@@ -40,3 +40,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/borski/travel-hacking-toolki
 
 No Claude Code na web, cadastre as chaves como variáveis de ambiente do ambiente de nuvem
 (nunca faça commit de um `.env` com valores reais).
+
+---
+
+## Área de Membros + Comunidade
+
+A pasta [`area-de-membros/`](area-de-membros/) contém a área de membros própria, com cursos pagos (Appmax),
+cursos gratuitos liberados pelo admin, comunidade e eventos. Guia completo de instalação em
+[`area-de-membros/README.md`](area-de-membros/README.md). Na Vercel, use **Root Directory = `area-de-membros`**.

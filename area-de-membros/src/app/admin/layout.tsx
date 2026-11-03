@@ -6,10 +6,11 @@ export const metadata = { title: "Admin" };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { profile, supabase } = await requireAdmin();
-  const { count } = await supabase.from("access_requests").select("*", { count: "exact", head: true }).eq("status", "pending");
+  const { data: jr } = profile.job_role_id ? await supabase.from("job_roles").select("name").eq("id", profile.job_role_id).maybeSingle() : { data: null };
   return (
-    <AppShell profile={profile}>
-      <AdminNav pending={count ?? 0} />
+    <AppShell profile={profile} jobRole={(jr?.name as string | undefined) ?? "Administrador(a)"}>
+      <p className="mb-3 text-sm font-bold uppercase tracking-wider text-gold-600">Painel administrativo</p>
+      <AdminNav />
       {children}
     </AppShell>
   );

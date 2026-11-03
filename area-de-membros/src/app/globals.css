@@ -1,106 +1,76 @@
 @import "tailwindcss";
 
 /*
- * Tema escuro estilo streaming.
- * Para trocar a cor da marca, altere apenas a escala --color-brand-* abaixo.
- * A escala "slate" foi invertida para o escuro: 50 = superfície sutil, 900 = texto mais claro.
+ * Tema do app corporativo. Para usar as cores da sua empresa,
+ * troque a escala --color-navy-* (cor principal) e --color-gold-* (destaque).
  */
 @theme {
-  --color-ink: #0b0b0e;          /* fundo da página */
-  --color-surface: #16161b;      /* cartões */
-  --color-surface-2: #1f1f26;    /* cartões em destaque / hover */
-
-  --color-brand-50: #2a0e12;
-  --color-brand-100: #3a1217;
-  --color-brand-200: #6a1b23;
-  --color-brand-500: #f0414e;
-  --color-brand-600: #e11d2e;    /* cor principal */
-  --color-brand-700: #ff6b76;    /* texto/links sobre o escuro */
-  --color-brand-800: #ffa3aa;
-
-  --color-slate-50: #1c1c22;
-  --color-slate-100: #26262e;
-  --color-slate-200: #32323c;
-  --color-slate-300: #45454f;
-  --color-slate-400: #74747f;
-  --color-slate-500: #a1a1ab;
-  --color-slate-600: #bdbdc6;
-  --color-slate-700: #d4d4da;
-  --color-slate-800: #ebebef;
-  --color-slate-900: #ffffff;
-
-  --color-emerald-50: #0e2a20;
-  --color-emerald-100: #113428;
-  --color-emerald-200: #1c5a42;
-  --color-emerald-600: #34d399;
-  --color-emerald-700: #4ade80;
-  --color-emerald-800: #86efac;
-
-  --color-amber-50: #2c2110;
-  --color-amber-100: #3a2a10;
-  --color-amber-200: #6b4c12;
-  --color-amber-800: #fcd34d;
-
-  --color-red-50: #2b1012;
-  --color-red-100: #3b1215;
-  --color-red-200: #6b1d22;
-  --color-red-600: #f87171;
-  --color-red-700: #fca5a5;
-  --color-red-800: #fecaca;
-
-  --color-rose-600: #fb7185;
-
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-navy-950: #071220;
+  --color-navy-900: #0c1b2c;
+  --color-navy-800: #12263c;
+  --color-navy-700: #1b3653;
+  --color-navy-600: #26476b;
+  --color-navy-100: #e6ebf1;
+  --color-navy-50: #f2f5f8;
+  --color-gold-600: #9c7c45;
+  --color-gold-500: #b39256;
+  --color-gold-100: #f3ece0;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-html { color-scheme: dark; }
-body {
-  @apply bg-ink text-slate-800 antialiased;
-}
+html { -webkit-tap-highlight-color: transparent; }
+body { @apply bg-white text-navy-900 antialiased; }
 
-/* rolagem horizontal das fileiras sem barra visível */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-@layer components {
-  .card { @apply bg-surface rounded-xl border border-white/5; }
-  .label { @apply block text-sm font-medium text-slate-700 mb-1; }
-  .input {
-    @apply w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition
-      placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
-  }
-  textarea.input { @apply min-h-28; }
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition
-      disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap;
-  }
-  .btn-primary { @apply bg-brand-600 text-white hover:bg-brand-500; }
-  .btn-secondary { @apply bg-white/10 text-white hover:bg-white/20; }
-  .btn-light { @apply bg-white text-black hover:bg-white/80; }
-  .btn-danger { @apply bg-red-50 text-red-700 border border-red-200 hover:bg-red-100; }
-  .btn-ghost { @apply text-slate-600 hover:bg-white/10 hover:text-white px-2.5 py-1.5; }
-  .btn-sm { @apply px-3 py-1.5 text-xs; }
-  .btn-lg { @apply px-6 py-3 text-base rounded-md; }
-  .link { @apply text-brand-700 font-medium hover:underline; }
-  .text-muted { @apply text-slate-500; }
-  .alert { @apply rounded-lg px-3 py-2 text-sm; }
-  .alert-error { @apply bg-red-50 text-red-700 border border-red-200; }
-  .alert-success { @apply bg-emerald-50 text-emerald-800 border border-emerald-200; }
-  .badge { @apply inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-semibold; }
-  .h-page { @apply text-2xl sm:text-3xl font-extrabold tracking-tight text-white; }
-  .h-section { @apply text-lg font-bold text-white; }
-  .h-row { @apply text-lg sm:text-xl font-bold text-white; }
-  .prose-lite { @apply whitespace-pre-wrap break-words leading-relaxed text-slate-600; }
-  .table { @apply w-full text-sm; }
-  .table th { @apply text-left font-semibold text-slate-500 px-3 py-2 border-b border-slate-200 whitespace-nowrap; }
-  .table td { @apply px-3 py-2.5 border-b border-slate-100 align-top; }
-  /* gradientes do banner (hero) */
-  .hero-fade-left { background: linear-gradient(90deg, var(--color-ink) 0%, rgb(11 11 14 / .85) 30%, rgb(11 11 14 / .2) 65%, transparent 100%); }
-  .hero-fade-bottom { background: linear-gradient(0deg, var(--color-ink) 0%, rgb(11 11 14 / .6) 25%, transparent 55%); }
+/* número vazado do "Top 10" */
+.outline-number {
+  color: transparent;
+  -webkit-text-stroke: 3px #d7dde4;
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: -0.06em;
 }
 
 @layer components {
-  /* margem lateral padrão das páginas e "sangria" para banners de ponta a ponta */
-  .gutter { @apply px-4 sm:px-8 lg:px-12; }
-  .bleed { @apply -mx-4 sm:-mx-8 lg:-mx-12; }
+  .container-app { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
+  .card { @apply bg-white rounded-2xl border border-slate-200; }
+  .label { @apply block text-sm font-semibold text-slate-600 mb-1.5; }
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-[15px] text-navy-900 outline-none transition
+      placeholder:text-slate-400 focus:border-navy-600 focus:ring-4 focus:ring-navy-100;
+  }
+  textarea.input { @apply min-h-28; }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-[15px] font-semibold transition
+      disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap select-none;
+  }
+  .btn-primary { @apply text-white bg-gradient-to-r from-navy-950 to-navy-700 hover:to-navy-600 shadow-sm; }
+  .btn-light { @apply bg-white text-navy-900 border border-slate-200 hover:bg-slate-50; }
+  .btn-secondary { @apply bg-slate-100 text-navy-900 hover:bg-slate-200; }
+  .btn-soft { @apply bg-slate-100 text-navy-900 hover:bg-slate-200; }
+  .btn-danger { @apply bg-red-50 text-red-700 hover:bg-red-100; }
+  .btn-ghost { @apply text-slate-600 hover:bg-slate-100 px-3 py-2; }
+  .btn-sm { @apply px-3.5 py-2 text-sm rounded-lg; }
+  .btn-lg { @apply px-6 py-4 text-lg rounded-2xl; }
+  .link { @apply text-navy-700 font-semibold underline-offset-2 hover:underline; }
+  .text-muted { @apply text-slate-500; }
+  .alert { @apply rounded-xl px-4 py-3 text-sm; }
+  .alert-error { @apply bg-red-50 text-red-700; }
+  .alert-success { @apply bg-emerald-50 text-emerald-800; }
+  .badge { @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold; }
+  .chip { @apply inline-flex items-center gap-2 rounded-full border border-slate-300 px-5 py-2.5 text-[15px] font-semibold text-slate-600 whitespace-nowrap transition hover:bg-slate-50; }
+  .chip-active { @apply border-navy-950 bg-navy-950 text-white hover:bg-navy-900; }
+  .seg { @apply inline-flex w-full rounded-full bg-slate-100 p-1.5; }
+  .seg-item { @apply flex-1 rounded-full px-4 py-2.5 text-center text-[15px] font-semibold text-slate-500 transition whitespace-nowrap; }
+  .seg-active { @apply bg-white text-navy-900 shadow-sm; }
+  .h-page { @apply text-3xl sm:text-4xl font-bold tracking-tight text-navy-950; }
+  .h-row { @apply text-xl sm:text-2xl font-bold tracking-tight text-navy-950; }
+  .h-section { @apply text-lg font-bold text-navy-950; }
+  .prose-lite { @apply whitespace-pre-wrap break-words leading-relaxed text-slate-600; }
+  .icon-box { @apply grid place-items-center w-12 h-12 rounded-xl bg-slate-100 text-navy-900 shrink-0; }
+  .table { @apply w-full text-sm; }
+  .table th { @apply text-left font-semibold text-slate-500 px-3 py-2.5 border-b border-slate-200 whitespace-nowrap; }
+  .table td { @apply px-3 py-3 border-b border-slate-100 align-top; }
 }

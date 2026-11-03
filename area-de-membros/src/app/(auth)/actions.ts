@@ -13,7 +13,7 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
   const { error } = await supabase.auth.signInWithPassword({ email: str(form, "email").toLowerCase(), password: str(form, "password") });
   if (error) return { error: "E-mail ou senha incorretos." };
   const next = str(form, "next");
-  redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard");
+  redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/inicio");
 }
 
 export async function logout() {
@@ -45,5 +45,5 @@ export async function setPassword(_: FormState, form: FormData): Promise<FormSta
   const { data, error } = await supabase.auth.updateUser({ password });
   if (error) return { error: "Não foi possível salvar. Seu link pode ter expirado — peça um novo em “Esqueci minha senha”." };
   if (name && data.user) await supabase.from("profiles").update({ full_name: name }).eq("id", data.user.id);
-  redirect("/dashboard?bemvindo=1");
+  redirect("/inicio?bemvindo=1");
 }

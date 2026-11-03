@@ -10,12 +10,12 @@ function layout({ title, intro, ctaLabel, ctaUrl, footer }: { title: string; int
   return `<!doctype html><html><body style="margin:0;background:#f4f4f7;font-family:Arial,Helvetica,sans-serif;color:#1f2937">
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 12px"><tr><td align="center">
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden">
-      <tr><td style="background:#6d28d9;padding:24px 32px;color:#fff;font-size:20px;font-weight:bold">${escapeHtml(SITE_NAME)}</td></tr>
+      <tr><td style="background:#0c1b2c;padding:24px 32px;color:#fff;font-size:20px;font-weight:bold">${escapeHtml(SITE_NAME)}</td></tr>
       <tr><td style="padding:32px">
         <h1 style="margin:0 0 16px;font-size:22px">${title}</h1>
         <div style="font-size:15px;line-height:1.6;color:#374151">${intro}</div>
-        <p style="margin:28px 0"><a href="${ctaUrl}" style="background:#6d28d9;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:bold;display:inline-block">${ctaLabel}</a></p>
-        <p style="font-size:12px;color:#6b7280;line-height:1.5">Se o botão não funcionar, copie e cole este link no navegador:<br><a href="${ctaUrl}" style="color:#6d28d9;word-break:break-all">${ctaUrl}</a></p>
+        <p style="margin:28px 0"><a href="${ctaUrl}" style="background:#0c1b2c;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:bold;display:inline-block">${ctaLabel}</a></p>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Se o botão não funcionar, copie e cole este link no navegador:<br><a href="${ctaUrl}" style="color:#12263c;word-break:break-all">${ctaUrl}</a></p>
         ${footer ? `<p style="font-size:12px;color:#6b7280">${footer}</p>` : ""}
       </td></tr>
     </table>
@@ -42,19 +42,14 @@ async function send(to: string, subject: string, html: string) {
   return { skipped: false };
 }
 
-function courseList(titles: string[]) {
-  if (!titles.length) return "";
-  return `<ul style="padding-left:20px">${titles.map((t) => `<li><strong>${escapeHtml(t)}</strong></li>`).join("")}</ul>`;
-}
-
-/** Novo aluno: link para criar a senha. */
-export function sendWelcomeEmail(to: string, name: string | null, link: string, courseTitles: string[]) {
+/** Colaborador convidado: link para criar a senha. */
+export function sendWelcomeEmail(to: string, name: string | null, link: string) {
   return send(
     to,
-    `Seu acesso à ${SITE_NAME} chegou!`,
+    `Seu acesso à ${SITE_NAME}`,
     layout({
-      title: `Bem-vindo(a)${name ? `, ${escapeHtml(name.split(" ")[0]!)}` : ""}! 🎉`,
-      intro: `Seu acesso foi liberado para:${courseList(courseTitles)}Clique no botão abaixo para criar sua senha e entrar na área de membros e na comunidade.`,
+      title: `Bem-vindo(a)${name ? `, ${escapeHtml(name.split(" ")[0]!)}` : ""}! 🎓`,
+      intro: `Você foi convidado(a) para a ${escapeHtml(SITE_NAME)}, nossa plataforma de desenvolvimento.<br><br>Lá você encontra a trilha da sua função, cursos, avaliações, certificados, a agenda de eventos e a comunidade da empresa.<br><br>Clique no botão abaixo para criar sua senha.`,
       ctaLabel: "Criar minha senha",
       ctaUrl: link,
       footer: `O link expira em algumas horas. Se expirar, use "Esqueci minha senha" em ${siteUrl("/login")}.`,
@@ -62,18 +57,9 @@ export function sendWelcomeEmail(to: string, name: string | null, link: string, 
   );
 }
 
-/** Aluno que já tinha conta recebeu um novo curso. */
-export function sendNewCourseEmail(to: string, name: string | null, courseTitles: string[]) {
-  return send(
-    to,
-    `Novo conteúdo liberado na ${SITE_NAME}`,
-    layout({
-      title: `Olá${name ? `, ${escapeHtml(name.split(" ")[0]!)}` : ""}! Você tem novidade 🚀`,
-      intro: `Acabamos de liberar para você:${courseList(courseTitles)}É só entrar com seu e-mail e senha de sempre.`,
-      ctaLabel: "Acessar agora",
-      ctaUrl: siteUrl("/dashboard"),
-    }),
-  );
+/** Aviso genérico (curso atribuído, novo PDI etc.). */
+export function sendNotificationEmail(to: string, subject: string, title: string, bodyHtml: string, path: string, cta = "Abrir") {
+  return send(to, subject, layout({ title: escapeHtml(title), intro: bodyHtml, ctaLabel: cta, ctaUrl: siteUrl(path) }));
 }
 
 export function sendPasswordResetEmail(to: string, link: string) {

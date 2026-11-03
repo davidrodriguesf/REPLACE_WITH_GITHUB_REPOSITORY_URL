@@ -1,142 +1,93 @@
-# Área de Membros + Comunidade
+# Universidade Corporativa
 
-Área de membros própria, sem taxa de plataforma, com:
+App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos, quiz, prova online, certificados, PDI (plano de desenvolvimento individual), agenda de eventos, biblioteca e comunidade**. Funciona no celular, com menu inferior e visual de aplicativo, e no computador.
 
-- **Cursos pagos**: liberados automaticamente quando a Appmax confirma o pagamento (webhook).
-- **Cursos gratuitos**: o aluno não paga, mas **quem libera é o administrador**. O aluno vê o curso e clica em "Solicitar acesso"; você aprova no painel. Você também pode liberar direto pelo e-mail.
-- **Cursos bloqueados com cadeado**: o aluno vê tudo o que existe e o que ainda não tem.
-- **Comunidade**: espaços (canais) com posts, comentários, curtidas e posts fixados. O espaço "Avisos" é só para a equipe publicar.
-- **Eventos**: lives e encontros com confirmação de presença, link da sala e botão "Adicionar à agenda".
-- **Painel admin**: cursos, módulos, aulas, alunos, liberação e remoção de acesso, solicitações, eventos, espaços da comunidade e log dos webhooks.
-- **E-mails automáticos (Resend)**: boas-vindas com link para criar a senha, aviso de novo curso liberado e redefinição de senha.
-- Visual estilo streaming: tema escuro, banner com o curso em destaque, fileiras com rolagem lateral, cards que crescem ao passar o mouse e lista de aulas em formato de episódios.
-- Funciona no celular, com menu inferior, e no computador.
+**Stack:** Next.js 15 · Supabase (banco e login) · Resend (e-mails) · Vercel (hospedagem)
 
-**Stack:** Next.js 15 · Supabase (banco + login) · Resend (e-mails) · Appmax (checkout) · Vercel (hospedagem)
+## O que tem
 
----
+### Para o colaborador
+- **Início**: a trilha da função com o progresso, os cursos obrigatórios com prazo, "Continuar Estudando", "Conteúdos em Alta" (top 10), recomendados, próximos eventos e fileiras por categoria.
+- **Catálogo** com busca e filtro por categoria.
+- **Página do curso** em formato de gaveta: módulos, carga horária, sobre o curso, mentores, prova final, certificado e o botão "Acessar"/"Continuar".
+- **Aula**: vídeo (YouTube, Vimeo, Panda, Bunny...), material de apoio, quiz da aula, "Concluir e avançar" e o painel de progresso.
+- **Quiz e prova online**: uma questão por vez, cronômetro opcional, limite de tentativas, correção no servidor, nota mínima e gabarito com explicação (configurável).
+- **Trilhas**: o caminho passo a passo da função.
+- **Meu desenvolvimento**: horas estudadas, cursos concluídos, certificados, média nas provas e PDIs com metas e anotações de feedback.
+- **Certificados** prontos para baixar em PDF, com código e página pública de verificação.
+- **Agenda**: eventos próximos e anteriores, selo "AO VIVO" e confirmação de presença.
+- **Biblioteca**: manuais, políticas e e-books.
+- **Comunidade**: canais, posts, comentários e curtidas.
+- **Perfil**, com informações pessoais e da empresa.
 
-## Fluxos
+### Para o gestor
+- **Minha equipe**: progresso de cada pessoa, cursos atrasados, PDIs e avaliações.
+- Cria **PDIs** com metas, atribui **cursos com prazo** e registra feedbacks.
+- Só enxerga a própria equipe (garantido pelo banco).
 
-```
-COMPRA (curso pago)
-pessoa compra na Appmax → webhook → sistema acha o curso pelo ID/SKU do produto
-  → aluno novo?    cria a conta e envia o e-mail "Criar minha senha"
-  → já é aluno?    libera o curso e envia o e-mail "Novo conteúdo liberado"
-reembolso/chargeback → remove o acesso daquela compra
+### Para o RH (admin)
+- **Colaboradores**: convite por e-mail, função, departamento, gestor, perfil de acesso e desativação.
+- **Funções** e **trilhas**: cada função recebe a sua trilha, com cursos em ordem, obrigatórios ou opcionais.
+- **Cursos**: módulos, aulas, categoria, mentores, carga horária, público (todos ou funções específicas) e certificado.
+- **Editor de quiz e prova**: questões de múltipla escolha, nota mínima, tentativas e tempo.
+- **Relatórios**: progresso por colaborador e por curso, atrasados e média das provas, com **exportação em CSV** (abre no Excel).
+- Biblioteca, eventos, canais da comunidade, categorias e mentores.
 
-CURSO GRATUITO (liberado pelo admin)
-aluno vê o curso → "Solicitar acesso gratuito" → admin aprova em Admin › Solicitações
-  → curso liberado + e-mail
-ou: Admin › Alunos & acessos › digita o e-mail → marca os cursos → Liberar
-  (se a pessoa não tiver conta, ela é criada e recebe o e-mail para criar a senha)
-```
+## Como os acessos funcionam
+- Cada colaborador tem uma **função** (ex.: Vendedor). A função define a **trilha**.
+- Um curso fica visível para a pessoa se for "para todos", se for da função dela, se estiver na trilha dela ou se tiver sido atribuído a ela.
+- O **certificado** é emitido sozinho quando a pessoa conclui todas as aulas e, se o curso tiver prova final, é aprovada nela.
+- O **gabarito nunca vai para o navegador**: a correção acontece no banco, então não dá para trapacear olhando o código da página.
 
----
+## Instalação
 
-## Instalação passo a passo
-
-### 1. Supabase (banco de dados e login)
-
+### 1. Supabase
 1. Crie um projeto em [supabase.com](https://supabase.com).
-2. Abra **SQL Editor**, cole todo o conteúdo de [`supabase/schema.sql`](supabase/schema.sql) e clique em **Run**. O script pode ser rodado de novo sem problemas.
-3. Em **Authentication › Sign In / Providers**:
-   - desative **Allow new users to sign up**. Só entra quem comprou ou foi liberado por você.
-   - em **Email**, aumente o **Email OTP Expiration** para `86400` (24 h), que é a validade do link de criar a senha.
-4. Em **Authentication › URL Configuration**, coloque seu domínio em **Site URL** (ex.: `https://membros.seudominio.com.br`).
-5. Em **Project Settings › API**, copie a `URL`, a `anon key` e a `service_role key`.
+2. Abra **SQL Editor**, cole o conteúdo de [`supabase/schema.sql`](supabase/schema.sql) e clique em **Run**. O script pode ser rodado de novo sem problemas.
+3. Em **Authentication › Sign In / Providers**, desative **Allow new users to sign up**. Só entra quem o RH convidar.
+4. Em **Authentication › Email**, defina **Email OTP Expiration** como `86400` (24 h), que é a validade do convite.
+5. Em **Authentication › URL Configuration**, coloque o domínio do app em **Site URL**.
+6. Copie a URL, a `anon key` e a `service_role key` em **Project Settings › API**.
 
-### 2. Resend (e-mails)
+### 2. Resend
+Crie a conta, verifique o domínio da empresa e gere uma API Key.
 
-1. Crie a conta em [resend.com](https://resend.com) e **verifique seu domínio** (Domains).
-2. Crie uma API Key.
-3. O remetente (`EMAIL_FROM`) precisa ser desse domínio, por exemplo `Minha Escola <acesso@seudominio.com.br>`.
-
-### 3. Rodar no seu computador (opcional)
-
-```bash
-cd area-de-membros
-cp .env.example .env.local   # preencha os valores
-npm install
-npm run dev                  # http://localhost:3000
-```
-
-### 4. Primeiro acesso como administrador(a)
-
-1. No Supabase, vá em **Authentication › Users › Add user › Send invitation** (ou *Create new user* com senha) usando seu e-mail.
-2. No **SQL Editor**, rode:
+### 3. Primeiro acesso (admin)
+1. No Supabase, vá em **Authentication › Users › Add user** e crie o seu usuário.
+2. No SQL Editor, rode:
    ```sql
    update public.profiles set role = 'admin' where email = 'seu@email.com';
    ```
-3. Entre no site e o menu **Admin** vai aparecer.
+3. Entre no app, abra o menu (⋯) e clique em **Painel administrativo**.
 
-### 5. Deploy na Vercel
+Ordem sugerida: **Funções → Categorias e mentores → Cursos (aulas e prova) → Trilhas → Colaboradores (convites)**.
 
-1. Em [vercel.com](https://vercel.com), clique em **Add New › Project** e importe este repositório do GitHub.
-2. Em **Root Directory**, escolha **`area-de-membros`**.
-3. Em **Environment Variables**, cadastre todas as variáveis do `.env.example`, com `NEXT_PUBLIC_SITE_URL` igual ao seu domínio.
-4. Clique em Deploy e depois conecte seu domínio em **Settings › Domains**.
+### 4. Deploy na Vercel
+1. Importe o repositório e defina o **Root Directory** como `area-de-membros`.
+2. Cadastre as variáveis do `.env.example`.
+3. Conecte o domínio da empresa.
 
-### 6. Appmax (checkout e webhook)
+### Rodar localmente
+```bash
+cd area-de-membros
+cp .env.example .env.local   # preencha
+npm install
+npm run dev
+```
 
-1. Na Appmax, cadastre um webhook com a URL abaixo, marcando os eventos de pedido pago/aprovado e de reembolso/chargeback:
-   ```
-   https://SEU_DOMINIO/api/webhooks/appmax?token=VALOR_DE_APPMAX_WEBHOOK_SECRET
-   ```
-2. No painel **Admin › Cursos**, em cada curso pago, preencha:
-   - **Link do checkout**: é para onde vai o botão "Quero este curso" do curso bloqueado.
-   - **ID(s)/SKU(s) do produto na Appmax**: é assim que o sistema sabe qual curso liberar. Um mesmo ID pode estar em vários cursos, o que serve para um **pacote completo** que libera tudo.
-3. Faça uma compra de teste e confira em **Admin › Webhooks**. Cada aviso recebido aparece ali com status (`processed`, `ignored`, `error`) e o conteúdo completo. Se aparecer *"Nenhum curso vinculado aos produtos: X"*, basta copiar o `X` para o campo de IDs do curso.
-
-Eventos que liberam acesso: `OrderApproved`, `OrderPaid`, `OrderPaidByPix`, `OrderPaidByBillet`, `OrderIntegrated`.
-Eventos que removem acesso: `OrderRefund`, `OrderChargeBack`.
-Para mudar essas listas, use as variáveis `APPMAX_GRANT_EVENTS` e `APPMAX_REVOKE_EVENTS`.
-
----
-
-## Uso do dia a dia (admin)
-
-| Quero... | Onde |
-|---|---|
-| Criar um curso pago ou gratuito | Admin › Cursos › Novo curso (escolha "Pago" ou "Gratuito") |
-| Adicionar módulos e aulas | Admin › Cursos › (curso) › + Módulo / + Aula |
-| Liberar um curso para alguém | Admin › Alunos & acessos › Liberar acesso |
-| Aprovar pedidos de curso gratuito | Admin › Solicitações |
-| Remover o acesso de um aluno | Admin › Alunos & acessos › (aluno) › Remover |
-| Criar uma live ou um encontro | Admin › Eventos › Novo evento |
-| Criar ou renomear canais da comunidade | Admin › Comunidade |
-| Fixar ou excluir posts | Direto no post, na Comunidade |
-| Tornar alguém admin | Admin › Alunos › (aluno) › Tornar admin |
-
-**Vídeos:** cole o link do YouTube (não listado), do Vimeo ou o link de *embed* do Panda Video ou do Bunny Stream. Para conteúdo pago, prefira Panda, Bunny ou Vimeo com restrição de domínio.
-
----
-
-## Personalizar a marca
-
-- **Nome:** variável `NEXT_PUBLIC_SITE_NAME`.
-- **Cor principal:** em `src/app/globals.css`, troque a escala `--color-brand-*` (a cor principal é `--color-brand-600`).
-- **Capas:** use imagens 16:9 (ex.: 1600×900) com o lado esquerdo mais escuro ou limpo, porque o título do banner fica sobre ele.
+## Personalizar
+- **Nome, logo e assinatura do certificado**: variáveis `NEXT_PUBLIC_*` no `.env`.
+- **Cores**: em `src/app/globals.css`, troque as escalas `--color-navy-*` (cor principal) e `--color-gold-*` (destaque).
+- **Capas**: use imagens 16:9 para os cursos e 2:3 para a biblioteca. Sem imagem, o app gera uma capa tipográfica.
 
 ## Estrutura
-
 ```
-supabase/schema.sql            tabelas, regras de segurança (RLS) e dados iniciais
-src/app/(auth)/                login, esqueci a senha
-src/app/definir-senha/         criação de senha (link do e-mail)
-src/app/auth/confirm/          valida o link do e-mail
-src/app/(membros)/             dashboard, cursos, aulas, comunidade, eventos, perfil
-src/app/admin/                 painel administrativo
-src/app/api/webhooks/appmax/   recebe as vendas da Appmax
-src/lib/access.ts              libera/remove acesso, cria a conta e manda o e-mail
-src/lib/appmax.ts              lê o payload da Appmax
-src/lib/email.ts               templates de e-mail (Resend)
+supabase/schema.sql              banco, regras de acesso (RLS), correção de provas e certificados
+src/app/(app)/                   telas do colaborador (início, catálogo, cursos, trilhas, agenda...)
+src/app/(app)/equipe/            visão do gestor
+src/app/admin/                   painel do RH
+src/app/certificados/[id]        certificado para imprimir ou salvar em PDF
+src/app/certificado/[code]       verificação pública do certificado
+src/lib/learning.ts              progresso, trilhas e próximos passos
+src/lib/reports.ts               relatórios (função learning_report do banco)
 ```
-
-## Segurança
-
-- Todas as tabelas usam **Row Level Security**. O aluno só lê as aulas dos cursos liberados para ele, mesmo que tente acessar o banco direto.
-- O aluno não consegue se promover a admin, liberar cursos para si mesmo, fixar posts nem publicar em espaços da equipe.
-- Na comunidade, os alunos veem nome e foto dos outros membros, mas **não o e-mail**.
-- A `SUPABASE_SERVICE_ROLE_KEY` fica só no servidor (webhook e convites). Nunca a coloque em variáveis `NEXT_PUBLIC_`.
-- O webhook exige o token secreto. Avisos repetidos do mesmo pedido são ignorados.

@@ -5,13 +5,17 @@ import { saveCourse } from "../actions";
 import { FormMessage, SubmitButton } from "@/components/ui";
 import type { Course } from "@/lib/types";
 
-export function CourseForm({ course }: { course?: Course }) {
+type Opt = { id: string; name: string };
+
+export function CourseForm({ course, categories, roles, instructors, selectedRoles = [], selectedInstructors = [] }: {
+  course?: Course; categories: Opt[]; roles: Opt[]; instructors: Opt[]; selectedRoles?: string[]; selectedInstructors?: string[];
+}) {
   const [state, action] = useActionState(saveCourse, undefined);
-  const [type, setType] = useState(course?.access_type ?? "paid");
+  const [audience, setAudience] = useState(course?.audience ?? "all");
   return (
     <form action={action} className="card p-5 space-y-4">
       {course && <input type="hidden" name="id" value={course.id} />}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label className="label">Título *</label>
           <input className="input" name="title" defaultValue={course?.title} required />
@@ -26,13 +30,24 @@ export function CourseForm({ course }: { course?: Course }) {
         <input className="input" name="subtitle" defaultValue={course?.subtitle ?? ""} />
       </div>
       <div>
-        <label className="label">Descrição</label>
+        <label className="label">Sobre o curso</label>
         <textarea className="input" name="description" defaultValue={course?.description ?? ""} />
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_120px]">
-        <div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="sm:col-span-2">
           <label className="label">URL da capa (16:9)</label>
           <input className="input" name="cover_url" type="url" defaultValue={course?.cover_url ?? ""} placeholder="https://..." />
+        </div>
+        <div>
+          <label className="label">Categoria</label>
+          <select className="input" name="category_id" defaultValue={course?.category_id ?? ""}>
+            <option value="">Sem categoria</option>
+            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="label">Carga horária (h)</label>
+          <input className="input" name="workload_hours" inputMode="decimal" defaultValue={course?.workload_hours ?? ""} placeholder="Ex.: 4" />
         </div>
         <div>
           <label className="label">Ordem</label>
@@ -40,38 +55,44 @@ export function CourseForm({ course }: { course?: Course }) {
         </div>
       </div>
 
-      <fieldset className="rounded-xl border border-slate-200 p-4 space-y-4">
-        <legend className="px-1 text-sm font-semibold">Tipo de acesso</legend>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label className={`rounded-xl border p-3 cursor-pointer ${type === "paid" ? "border-brand-500 bg-brand-50" : "border-slate-200"}`}>
-            <input type="radio" name="access_type" value="paid" checked={type === "paid"} onChange={() => setType("paid")} className="mr-2" />
-            <strong>Pago</strong>
-            <p className="text-xs text-muted mt-1">Liberado automaticamente quando a Appmax confirma o pagamento (ou manualmente por você).</p>
+      <fieldset className="rounded-2xl border border-slate-200 p-4 space-y-3">
+        <legend className="px-1 text-sm font-bold">Quem pode ver</legend>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <label className={`rounded-xl border p-3 cursor-pointer ${audience === "all" ? "border-navy-900 bg-navy-50" : "border-slate-200"}`}>
+            <input type="radio" name="audience" value="all" checked={audience === "all"} onChange={() => setAudience("all")} className="mr-2" />
+            <strong>Todos os colaboradores</strong>
           </label>
-          <label className={`rounded-xl border p-3 cursor-pointer ${type === "free" ? "border-brand-500 bg-brand-50" : "border-slate-200"}`}>
-            <input type="radio" name="access_type" value="free" checked={type === "free"} onChange={() => setType("free")} className="mr-2" />
-            <strong>Gratuito (liberado pelo admin)</strong>
-            <p className="text-xs text-muted mt-1">O aluno não paga. Ele solicita e você aprova, ou você libera direto em “Alunos & acessos”.</p>
+          <label className={`rounded-xl border p-3 cursor-pointer ${audience === "roles" ? "border-navy-900 bg-navy-50" : "border-slate-200"}`}>
+            <input type="radio" name="audience" value="roles" checked={audience === "roles"} onChange={() => setAudience("roles")} className="mr-2" />
+            <strong>Só algumas funções</strong>
           </label>
         </div>
-        {type === "paid" && (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="label">Link do checkout (Appmax)</label>
-              <input className="input" name="checkout_url" type="url" defaultValue={course?.checkout_url ?? ""} placeholder="https://..." />
-            </div>
-            <div>
-              <label className="label">ID(s) / SKU(s) do produto na Appmax</label>
-              <input className="input" name="appmax_product_ids" defaultValue={course?.appmax_product_ids?.join(", ") ?? ""} placeholder="ex.: 12345, CURSO-01" />
-              <p className="text-xs text-muted mt-1">Separe por vírgula. É assim que o webhook sabe qual curso liberar.</p>
-            </div>
+        {audience === "roles" && (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {roles.map((r) => (
+              <label key={r.id} className="flex items-center gap-2 text-sm"><input type="checkbox" name="job_role_ids" value={r.id} defaultChecked={selectedRoles.includes(r.id)} />{r.name}</label>
+            ))}
           </div>
         )}
+        <p className="text-xs text-slate-500">Cursos que estão numa trilha ou foram atribuídos a alguém ficam visíveis para essas pessoas de qualquer forma.</p>
       </fieldset>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="is_published" defaultChecked={course?.is_published ?? false} /> Publicado (visível para os alunos)
-      </label>
+      {instructors.length > 0 && (
+        <fieldset>
+          <legend className="label">Mentores</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {instructors.map((i) => (
+              <label key={i.id} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm"><input type="checkbox" name="instructor_ids" value={i.id} defaultChecked={selectedInstructors.includes(i.id)} />{i.name}</label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold">
+        <label className="flex items-center gap-2"><input type="checkbox" name="is_published" defaultChecked={course?.is_published ?? false} />Publicado</label>
+        <label className="flex items-center gap-2"><input type="checkbox" name="certificate_enabled" defaultChecked={course?.certificate_enabled ?? true} />Emite certificado</label>
+        <label className="flex items-center gap-2"><input type="checkbox" name="is_featured" defaultChecked={course?.is_featured ?? false} />Destaque em "Recomendados"</label>
+      </div>
       <FormMessage state={state} />
       <SubmitButton>{course ? "Salvar curso" : "Criar curso"}</SubmitButton>
     </form>

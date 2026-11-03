@@ -17,11 +17,22 @@ export const getCurrentUser = cache(async () => {
 export async function requireUser() {
   const current = await getCurrentUser();
   if (!current || !current.profile) redirect("/login");
+  if (!current.profile.is_active) {
+    await current.supabase.auth.signOut();
+    redirect("/login?erro=inativo");
+  }
   return current as { user: NonNullable<typeof current>["user"]; profile: Profile; supabase: NonNullable<typeof current>["supabase"] };
 }
 
 export async function requireAdmin() {
   const current = await requireUser();
-  if (current.profile.role !== "admin") redirect("/dashboard");
+  if (current.profile.role !== "admin") redirect("/inicio");
+  return current;
+}
+
+/** Gestor ou admin. */
+export async function requireManager() {
+  const current = await requireUser();
+  if (current.profile.role === "employee") redirect("/inicio");
   return current;
 }

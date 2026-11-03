@@ -1,4 +1,4 @@
-import { toggleLike } from "@/app/(membros)/actions";
+import { toggleLike } from "@/app/(app)/actions";
 import { IconHeart } from "./Icons";
 
 export function LikeButton({ postId, liked, count }: { postId: string; liked: boolean; count: number }) {

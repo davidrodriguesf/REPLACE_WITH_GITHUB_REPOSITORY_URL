@@ -43,8 +43,8 @@ No Claude Code na web, cadastre as chaves como variáveis de ambiente do ambient
 
 ---
 
-## Área de Membros + Comunidade
+## Universidade Corporativa
 
-A pasta [`area-de-membros/`](area-de-membros/) contém a área de membros própria, com cursos pagos (Appmax),
-cursos gratuitos liberados pelo admin, comunidade e eventos. Guia completo de instalação em
-[`area-de-membros/README.md`](area-de-membros/README.md). Na Vercel, use **Root Directory = `area-de-membros`**.
+A pasta [`area-de-membros/`](area-de-membros/) contém o app interno de desenvolvimento dos colaboradores:
+trilhas por função, cursos, quiz e prova online, certificados, PDI, agenda, biblioteca e comunidade.
+Guia completo em [`area-de-membros/README.md`](area-de-membros/README.md). Na Vercel, use **Root Directory = `area-de-membros`**.

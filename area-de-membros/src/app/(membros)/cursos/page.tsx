@@ -11,7 +11,7 @@ export default async function CoursesPage() {
     <div>
       <h1 className="h-page mb-6">Todos os cursos</h1>
       {catalog.length ? (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{catalog.map((c) => <CourseCard key={c.id} course={c} />)}</div>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{catalog.map((c) => <CourseCard key={c.id} course={c} />)}</div>
       ) : (
         <p className="card p-6 text-muted">Nenhum curso publicado ainda.</p>
       )}

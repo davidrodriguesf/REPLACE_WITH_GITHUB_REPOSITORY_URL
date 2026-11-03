@@ -21,7 +21,7 @@ export function GrantForm({ courses, email, name }: { courses: C[]; email?: stri
       {email ? (
         <input type="hidden" name="email" value={email} />
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className="label">E-mail do aluno *</label>
             <input className="input" name="email" type="email" required />
@@ -35,7 +35,7 @@ export function GrantForm({ courses, email, name }: { courses: C[]; email?: stri
       {email && <input type="hidden" name="name" value={name ?? ""} />}
       <div>
         <p className="label">Cursos</p>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {courses.map((c) => (
             <label key={c.id} className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm cursor-pointer hover:bg-slate-50">
               <input type="checkbox" name="course_ids" value={c.id} />

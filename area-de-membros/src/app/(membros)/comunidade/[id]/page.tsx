@@ -39,7 +39,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
               {author?.full_name ?? "Membro"}
               {author?.role === "admin" && <span className="badge bg-brand-100 text-brand-700 ml-2">Equipe</span>}
             </p>
-            <p className="text-xs text-muted capitalize">{formatDateTime(post.created_at)}</p>
+            <p className="text-xs text-muted">{formatDateTime(post.created_at)}</p>
           </div>
           {post.pinned && <span className="badge bg-brand-600 text-white"><IconPin className="w-3 h-3" />Fixado</span>}
         </header>

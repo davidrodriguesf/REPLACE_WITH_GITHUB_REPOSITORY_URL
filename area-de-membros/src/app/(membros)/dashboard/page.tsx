@@ -35,13 +35,13 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       <section>
         <h2 className="h-section mb-4">Meus cursos</h2>
         {mine.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{mine.map((c) => <CourseCard key={c.id} course={c} />)}</div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{mine.map((c) => <CourseCard key={c.id} course={c} />)}</div>
         ) : (
           <p className="card p-6 text-muted">Você ainda não tem cursos liberados. Veja as opções abaixo.</p>
         )}
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="card p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="h-section">Próximos eventos</h2>
@@ -52,7 +52,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               {(events as EventItem[]).map((e) => (
                 <li key={e.id} className="py-3">
                   <Link href={`/eventos/${e.id}`} className="font-medium hover:text-brand-700">{e.title}</Link>
-                  <p className="text-sm text-muted capitalize">{formatDateTime(e.starts_at)}</p>
+                  <p className="text-sm text-muted">{formatDateTime(e.starts_at)}</p>
                 </li>
               ))}
             </ul>
@@ -87,14 +87,14 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <section>
           <h2 className="h-section mb-1">Cursos gratuitos</h2>
           <p className="text-sm text-muted mb-4">Sem custo — solicite e nossa equipe libera para você.</p>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{free.map((c) => <CourseCard key={c.id} course={c} />)}</div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{free.map((c) => <CourseCard key={c.id} course={c} />)}</div>
         </section>
       )}
 
       {locked.length > 0 && (
         <section>
           <h2 className="h-section mb-4">Outros cursos</h2>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{locked.map((c) => <CourseCard key={c.id} course={c} />)}</div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{locked.map((c) => <CourseCard key={c.id} course={c} />)}</div>
         </section>
       )}
     </div>

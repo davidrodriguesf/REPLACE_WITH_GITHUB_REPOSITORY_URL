@@ -8,7 +8,7 @@ export default async function AdminCourses() {
   const { data } = await supabase.from("courses").select("*, enrollments(count), lessons(count)").order("position").order("created_at");
   const courses = (data ?? []) as (Course & { enrollments: { count: number }[]; lessons: { count: number }[] })[];
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_420px]">
       <section>
         <h1 className="h-section mb-4">Cursos</h1>
         <div className="card overflow-x-auto">

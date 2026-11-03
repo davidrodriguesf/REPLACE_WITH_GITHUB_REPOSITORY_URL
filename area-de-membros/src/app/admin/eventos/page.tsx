@@ -10,7 +10,7 @@ export default async function AdminEvents() {
   const events = (data ?? []) as (EventItem & { event_rsvps: { count: number }[] })[];
   const now = Date.now();
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_440px]">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_440px]">
       <section>
         <h1 className="h-section mb-4">Eventos</h1>
         <div className="card overflow-x-auto">
@@ -23,7 +23,7 @@ export default async function AdminEvents() {
                     <Link href={`/admin/eventos/${e.id}`} className="link">{e.title}</Link>
                     {!e.is_published && <span className="badge bg-slate-100 text-slate-600 ml-2">Rascunho</span>}
                   </td>
-                  <td className="whitespace-nowrap capitalize">{formatDateTime(e.starts_at)}</td>
+                  <td className="whitespace-nowrap">{formatDateTime(e.starts_at)}</td>
                   <td>{e.event_rsvps[0]?.count ?? 0}</td>
                 </tr>
               ))}

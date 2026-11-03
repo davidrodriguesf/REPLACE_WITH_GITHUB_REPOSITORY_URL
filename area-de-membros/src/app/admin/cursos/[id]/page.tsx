@@ -35,7 +35,7 @@ export default async function AdminCourse({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
-      <div className="grid gap-8 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
         <section>
           <h2 className="h-section mb-3">Dados do curso</h2>
           <CourseForm course={course} />

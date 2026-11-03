@@ -7,7 +7,7 @@ function SpaceFields({ s }: { s?: Space }) {
   return (
     <>
       {s && <input type="hidden" name="id" value={s.id} />}
-      <div className="grid gap-2 sm:grid-cols-[80px_1fr_1fr]">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-[80px_1fr_1fr]">
         <input className="input" name="position" type="number" defaultValue={s?.position ?? 0} aria-label="Ordem" />
         <input className="input" name="name" defaultValue={s?.name} placeholder="Nome do espaço" required />
         <input className="input" name="slug" defaultValue={s?.slug} placeholder="slug (opcional)" />

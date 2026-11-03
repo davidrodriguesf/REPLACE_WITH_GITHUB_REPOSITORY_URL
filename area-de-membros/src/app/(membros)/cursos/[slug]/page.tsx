@@ -27,7 +27,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const firstPending = lessonList.find((l) => !done.has(l.id)) ?? lessonList[0];
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px]">
       <div className="space-y-6">
         <div className="card overflow-hidden">
           <div className="relative aspect-[21/9] bg-gradient-to-br from-brand-600 to-fuchsia-500">

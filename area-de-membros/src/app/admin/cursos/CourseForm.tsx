@@ -11,7 +11,7 @@ export function CourseForm({ course }: { course?: Course }) {
   return (
     <form action={action} className="card p-5 space-y-4">
       {course && <input type="hidden" name="id" value={course.id} />}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="label">Título *</label>
           <input className="input" name="title" defaultValue={course?.title} required />
@@ -29,7 +29,7 @@ export function CourseForm({ course }: { course?: Course }) {
         <label className="label">Descrição</label>
         <textarea className="input" name="description" defaultValue={course?.description ?? ""} />
       </div>
-      <div className="grid gap-4 sm:grid-cols-[1fr_120px]">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_120px]">
         <div>
           <label className="label">URL da capa (16:9)</label>
           <input className="input" name="cover_url" type="url" defaultValue={course?.cover_url ?? ""} placeholder="https://..." />
@@ -42,7 +42,7 @@ export function CourseForm({ course }: { course?: Course }) {
 
       <fieldset className="rounded-xl border border-slate-200 p-4 space-y-4">
         <legend className="px-1 text-sm font-semibold">Tipo de acesso</legend>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className={`rounded-xl border p-3 cursor-pointer ${type === "paid" ? "border-brand-500 bg-brand-50" : "border-slate-200"}`}>
             <input type="radio" name="access_type" value="paid" checked={type === "paid"} onChange={() => setType("paid")} className="mr-2" />
             <strong>Pago</strong>
@@ -55,7 +55,7 @@ export function CourseForm({ course }: { course?: Course }) {
           </label>
         </div>
         {type === "paid" && (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="label">Link do checkout (Appmax)</label>
               <input className="input" name="checkout_url" type="url" defaultValue={course?.checkout_url ?? ""} placeholder="https://..." />

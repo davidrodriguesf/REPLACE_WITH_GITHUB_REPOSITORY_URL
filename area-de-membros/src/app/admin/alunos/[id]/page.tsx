@@ -41,7 +41,7 @@ export default async function AdminStudent({ params }: { params: Promise<{ id: s
         )}
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <section className="card p-5">
           <h2 className="h-section mb-3">Cursos liberados</h2>
           <ul className="divide-y divide-slate-100">

@@ -24,7 +24,7 @@ export default async function AdminStudents({ searchParams }: { searchParams: Pr
   const titles = new Map((courses ?? []).map((c) => [c.id as string, c.title as string]));
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[1fr_440px]">
+    <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1fr_440px]">
       <section className="space-y-4 min-w-0">
         <h1 className="h-section">Alunos</h1>
         <form className="flex flex-col sm:flex-row gap-2">

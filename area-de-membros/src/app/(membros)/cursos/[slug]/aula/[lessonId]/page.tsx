@@ -32,7 +32,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   const embed = toEmbedUrl(lesson.video_url);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
       <div className="space-y-5 min-w-0">
         <Link href={`/cursos/${slug}`} className="link text-sm">← {course.title}</Link>
         {embed && (

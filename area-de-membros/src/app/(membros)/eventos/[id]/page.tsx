@@ -30,7 +30,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         <div className="p-5 sm:p-6 space-y-4">
           <h1 className="h-page">{event.title}</h1>
           <div className="text-sm text-slate-600 space-y-1">
-            <p className="capitalize">🗓️ {formatDateTime(event.starts_at)}{event.ends_at ? ` até ${formatDateTime(event.ends_at)}` : ""} (horário de Brasília)</p>
+            <p className="">🗓️ {formatDateTime(event.starts_at)}{event.ends_at ? ` até ${formatDateTime(event.ends_at)}` : ""} (horário de Brasília)</p>
             <p>📍 {event.location || "Online"}</p>
           </div>
           {event.description && <p className="prose-lite">{event.description}</p>}

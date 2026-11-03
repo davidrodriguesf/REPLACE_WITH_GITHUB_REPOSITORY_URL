@@ -14,7 +14,7 @@ export function EventForm({ event, startsLocal, endsLocal }: { event?: EventItem
         <label className="label">Título *</label>
         <input className="input" name="title" defaultValue={event?.title} required />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="label">Início * (horário de Brasília)</label>
           <input className="input" name="starts_at" type="datetime-local" defaultValue={startsLocal} required />
@@ -24,7 +24,7 @@ export function EventForm({ event, startsLocal, endsLocal }: { event?: EventItem
           <input className="input" name="ends_at" type="datetime-local" defaultValue={endsLocal} />
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="label">Local</label>
           <input className="input" name="location" defaultValue={event?.location ?? ""} placeholder="Online / endereço" />

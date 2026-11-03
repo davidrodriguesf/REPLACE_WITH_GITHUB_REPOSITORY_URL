@@ -33,7 +33,7 @@ export default async function CommunityPage({ searchParams }: { searchParams: Pr
   const canPostSpaces = spaces.filter((s) => !s.admin_only_posts || profile.role === "admin");
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
       <aside>
         <h1 className="h-page mb-4 lg:hidden">Comunidade</h1>
         <nav className="flex lg:flex-col gap-1 overflow-x-auto pb-2 -mx-4 px-4 lg:mx-0 lg:px-0">

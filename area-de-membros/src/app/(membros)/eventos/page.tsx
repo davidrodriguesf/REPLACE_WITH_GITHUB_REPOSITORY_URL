@@ -42,9 +42,9 @@ export default async function EventsPage() {
             <DateBadge iso={e.starts_at} />
             <div className="flex-1 min-w-0">
               <Link href={`/eventos/${e.id}`} className="font-semibold text-lg hover:text-brand-700">{e.title}</Link>
-              <p className="text-sm text-muted capitalize">{formatDateTime(e.starts_at)} · {e.location || "Online"}</p>
+              <p className="text-sm text-muted">{formatDateTime(e.starts_at)} · {e.location || "Online"}</p>
               {e.description && <p className="text-sm text-slate-600 mt-2 line-clamp-2">{e.description}</p>}
-              <p className="text-xs text-muted mt-2">{e.event_rsvps[0]?.count ?? 0} confirmados</p>
+              <p className="text-xs text-muted mt-2">{e.event_rsvps[0]?.count ?? 0} confirmado{(e.event_rsvps[0]?.count ?? 0) === 1 ? "" : "s"}</p>
             </div>
             <div className="sm:self-center"><RsvpButton eventId={e.id} going={going.has(e.id)} /></div>
           </article>

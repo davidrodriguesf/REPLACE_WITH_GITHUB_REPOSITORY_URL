@@ -29,7 +29,8 @@ export function formatDate(iso: string, opts: Intl.DateTimeFormatOptions = {}) {
 }
 
 export function formatDateTime(iso: string) {
-  return formatDate(iso, { hour: "2-digit", minute: "2-digit", weekday: "short" });
+  const s = formatDate(iso, { hour: "2-digit", minute: "2-digit", weekday: "short" });
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 export function timeAgo(iso: string) {

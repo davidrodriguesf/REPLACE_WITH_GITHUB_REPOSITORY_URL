@@ -11,7 +11,7 @@ export function LessonForm({ courseId, modules, lesson, moduleId }: { courseId: 
     <form action={action} className="space-y-4">
       {lesson && <input type="hidden" name="id" value={lesson.id} />}
       <input type="hidden" name="course_id" value={courseId} />
-      <div className="grid gap-4 sm:grid-cols-[1fr_200px_100px]">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_200px_100px]">
         <div>
           <label className="label">Título da aula *</label>
           <input className="input" name="title" defaultValue={lesson?.title} required />
@@ -27,7 +27,7 @@ export function LessonForm({ courseId, modules, lesson, moduleId }: { courseId: 
           <input className="input" name="position" type="number" defaultValue={lesson?.position ?? 0} />
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-[1fr_140px]">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_140px]">
         <div>
           <label className="label">Link do vídeo (YouTube, Vimeo, Panda, Bunny...)</label>
           <input className="input" name="video_url" type="url" defaultValue={lesson?.video_url ?? ""} placeholder="https://..." />

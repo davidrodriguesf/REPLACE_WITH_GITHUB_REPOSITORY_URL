@@ -17,7 +17,7 @@ export function NewPostForm({ spaces, defaultSpaceId }: { spaces: Space[]; defau
     );
   return (
     <form action={action} className="card p-4 space-y-3">
-      <div className="grid gap-3 sm:grid-cols-[200px_1fr]">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[200px_1fr]">
         <select name="space_id" className="input" defaultValue={defaultSpaceId ?? spaces[0]!.id}>
           {spaces.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>

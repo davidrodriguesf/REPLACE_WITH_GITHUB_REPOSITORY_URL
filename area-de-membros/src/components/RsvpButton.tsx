@@ -7,7 +7,7 @@ export function RsvpButton({ eventId, going, className = "" }: { eventId: string
     <form action={toggleRsvp}>
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="going" value={going ? "1" : "0"} />
-      <SubmitButton variant={going ? "secondary" : "primary"} pendingText="..." className={className}>
+      <SubmitButton variant={going ? "secondary" : "light"} pendingText="..." className={className}>
         {going ? <><IconCheck className="w-4 h-4" />Presença confirmada</> : "Vou participar"}
       </SubmitButton>
     </form>

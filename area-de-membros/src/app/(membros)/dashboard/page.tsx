@@ -3,100 +3,114 @@ import { requireUser } from "@/lib/auth";
 import { getCatalog } from "@/lib/catalog";
 import { getMembersMap } from "@/lib/members";
 import { CourseCard } from "@/components/CourseCard";
+import { EventCard } from "@/components/EventCard";
+import { Hero } from "@/components/Hero";
+import { Row } from "@/components/Row";
+import { rowItem } from "@/components/row-item";
 import { Avatar } from "@/components/Avatar";
-import { formatDateTime, timeAgo } from "@/lib/utils";
+import { IconChat, IconHeart } from "@/components/Icons";
+import { timeAgo } from "@/lib/utils";
 import type { EventItem, Post } from "@/lib/types";
 
 export const metadata = { title: "Início" };
 
+type PostRow = Post & { comments: { count: number }[]; post_likes: { count: number }[] };
+type EventRow = EventItem & { event_rsvps: { count: number }[] };
+
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ bemvindo?: string }> }) {
   const { supabase, user, profile } = await requireUser();
   const sp = await searchParams;
-  const [catalog, { data: events }, { data: posts }] = await Promise.all([
+  const [catalog, { data: events }, { data: posts }, { data: myRsvps }] = await Promise.all([
     getCatalog(supabase, user.id, profile.role === "admin"),
-    supabase.from("events").select("*").eq("is_published", true).gte("starts_at", new Date().toISOString()).order("starts_at").limit(3),
-    supabase.from("posts").select("*").order("created_at", { ascending: false }).limit(4),
+    supabase.from("events").select("*, event_rsvps(count)").eq("is_published", true).gte("starts_at", new Date().toISOString()).order("starts_at").limit(10),
+    supabase.from("posts").select("*, comments(count), post_likes(count)").order("created_at", { ascending: false }).limit(10),
+    supabase.from("event_rsvps").select("event_id").eq("user_id", user.id),
   ]);
-  const members = await getMembersMap(supabase, ((posts ?? []) as Post[]).map((p) => p.author_id));
+  const postList = (posts ?? []) as PostRow[];
+  const members = await getMembersMap(supabase, postList.map((p) => p.author_id));
+  const going = new Set((myRsvps ?? []).map((r) => r.event_id as string));
 
   const mine = catalog.filter((c) => c.status === "enrolled");
+  const inProgress = mine
+    .filter((c) => c.doneLessons > 0 && c.doneLessons < c.totalLessons)
+    .sort((a, b) => (b.lastActivity ?? "").localeCompare(a.lastActivity ?? ""));
   const free = catalog.filter((c) => c.status === "free_locked" || c.status === "pending");
   const locked = catalog.filter((c) => c.status === "paid_locked");
+  const featured = inProgress[0] ?? mine[0] ?? locked[0] ?? free[0];
   const firstName = profile.full_name?.split(" ")[0];
 
   return (
-    <div className="space-y-10">
-      {sp.bemvindo && <p className="alert alert-success">Senha criada com sucesso. Bem-vindo(a)! 🎉</p>}
-      <div>
-        <h1 className="h-page">Olá{firstName ? `, ${firstName}` : ""}! 👋</h1>
-        <p className="text-muted mt-1">Continue de onde parou ou explore a comunidade.</p>
-      </div>
+    <div className="space-y-8 sm:space-y-10">
+      {featured ? (
+        <Hero course={featured} eyebrow={inProgress[0] ? `Continue de onde parou${firstName ? `, ${firstName}` : ""}` : featured.status === "enrolled" ? "Seu curso" : "Em destaque"} />
+      ) : (
+        <div className="pt-6"><h1 className="h-page">Olá{firstName ? `, ${firstName}` : ""}! 👋</h1><p className="text-muted">Em breve novos cursos por aqui.</p></div>
+      )}
 
-      <section>
-        <h2 className="h-section mb-4">Meus cursos</h2>
-        {mine.length ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{mine.map((c) => <CourseCard key={c.id} course={c} />)}</div>
-        ) : (
-          <p className="card p-6 text-muted">Você ainda não tem cursos liberados. Veja as opções abaixo.</p>
+      {sp.bemvindo && <p className="alert alert-success relative">Senha criada com sucesso. Bem-vindo(a)! 🎉</p>}
+
+      <div className="relative space-y-8 sm:space-y-10 sm:-mt-24">
+        {inProgress.length > 0 && (
+          <Row title="Continuar assistindo">
+            {inProgress.map((c) => <CourseCard key={c.id} course={c} className={rowItem} />)}
+          </Row>
         )}
-      </section>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section className="card p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="h-section">Próximos eventos</h2>
-            <Link href="/eventos" className="link text-sm">Ver todos</Link>
-          </div>
-          {(events as EventItem[] | null)?.length ? (
-            <ul className="divide-y divide-slate-100">
-              {(events as EventItem[]).map((e) => (
-                <li key={e.id} className="py-3">
-                  <Link href={`/eventos/${e.id}`} className="font-medium hover:text-brand-700">{e.title}</Link>
-                  <p className="text-sm text-muted">{formatDateTime(e.starts_at)}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted">Nenhum evento agendado.</p>
-          )}
-        </section>
-        <section className="card p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="h-section">Na comunidade</h2>
-            <Link href="/comunidade" className="link text-sm">Abrir</Link>
-          </div>
-          {(posts as Post[] | null)?.length ? (
-            <ul className="divide-y divide-slate-100">
-              {(posts as Post[]).map((p) => (
-                <li key={p.id} className="py-3 flex gap-3">
-                  <Avatar name={members.get(p.author_id)?.full_name} url={members.get(p.author_id)?.avatar_url} size={32} />
-                  <div className="min-w-0">
-                    <Link href={`/comunidade/${p.id}`} className="font-medium hover:text-brand-700 line-clamp-1">{p.title}</Link>
-                    <p className="text-xs text-muted">{members.get(p.author_id)?.full_name ?? "Membro"} · {timeAgo(p.created_at)}</p>
+        {mine.length > 0 && (
+          <Row title="Meus cursos">
+            {mine.map((c) => <CourseCard key={c.id} course={c} className={rowItem} />)}
+          </Row>
+        )}
+
+        {(events as EventRow[] | null)?.length ? (
+          <Row title="Próximos eventos ao vivo" action={<Link href="/eventos" className="text-sm font-semibold text-slate-600 hover:text-white">Ver todos ›</Link>}>
+            {(events as EventRow[]).map((e) => (
+              <EventCard key={e.id} event={e} going={going.has(e.id)} count={e.event_rsvps[0]?.count} className={rowItem} />
+            ))}
+          </Row>
+        ) : null}
+
+        {free.length > 0 && (
+          <Row title="Cursos gratuitos" subtitle="Sem custo: solicite e nossa equipe libera o acesso para você.">
+            {free.map((c) => <CourseCard key={c.id} course={c} className={rowItem} />)}
+          </Row>
+        )}
+
+        {locked.length > 0 && (
+          <Row title="Desbloqueie mais conteúdos">
+            {locked.map((c) => <CourseCard key={c.id} course={c} className={rowItem} />)}
+          </Row>
+        )}
+
+        {postList.length > 0 && (
+          <Row title="Em alta na comunidade" action={<Link href="/comunidade" className="text-sm font-semibold text-slate-600 hover:text-white">Abrir comunidade ›</Link>}>
+            {postList.map((p) => {
+              const a = members.get(p.author_id);
+              return (
+                <Link
+                  key={p.id}
+                  href={`/comunidade/${p.id}`}
+                  className={`${rowItem} rounded-md bg-surface p-4 flex flex-col gap-3 transition duration-300 hover:bg-surface-2 hover:scale-[1.03] min-h-40`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Avatar name={a?.full_name} url={a?.avatar_url} size={30} square />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-white truncate">{a?.full_name ?? "Membro"}</p>
+                      <p className="text-[11px] text-muted">{timeAgo(p.created_at)}</p>
+                    </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted">Seja o primeiro a publicar!</p>
-          )}
-        </section>
+                  <p className="font-semibold text-white text-sm line-clamp-2">{p.title}</p>
+                  <p className="text-xs text-slate-500 line-clamp-2">{p.body}</p>
+                  <p className="mt-auto flex gap-4 text-xs text-slate-500">
+                    <span className="flex items-center gap-1"><IconHeart className="w-4 h-4" />{p.post_likes[0]?.count ?? 0}</span>
+                    <span className="flex items-center gap-1"><IconChat className="w-4 h-4" />{p.comments[0]?.count ?? 0}</span>
+                  </p>
+                </Link>
+              );
+            })}
+          </Row>
+        )}
       </div>
-
-      {free.length > 0 && (
-        <section>
-          <h2 className="h-section mb-1">Cursos gratuitos</h2>
-          <p className="text-sm text-muted mb-4">Sem custo — solicite e nossa equipe libera para você.</p>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{free.map((c) => <CourseCard key={c.id} course={c} />)}</div>
-        </section>
-      )}
-
-      {locked.length > 0 && (
-        <section>
-          <h2 className="h-section mb-4">Outros cursos</h2>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{locked.map((c) => <CourseCard key={c.id} course={c} />)}</div>
-        </section>
-      )}
     </div>
   );
 }

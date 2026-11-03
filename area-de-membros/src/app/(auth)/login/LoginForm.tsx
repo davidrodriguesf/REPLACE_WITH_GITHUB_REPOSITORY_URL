@@ -12,14 +12,14 @@ export function LoginForm({ next, linkError }: { next?: string; linkError?: bool
       <input type="hidden" name="next" value={next ?? ""} />
       <div>
         <label className="label" htmlFor="email">E-mail</label>
-        <input className="input" id="email" name="email" type="email" autoComplete="email" required />
+        <input className="input py-3.5 bg-slate-100/80" id="email" name="email" type="email" autoComplete="email" required />
       </div>
       <div>
         <label className="label" htmlFor="password">Senha</label>
-        <input className="input" id="password" name="password" type="password" autoComplete="current-password" required />
+        <input className="input py-3.5 bg-slate-100/80" id="password" name="password" type="password" autoComplete="current-password" required />
       </div>
       <FormMessage state={state} />
-      <SubmitButton className="w-full" pendingText="Entrando...">Entrar</SubmitButton>
+      <SubmitButton className="w-full btn-lg" pendingText="Entrando...">Entrar</SubmitButton>
       <p className="text-center text-sm">
         <Link href="/esqueci-senha" className="link">Esqueci minha senha / primeiro acesso</Link>
       </p>

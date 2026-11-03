@@ -9,7 +9,7 @@ export function SubmitButton({
   variant = "primary",
   className = "",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { pendingText?: string; variant?: "primary" | "secondary" | "danger" | "ghost" }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { pendingText?: string; variant?: "primary" | "secondary" | "danger" | "ghost" | "light" }) {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending || props.disabled} className={`btn btn-${variant} ${className}`} {...props}>

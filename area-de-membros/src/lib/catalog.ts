@@ -3,7 +3,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Course } from "@/lib/types";
 
 export type CourseStatus = "enrolled" | "pending" | "free_locked" | "paid_locked";
-export type CatalogCourse = Course & { status: CourseStatus; totalLessons: number; doneLessons: number };
+export type CatalogCourse = Course & {
+  status: CourseStatus;
+  totalLessons: number;
+  doneLessons: number;
+  totalMinutes: number;
+  /** próxima aula não concluída (ou a primeira), para o botão "Continuar" */
+  nextLesson: { id: string; title: string; number: number } | null;
+  lastActivity: string | null;
+};
 
 export async function getCatalog(supabase: SupabaseClient, userId: string, isAdmin: boolean): Promise<CatalogCourse[]> {
   const [{ data: courses }, { data: enrollments }, { data: requests }] = await Promise.all([
@@ -20,24 +28,45 @@ export async function getCatalog(supabase: SupabaseClient, userId: string, isAdm
   const list = (courses ?? []) as Course[];
   const accessible = list.filter((c) => isAdmin || enrolled.has(c.id)).map((c) => c.id);
 
-  const totals = new Map<string, number>();
-  const done = new Map<string, number>();
+  type L = { id: string; course_id: string; module_id: string; title: string; position: number; duration_minutes: number | null };
+  const byCourse = new Map<string, L[]>();
+  const doneAt = new Map<string, string>();
   if (accessible.length) {
-    const [{ data: lessons }, { data: progress }] = await Promise.all([
-      supabase.from("lessons").select("id, course_id").in("course_id", accessible),
-      supabase.from("lesson_progress").select("lesson_id").eq("user_id", userId),
+    const [{ data: modules }, { data: lessons }, { data: progress }] = await Promise.all([
+      supabase.from("modules").select("id, course_id, position").in("course_id", accessible),
+      supabase.from("lessons").select("id, course_id, module_id, title, position, duration_minutes").in("course_id", accessible),
+      supabase.from("lesson_progress").select("lesson_id, completed_at").eq("user_id", userId),
     ]);
-    const doneIds = new Set((progress ?? []).map((p) => p.lesson_id as string));
-    for (const l of lessons ?? []) {
-      totals.set(l.course_id, (totals.get(l.course_id) ?? 0) + 1);
-      if (doneIds.has(l.id)) done.set(l.course_id, (done.get(l.course_id) ?? 0) + 1);
+    const modPos = new Map((modules ?? []).map((m) => [m.id as string, m.position as number]));
+    for (const p of progress ?? []) doneAt.set(p.lesson_id, p.completed_at);
+    for (const l of (lessons ?? []) as L[]) {
+      if (!byCourse.has(l.course_id)) byCourse.set(l.course_id, []);
+      byCourse.get(l.course_id)!.push(l);
     }
+    for (const arr of byCourse.values())
+      arr.sort((a, b) => (modPos.get(a.module_id) ?? 0) - (modPos.get(b.module_id) ?? 0) || a.position - b.position);
   }
 
-  return list.map((c) => ({
-    ...c,
-    status: isAdmin || enrolled.has(c.id) ? "enrolled" : pending.has(c.id) ? "pending" : c.access_type === "free" ? "free_locked" : "paid_locked",
-    totalLessons: totals.get(c.id) ?? 0,
-    doneLessons: done.get(c.id) ?? 0,
-  }));
+  return list.map((c) => {
+    const ls = byCourse.get(c.id) ?? [];
+    const idx = ls.findIndex((l) => !doneAt.has(l.id));
+    const next = ls[idx >= 0 ? idx : 0];
+    const dates = ls.map((l) => doneAt.get(l.id)).filter(Boolean) as string[];
+    return {
+      ...c,
+      status: isAdmin || enrolled.has(c.id) ? "enrolled" : pending.has(c.id) ? "pending" : c.access_type === "free" ? "free_locked" : "paid_locked",
+      totalLessons: ls.length,
+      doneLessons: ls.filter((l) => doneAt.has(l.id)).length,
+      totalMinutes: ls.reduce((s, l) => s + (l.duration_minutes ?? 0), 0),
+      nextLesson: next ? { id: next.id, title: next.title, number: (idx >= 0 ? idx : 0) + 1 } : null,
+      lastActivity: dates.sort().pop() ?? null,
+    };
+  });
+}
+
+export function formatMinutes(min: number) {
+  if (!min) return "";
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h ? `${h}h${m ? ` ${m}min` : ""}` : `${m}min`;
 }

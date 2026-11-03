@@ -9,6 +9,7 @@
 - **Eventos**: lives e encontros com confirmação de presença, link da sala e botão "Adicionar à agenda".
 - **Painel admin**: cursos, módulos, aulas, alunos, liberação e remoção de acesso, solicitações, eventos, espaços da comunidade e log dos webhooks.
 - **E-mails automáticos (Resend)**: boas-vindas com link para criar a senha, aviso de novo curso liberado e redefinição de senha.
+- Visual estilo streaming: tema escuro, banner com o curso em destaque, fileiras com rolagem lateral, cards que crescem ao passar o mouse e lista de aulas em formato de episódios.
 - Funciona no celular, com menu inferior, e no computador.
 
 **Stack:** Next.js 15 · Supabase (banco + login) · Resend (e-mails) · Appmax (checkout) · Vercel (hospedagem)
@@ -110,6 +111,12 @@ Para mudar essas listas, use as variáveis `APPMAX_GRANT_EVENTS` e `APPMAX_REVOK
 **Vídeos:** cole o link do YouTube (não listado), do Vimeo ou o link de *embed* do Panda Video ou do Bunny Stream. Para conteúdo pago, prefira Panda, Bunny ou Vimeo com restrição de domínio.
 
 ---
+
+## Personalizar a marca
+
+- **Nome:** variável `NEXT_PUBLIC_SITE_NAME`.
+- **Cor principal:** em `src/app/globals.css`, troque a escala `--color-brand-*` (a cor principal é `--color-brand-600`).
+- **Capas:** use imagens 16:9 (ex.: 1600×900) com o lado esquerdo mais escuro ou limpo, porque o título do banner fica sobre ele.
 
 ## Estrutura
 

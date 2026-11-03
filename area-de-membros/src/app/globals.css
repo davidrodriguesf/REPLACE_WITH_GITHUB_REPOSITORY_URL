@@ -1,47 +1,106 @@
 @import "tailwindcss";
 
+/*
+ * Tema escuro estilo streaming.
+ * Para trocar a cor da marca, altere apenas a escala --color-brand-* abaixo.
+ * A escala "slate" foi invertida para o escuro: 50 = superfície sutil, 900 = texto mais claro.
+ */
 @theme {
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
+  --color-ink: #0b0b0e;          /* fundo da página */
+  --color-surface: #16161b;      /* cartões */
+  --color-surface-2: #1f1f26;    /* cartões em destaque / hover */
+
+  --color-brand-50: #2a0e12;
+  --color-brand-100: #3a1217;
+  --color-brand-200: #6a1b23;
+  --color-brand-500: #f0414e;
+  --color-brand-600: #e11d2e;    /* cor principal */
+  --color-brand-700: #ff6b76;    /* texto/links sobre o escuro */
+  --color-brand-800: #ffa3aa;
+
+  --color-slate-50: #1c1c22;
+  --color-slate-100: #26262e;
+  --color-slate-200: #32323c;
+  --color-slate-300: #45454f;
+  --color-slate-400: #74747f;
+  --color-slate-500: #a1a1ab;
+  --color-slate-600: #bdbdc6;
+  --color-slate-700: #d4d4da;
+  --color-slate-800: #ebebef;
+  --color-slate-900: #ffffff;
+
+  --color-emerald-50: #0e2a20;
+  --color-emerald-100: #113428;
+  --color-emerald-200: #1c5a42;
+  --color-emerald-600: #34d399;
+  --color-emerald-700: #4ade80;
+  --color-emerald-800: #86efac;
+
+  --color-amber-50: #2c2110;
+  --color-amber-100: #3a2a10;
+  --color-amber-200: #6b4c12;
+  --color-amber-800: #fcd34d;
+
+  --color-red-50: #2b1012;
+  --color-red-100: #3b1215;
+  --color-red-200: #6b1d22;
+  --color-red-600: #f87171;
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
+
+  --color-rose-600: #fb7185;
+
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
+html { color-scheme: dark; }
 body {
-  @apply bg-slate-50 text-slate-800 antialiased;
+  @apply bg-ink text-slate-800 antialiased;
 }
 
+/* rolagem horizontal das fileiras sem barra visível */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 @layer components {
-  .card { @apply bg-white rounded-2xl border border-slate-200 shadow-sm; }
+  .card { @apply bg-surface rounded-xl border border-white/5; }
   .label { @apply block text-sm font-medium text-slate-700 mb-1; }
   .input {
-    @apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition
-      focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
+    @apply w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition
+      placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
   }
   textarea.input { @apply min-h-28; }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition
       disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap;
   }
-  .btn-primary { @apply bg-brand-600 text-white hover:bg-brand-700; }
-  .btn-secondary { @apply bg-white border border-slate-300 text-slate-700 hover:bg-slate-50; }
+  .btn-primary { @apply bg-brand-600 text-white hover:bg-brand-500; }
+  .btn-secondary { @apply bg-white/10 text-white hover:bg-white/20; }
+  .btn-light { @apply bg-white text-black hover:bg-white/80; }
   .btn-danger { @apply bg-red-50 text-red-700 border border-red-200 hover:bg-red-100; }
-  .btn-ghost { @apply text-slate-600 hover:bg-slate-100 px-2.5 py-1.5; }
-  .btn-sm { @apply px-3 py-1.5 text-xs rounded-lg; }
+  .btn-ghost { @apply text-slate-600 hover:bg-white/10 hover:text-white px-2.5 py-1.5; }
+  .btn-sm { @apply px-3 py-1.5 text-xs; }
+  .btn-lg { @apply px-6 py-3 text-base rounded-md; }
   .link { @apply text-brand-700 font-medium hover:underline; }
   .text-muted { @apply text-slate-500; }
-  .alert { @apply rounded-xl px-3 py-2 text-sm; }
+  .alert { @apply rounded-lg px-3 py-2 text-sm; }
   .alert-error { @apply bg-red-50 text-red-700 border border-red-200; }
-  .alert-success { @apply bg-emerald-50 text-emerald-700 border border-emerald-200; }
-  .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold; }
-  .h-page { @apply text-2xl sm:text-3xl font-bold text-slate-900; }
-  .h-section { @apply text-lg font-bold text-slate-900; }
-  .prose-lite { @apply whitespace-pre-wrap break-words leading-relaxed text-slate-700; }
+  .alert-success { @apply bg-emerald-50 text-emerald-800 border border-emerald-200; }
+  .badge { @apply inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-semibold; }
+  .h-page { @apply text-2xl sm:text-3xl font-extrabold tracking-tight text-white; }
+  .h-section { @apply text-lg font-bold text-white; }
+  .h-row { @apply text-lg sm:text-xl font-bold text-white; }
+  .prose-lite { @apply whitespace-pre-wrap break-words leading-relaxed text-slate-600; }
   .table { @apply w-full text-sm; }
   .table th { @apply text-left font-semibold text-slate-500 px-3 py-2 border-b border-slate-200 whitespace-nowrap; }
   .table td { @apply px-3 py-2.5 border-b border-slate-100 align-top; }
+  /* gradientes do banner (hero) */
+  .hero-fade-left { background: linear-gradient(90deg, var(--color-ink) 0%, rgb(11 11 14 / .85) 30%, rgb(11 11 14 / .2) 65%, transparent 100%); }
+  .hero-fade-bottom { background: linear-gradient(0deg, var(--color-ink) 0%, rgb(11 11 14 / .6) 25%, transparent 55%); }
+}
+
+@layer components {
+  /* margem lateral padrão das páginas e "sangria" para banners de ponta a ponta */
+  .gutter { @apply px-4 sm:px-8 lg:px-12; }
+  .bleed { @apply -mx-4 sm:-mx-8 lg:-mx-12; }
 }

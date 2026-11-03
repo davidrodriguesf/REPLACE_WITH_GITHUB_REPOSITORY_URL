@@ -10,7 +10,7 @@ export default async function AdminWebhooks() {
       <div className="card p-5">
         <h1 className="h-section">Integração com a Appmax</h1>
         <p className="text-sm text-muted mt-1">Na Appmax, cadastre o webhook com esta URL (troque o token pelo valor de <code>APPMAX_WEBHOOK_SECRET</code>):</p>
-        <code className="block mt-2 rounded-lg bg-slate-900 text-emerald-300 px-3 py-2 text-xs break-all">{siteUrl("/api/webhooks/appmax")}?token=SEU_TOKEN</code>
+        <code className="block mt-2 rounded-lg bg-black text-emerald-700 px-3 py-2 text-xs break-all">{siteUrl("/api/webhooks/appmax")}?token=SEU_TOKEN</code>
         <p className="text-sm text-muted mt-2">Em cada curso pago, informe o ID ou SKU do produto na Appmax. Pagamento aprovado libera o curso; reembolso/chargeback remove o acesso.</p>
       </div>
       <div className="card overflow-x-auto">

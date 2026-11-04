@@ -35,6 +35,38 @@ fi
 if [[ $EUID -ne 0 ]]; then echo "Rode com sudo." >&2; exit 1; fi
 ENVF="$BASE/academia.env"
 
+# ------------------------------------------------------------ trocar só a senha/endereço do banco
+#   sudo bash instalar-na-vps.sh academia.pestx.com.br --trocar-banco
+if [[ "${2:-}" == "--trocar-banco" ]]; then
+  [[ -f "$ENVF" ]] || { echo "Ainda não instalado. Rode primeiro sem --trocar-banco." >&2; exit 1; }
+  echo "Cole a NOVA connection string do Neon quando aparecer 'DATABASE_URL:' e tecle Enter."
+  echo "(ela não aparece na tela enquanto você cola)"
+  read -r -s -p "DATABASE_URL: " DBURL
+  echo ""
+  DBURL="$(printf '%s' "$DBURL" | tr -d '\r' | sed "s/^[[:space:]]*psql[[:space:]]*//; s/^[[:space:]'\"]*//; s/[[:space:]'\"]*$//")"
+  [[ "$DBURL" == postgres* ]] || { echo "Isso não parece uma connection string (deve começar com postgresql://). Nada foi alterado." >&2; exit 1; }
+  cp -p "$ENVF" "$ENVF.anterior"
+  grep -v '^DATABASE_URL=' "$ENVF.anterior" > "$ENVF.novo"
+  printf "DATABASE_URL='%s'\n" "$DBURL" >> "$ENVF.novo"
+  chown root:"$USUARIO" "$ENVF.novo"; chmod 640 "$ENVF.novo"; mv "$ENVF.novo" "$ENVF"
+  systemctl restart "$SERVICO"
+  PORTA="$(grep '^PORT=' "$ENVF" | cut -d= -f2 | tr -d '"')"
+  for i in $(seq 1 20); do
+    sleep 1
+    CODIGO="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORTA/primeiro-acesso" || true)"
+    [[ "$CODIGO" == "200" ]] && break
+  done
+  if [[ "$CODIGO" == "200" ]]; then
+    rm -f "$ENVF.anterior"
+    echo "Banco trocado e testado: o app conectou no Neon (primeiro-acesso respondeu 200)."
+  else
+    echo "O app não conseguiu usar a nova string (HTTP ${CODIGO:-sem resposta}). Voltando para a anterior." >&2
+    journalctl -u "$SERVICO" -n 15 --no-pager >&2 || true
+    mv "$ENVF.anterior" "$ENVF"; systemctl restart "$SERVICO"; exit 1
+  fi
+  exit 0
+fi
+
 # ------------------------------------------------------------ 1. diagnóstico
 echo "==> 1/8  Conferindo a VPS"
 systemctl is-active --quiet nginx || { echo "O nginx não está ativo. Não vou instalar servidor web por conta própria." >&2; exit 1; }
@@ -177,6 +209,13 @@ if [[ "$CODIGO" != "200" ]]; then
   exit 1
 fi
 echo "     app no ar em 127.0.0.1:$PORTA (login respondeu 200)"
+CODIGO_DB="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORTA/primeiro-acesso" || true)"
+if [[ "$CODIGO_DB" == "200" ]]; then
+  echo "     banco Neon conectado (primeiro-acesso respondeu 200)"
+else
+  echo "     ATENÇÃO: o app não conseguiu falar com o banco (HTTP $CODIGO_DB)." >&2
+  echo "     Troque a string com:  sudo bash $0 $DOMINIO --trocar-banco" >&2
+fi
 
 # ------------------------------------------------------------ 7. nginx
 echo "==> 7/8  Site no nginx"

@@ -51,7 +51,11 @@ App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos
 ### 2. E-mails (Resend)
 Crie a conta em [resend.com](https://resend.com), verifique o domínio da empresa e gere uma API Key. Sem ela, o app funciona, mas os links de convite e de senha aparecem só no log do servidor.
 
-### 3. Hospedagem (Netlify)
+### 3. Hospedagem
+
+**Na VPS (recomendado, igual aos outros projetos PestX):** siga [`INSTALAR-NA-VPS.md`](INSTALAR-NA-VPS.md).
+
+**Alternativa, no Netlify:**
 1. Em [netlify.com](https://netlify.com), clique em **Add new site › Import from Git** e escolha este repositório.
 2. Em **Base directory**, coloque `area-de-membros`. O Netlify detecta o Next.js sozinho.
 3. Em **Site configuration › Environment variables**, cadastre as variáveis do [`.env.example`](.env.example). As obrigatórias são `DATABASE_URL`, `SETUP_KEY`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY` e `EMAIL_FROM`.

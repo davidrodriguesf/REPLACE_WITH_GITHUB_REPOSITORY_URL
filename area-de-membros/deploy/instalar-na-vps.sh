@@ -26,7 +26,7 @@ SERVICO=academia
 USUARIO=academia
 REPO="${ACADEMIA_REPO:-https://github.com/davidrodriguesf/REPLACE_WITH_GITHUB_REPOSITORY_URL.git}"
 BRANCH="${ACADEMIA_BRANCH:-claude/members-community-area-265h9e}"
-NODE_VERSAO=v22.11.0
+NODE_VERSAO=v22.20.0   # 22.12+ é necessário (Tailwind 4 usa require de módulos ESM)
 
 if [[ -z "$DOMINIO" ]]; then
   echo "Falta o domínio.  Uso: sudo bash instalar-na-vps.sh academia.pestx.com.br" >&2

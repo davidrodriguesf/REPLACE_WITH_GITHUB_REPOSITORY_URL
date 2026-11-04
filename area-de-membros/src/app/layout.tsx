@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE_NAME } from "@/lib/utils";
 
+// Tudo é gerado na hora (dados por usuário): o servidor nunca precisa gravar cache em disco.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
   description: "Universidade corporativa: trilhas, cursos, avaliações, certificados e comunidade",

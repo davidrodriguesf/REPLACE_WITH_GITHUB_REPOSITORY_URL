@@ -227,6 +227,12 @@ if [[ -n "$CHAVE_NOVA" ]]; then
   echo "  (guarde agora; ela também fica em $ENVF)"
   echo "  Passo 1: Preparar banco de dados · Passo 2: criar o administrador"
 fi
+if [[ -z "$CHAVE_NOVA" ]]; then
+  echo ""
+  echo "Primeiro acesso (se ainda não fez):  https://$DOMINIO/primeiro-acesso"
+  echo "  ver a chave:  sudo grep SETUP_KEY $ENVF"
+fi
 echo ""
+echo "Links de convite (enquanto o Resend não estiver configurado):  journalctl -u $SERVICO | grep link"
 echo "Conferir:   systemctl status $SERVICO   ·   journalctl -u $SERVICO -f"
 echo "Voltar à versão anterior:  sudo rm -rf $BASE/app && sudo mv $BASE/app.anterior $BASE/app && sudo systemctl restart $SERVICO"

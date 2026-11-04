@@ -1,0 +1,26 @@
+[Unit]
+Description=Academia Foco - universidade corporativa (Next.js)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USUARIO__
+Group=__USUARIO__
+WorkingDirectory=__BASE__/app
+EnvironmentFile=__BASE__/academia.env
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+ExecStart=__BASE__/node/bin/node __BASE__/app/server.js
+Restart=always
+RestartSec=5
+
+# só grava no cache do próprio app
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=__BASE__/app/.next/cache
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

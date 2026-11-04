@@ -112,3 +112,9 @@ export async function hasAnyAdmin() {
   const rows = await service().sql<{ n: number }>("select count(*)::int as n from public.profiles where role = 'admin'");
   return (rows[0]?.n ?? 0) > 0;
 }
+
+/** O banco já foi preparado (tabelas criadas)? */
+export async function isDatabaseReady() {
+  const rows = await service().sql<{ ok: boolean }>("select to_regclass('public.profiles') is not null and to_regclass('auth.users') is not null as ok");
+  return !!rows[0]?.ok;
+}

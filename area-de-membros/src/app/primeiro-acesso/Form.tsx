@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { createFirstAdmin } from "./actions";
+import { createFirstAdmin, prepareDatabase } from "./actions";
 import { FormMessage, SubmitButton } from "@/components/ui";
 
 export function SetupForm() {
@@ -27,6 +27,21 @@ export function SetupForm() {
       </div>
       <FormMessage state={state} />
       <SubmitButton className="w-full btn-lg" pendingText="Criando...">Criar administrador</SubmitButton>
+    </form>
+  );
+}
+
+export function PrepareForm() {
+  const [state, action] = useActionState(prepareDatabase, undefined);
+  return (
+    <form action={action} className="space-y-4">
+      <div>
+        <label className="label" htmlFor="setup_key_db">Chave de instalação</label>
+        <input className="input" id="setup_key_db" name="setup_key" type="password" required autoComplete="off" />
+        <p className="mt-1 text-xs text-slate-500">É o valor da variável SETUP_KEY configurada na hospedagem.</p>
+      </div>
+      <FormMessage state={state} />
+      <SubmitButton className="w-full btn-lg" pendingText="Preparando (alguns segundos)...">Preparar banco de dados</SubmitButton>
     </form>
   );
 }

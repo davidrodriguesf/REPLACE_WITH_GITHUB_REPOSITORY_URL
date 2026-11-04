@@ -1,0 +1,7 @@
+# Configuração do Netlify (Base directory = area-de-membros)
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"

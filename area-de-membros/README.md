@@ -42,9 +42,9 @@ App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos
 ## Instalação
 
 ### 1. Banco de dados (Neon)
-1. No [Neon](https://console.neon.tech), abra o projeto e vá em **SQL Editor**.
-2. Cole todo o conteúdo de [`database/schema.sql`](database/schema.sql) e clique em **Run**. O script pode ser rodado de novo sem problemas.
-3. Em **Connect**, com **Connection pooling** ligado, copie a *connection string*. O endereço tem `-pooler`. Ela vai na variável `DATABASE_URL`.
+1. No [Neon](https://console.neon.tech), abra o projeto, vá em **Connect** e ligue **Connection pooling**.
+2. Copie a *connection string* (o endereço tem `-pooler`). Ela vai na variável `DATABASE_URL`.
+3. Não precisa rodar SQL à mão: a página `/primeiro-acesso` cria as tabelas sozinha na primeira vez. Se preferir fazer manualmente, cole [`database/schema.sql`](database/schema.sql) no **SQL Editor** do Neon.
 
 > Por segurança, se a senha do banco já apareceu em algum print ou mensagem, clique em **Reset password** no Neon e use a nova string.
 
@@ -59,8 +59,9 @@ Crie a conta em [resend.com](https://resend.com), verifique o domínio da empres
 
 ### 4. Primeiro acesso (admin)
 1. Abra `https://SEU-SITE/primeiro-acesso`.
-2. Informe a chave `SETUP_KEY` e crie a conta de administrador(a). Essa tela só funciona enquanto não existir nenhum admin.
-3. No menu (⋯), entre em **Painel administrativo**.
+2. **Passo 1:** informe a chave `SETUP_KEY` e clique em **Preparar banco de dados**.
+3. **Passo 2:** crie a conta de administrador(a). Essa tela só funciona enquanto não existir nenhum admin.
+4. No menu (⋯), entre em **Painel administrativo**.
 
 Ordem sugerida: **Funções → Categorias e mentores → Cursos (aulas e prova) → Trilhas → Colaboradores (convites)**.
 

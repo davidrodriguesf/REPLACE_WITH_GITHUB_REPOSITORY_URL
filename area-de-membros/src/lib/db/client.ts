@@ -328,6 +328,17 @@ export class Db {
     }
   }
 
+  /** Executa um script com vários comandos (sem parâmetros). Só no modo service. */
+  async script(text: string) {
+    if (this.mode !== "service") throw new Error("script() só pode rodar como service");
+    const client = await pool().connect();
+    try {
+      await client.query(text);
+    } finally {
+      client.release();
+    }
+  }
+
   /** SQL direto (somente no servidor, para autenticação e tarefas internas). */
   async sql<T = Record<string, unknown>>(text: string, params: unknown[] = []): Promise<T[]> {
     const res = await run(this.mode, this.uid, text, params);

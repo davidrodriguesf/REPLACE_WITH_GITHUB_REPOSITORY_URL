@@ -35,6 +35,29 @@ fi
 if [[ $EUID -ne 0 ]]; then echo "Rode com sudo." >&2; exit 1; fi
 ENVF="$BASE/academia.env"
 
+# ------------------------------------------------------------ configurar o envio de e-mails (Resend)
+#   sudo bash instalar-na-vps.sh academia.pestx.com.br --configurar-email
+if [[ "${2:-}" == "--configurar-email" ]]; then
+  [[ -f "$ENVF" ]] || { echo "Ainda não instalado. Rode primeiro sem --configurar-email." >&2; exit 1; }
+  echo "Cole a API key do Resend quando aparecer 'RESEND_API_KEY:' e tecle Enter (ela não aparece na tela)."
+  read -r -s -p "RESEND_API_KEY: " RKEY
+  echo ""
+  RKEY="$(printf '%s' "$RKEY" | tr -d '\r[:space:]"'"'"'')"
+  [[ "$RKEY" == re_* ]] || { echo "Isso não parece uma chave do Resend (começa com re_). Nada foi alterado." >&2; exit 1; }
+  read -r -p "Remetente [academia@envio.pestx.com.br]: " REMET
+  REMET="${REMET:-academia@envio.pestx.com.br}"
+  [[ "$REMET" == *@*.* ]] || { echo "Remetente inválido. Nada foi alterado." >&2; exit 1; }
+  NOME="$(grep '^NEXT_PUBLIC_SITE_NAME=' "$ENVF" | cut -d= -f2- | tr -d '"')"
+  grep -v -e '^RESEND_API_KEY=' -e '^EMAIL_FROM=' "$ENVF" > "$ENVF.novo"
+  printf 'RESEND_API_KEY="%s"\nEMAIL_FROM="%s <%s>"\n' "$RKEY" "${NOME:-Academia}" "$REMET" >> "$ENVF.novo"
+  chown root:"$USUARIO" "$ENVF.novo"; chmod 640 "$ENVF.novo"; mv "$ENVF.novo" "$ENVF"
+  systemctl restart "$SERVICO"
+  echo "E-mail configurado: os convites agora saem de \"${NOME:-Academia} <$REMET>\"."
+  echo "Teste: convide alguém no painel e confira a caixa de entrada (e o spam)."
+  echo "Se não chegar:  journalctl -u $SERVICO -n 30 --no-pager | grep -i email"
+  exit 0
+fi
+
 # ------------------------------------------------------------ trocar só a senha/endereço do banco
 #   sudo bash instalar-na-vps.sh academia.pestx.com.br --trocar-banco
 if [[ "${2:-}" == "--trocar-banco" ]]; then

@@ -73,27 +73,28 @@ if [[ ! -f "$ENVF" ]]; then
   echo "     Ela não aparece na tela enquanto você cola. Depois tecle Enter."
   read -r -s -p "     DATABASE_URL: " DBURL
   echo ""
+  DBURL="$(printf '%s' "$DBURL" | tr -d '\r' | sed "s/^[[:space:]]*psql[[:space:]]*//; s/^[[:space:]'\"]*//; s/[[:space:]'\"]*$//")"
   [[ "$DBURL" == postgres* ]] || { echo "Isso não parece uma connection string do Neon (deve começar com postgresql://)." >&2; exit 1; }
   CHAVE_NOVA="$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 24)"
   umask 077
   cat > "$ENVF" <<EOF
-# Academia Foco — configuração (só nesta VPS; não versionar)
-DATABASE_URL=$DBURL
-SETUP_KEY=$CHAVE_NOVA
-NEXT_PUBLIC_SITE_URL=https://$DOMINIO
-NEXT_PUBLIC_SITE_NAME=Academia Foco
-NEXT_PUBLIC_COMPANY_NAME=Foco Dedetizadora
-NEXT_PUBLIC_LOGO_URL=
-NEXT_PUBLIC_SUPPORT_URL=
-NEXT_PUBLIC_CERT_SIGNER=
-NEXT_PUBLIC_CERT_SIGNER_TITLE=
+# Academia Foco — configuração (só nesta VPS; não versionar). Valores entre aspas.
+DATABASE_URL='$DBURL'
+SETUP_KEY="$CHAVE_NOVA"
+NEXT_PUBLIC_SITE_URL="https://$DOMINIO"
+NEXT_PUBLIC_SITE_NAME="Academia Foco"
+NEXT_PUBLIC_COMPANY_NAME="Foco Dedetizadora"
+NEXT_PUBLIC_LOGO_URL=""
+NEXT_PUBLIC_SUPPORT_URL=""
+NEXT_PUBLIC_CERT_SIGNER=""
+NEXT_PUBLIC_CERT_SIGNER_TITLE=""
 # E-mails (Resend). Sem a chave, os links de convite aparecem em: journalctl -u academia
-RESEND_API_KEY=
-EMAIL_FROM=
+RESEND_API_KEY=""
+EMAIL_FROM=""
 EOF
   umask 022
 else
-  sed -i "s#^NEXT_PUBLIC_SITE_URL=.*#NEXT_PUBLIC_SITE_URL=https://$DOMINIO#" "$ENVF"
+  sed -i "s#^NEXT_PUBLIC_SITE_URL=.*#NEXT_PUBLIC_SITE_URL=\"https://$DOMINIO\"#" "$ENVF"
   echo "     $ENVF já existe — mantido (só o endereço foi conferido)"
 fi
 grep -q '^PORT=' "$ENVF" || {
@@ -102,9 +103,9 @@ grep -q '^PORT=' "$ENVF" || {
     if ! ss -ltnH "sport = :$p" | grep -q .; then PORTA=$p; break; fi
   done
   [[ -n "$PORTA" ]] || { echo "Nenhuma porta livre entre 8840 e 8870." >&2; exit 1; }
-  printf 'PORT=%s\nHOSTNAME=127.0.0.1\n' "$PORTA" >> "$ENVF"
+  printf 'PORT="%s"\nHOSTNAME="127.0.0.1"\n' "$PORTA" >> "$ENVF"
 }
-PORTA="$(grep '^PORT=' "$ENVF" | cut -d= -f2)"
+PORTA="$(grep '^PORT=' "$ENVF" | cut -d= -f2 | tr -d '"')"
 chown root:"$USUARIO" "$ENVF"; chmod 640 "$ENVF"
 echo "     porta $PORTA (só dentro da VPS; quem fala com a internet é o nginx)"
 

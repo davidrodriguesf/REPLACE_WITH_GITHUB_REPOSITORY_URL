@@ -32,13 +32,13 @@ export default async function Biblioteca({ searchParams }: { searchParams: Promi
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {shown.map((i) => (
             <a key={i.id} href={i.file_url ?? "#"} target="_blank" rel="noopener noreferrer" className="group block">
-              <div className="relative aspect-[2/3] overflow-hidden rounded-3xl bg-gradient-to-br from-navy-800 to-navy-950 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
+              <div className="relative aspect-[2/3] overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 to-brand-900 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
                 {i.cover_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={i.cover_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
                 ) : (
                   <div className="absolute inset-0 flex flex-col justify-between p-5 text-white">
-                    <p className="text-xs font-bold uppercase tracking-widest text-gold-500">{i.author}</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-brand-200">{i.author}</p>
                     <p className="font-serif text-lg sm:text-xl uppercase leading-tight break-words hyphens-auto" lang="pt-BR">{i.title}</p>
                   </div>
                 )}

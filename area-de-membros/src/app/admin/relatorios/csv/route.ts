@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/db/server";
 import { getReport, rowDone } from "@/lib/reports";
 import type { Profile } from "@/lib/types";
 

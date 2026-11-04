@@ -3,7 +3,7 @@ import type { LearnCourse } from "@/lib/learning";
 import { formatDate } from "@/lib/utils";
 import { IconPlay } from "./Icons";
 
-const PANELS = ["from-navy-800 to-navy-950", "from-[#1f4e5f] to-[#0e2a33]", "from-[#5b2333] to-[#2a0f18]", "from-[#2f4f3a] to-[#14261b]", "from-[#4a3b2a] to-[#211a12]", "from-[#2d3a63] to-[#141b33]"];
+const PANELS = ["from-brand-600 to-brand-900", "from-[#6d28d9] to-[#2e1065]", "from-[#1f4e5f] to-[#0e2a33]", "from-[#5b2333] to-[#2a0f18]", "from-[#2f4f3a] to-[#14261b]", "from-[#4a3b2a] to-[#211a12]", "from-[#2d3a63] to-[#141b33]"];
 function panelFor(title: string) {
   let h = 0;
   for (let i = 0; i < title.length; i++) h = (h * 31 + title.charCodeAt(i)) >>> 0;
@@ -20,7 +20,7 @@ export function Cover({ title, subtitle, url, className = "", rounded = "rounded
       ) : (
         <div className="absolute inset-0 flex">
           <div className={`w-[38%] bg-gradient-to-br ${panelFor(title)}`} />
-          <div className="w-1.5 bg-gold-600" />
+          <div className="w-1.5 bg-brand-700" />
           <div className="flex-1 p-[6%] flex flex-col justify-center">
             <p className="font-serif uppercase tracking-wide text-navy-900 leading-[1.05] text-[clamp(14px,2.2vw,26px)] line-clamp-4">{title}</p>
             {subtitle && <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.15em] text-navy-700/80 line-clamp-1">{subtitle}</p>}
@@ -34,7 +34,7 @@ export function Cover({ title, subtitle, url, className = "", rounded = "rounded
 export function ProgressBar({ pct, className = "" }: { pct: number; className?: string }) {
   return (
     <div className={`h-2 rounded-full bg-slate-200 overflow-hidden ${className}`}>
-      <div className="h-full rounded-full bg-gradient-to-r from-navy-950 to-navy-700" style={{ width: `${Math.max(0, Math.min(100, pct))}%` }} />
+      <div className="h-full rounded-full bg-gradient-to-r from-brand-700 to-brand-500" style={{ width: `${Math.max(0, Math.min(100, pct))}%` }} />
     </div>
   );
 }
@@ -51,7 +51,7 @@ export function CourseCard({ course, className = "", showTitle = true }: { cours
           <span className="absolute bottom-3 right-3 rounded-xl bg-white px-3 py-1.5 text-sm font-semibold text-navy-900 shadow-sm">{course.totalLessons} aulas</span>
         )}
         {course.dueDate && !course.completed && (
-          <span className="absolute top-3 left-3 rounded-lg bg-gold-500 px-2.5 py-1 text-xs font-bold text-white">Até {formatDate(course.dueDate, { day: "2-digit", month: "2-digit", year: undefined })}</span>
+          <span className="absolute top-3 left-3 rounded-lg bg-brand-600 px-2.5 py-1 text-xs font-bold text-white">Até {formatDate(course.dueDate, { day: "2-digit", month: "2-digit", year: undefined })}</span>
         )}
         {course.completed && <span className="absolute top-3 left-3 rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-bold text-white">Concluído</span>}
       </div>

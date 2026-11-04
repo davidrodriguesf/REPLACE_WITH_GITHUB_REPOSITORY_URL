@@ -1,12 +1,12 @@
 import "server-only";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createAdminClient } from "@/lib/db/admin";
+import { createEmailToken, createUser, findUserByEmail } from "@/lib/db/auth";
 import { sendWelcomeEmail } from "@/lib/email";
 import { siteUrl } from "@/lib/utils";
 import type { Role } from "@/lib/types";
 
-function confirmLink(hashedToken: string, type: "invite" | "recovery" | "magiclink") {
-  const params = new URLSearchParams({ token_hash: hashedToken, type, next: "/definir-senha" });
-  return siteUrl(`/auth/confirm?${params}`);
+function confirmLink(token: string) {
+  return siteUrl(`/auth/confirm?${new URLSearchParams({ token, next: "/definir-senha" })}`);
 }
 
 export type EmployeeInput = {
@@ -21,46 +21,34 @@ export type EmployeeInput = {
 
 /**
  * Convida (ou atualiza) um colaborador. Conta nova → e-mail para criar a senha.
- * Usa a service role: chame somente depois de verificar que quem pede é admin.
+ * Chame somente depois de verificar que quem pede é admin.
  */
 export async function inviteEmployee(input: EmployeeInput, opts: { resend?: boolean } = {}) {
   const admin = createAdminClient();
   const email = input.email.trim().toLowerCase();
-  const { data: existing } = await admin.from("profiles").select("id").eq("email", email).maybeSingle();
-  let userId = (existing?.id as string | undefined) ?? null;
-  let created = false;
-  let link: string | null = null;
+  let userId = await findUserByEmail(email);
+  const created = !userId;
+  if (!userId) userId = await createUser(email, input.full_name ?? null);
 
-  if (!userId) {
-    const { data, error } = await admin.auth.admin.generateLink({ type: "invite", email, options: { data: { full_name: input.full_name || "" } } });
-    if (error) {
-      const fallback = await admin.auth.admin.generateLink({ type: "magiclink", email });
-      if (fallback.error || !fallback.data.user) throw new Error(error.message);
-      userId = fallback.data.user.id;
-    } else {
-      userId = data.user.id;
-      created = true;
-      link = confirmLink(data.properties.hashed_token, "invite");
-    }
-  } else if (opts.resend) {
-    const { data } = await admin.auth.admin.generateLink({ type: "recovery", email });
-    if (data?.properties?.hashed_token) link = confirmLink(data.properties.hashed_token, "recovery");
-  }
-
-  const fields: Record<string, unknown> = { id: userId, email };
+  const fields: Record<string, unknown> = {};
   for (const k of ["full_name", "job_role_id", "department", "manager_id", "role", "hired_at"] as const) {
     if (input[k] !== undefined) fields[k] = input[k] || (k === "role" ? "employee" : null);
   }
-  const { error } = await admin.from("profiles").upsert(fields, { onConflict: "id" });
-  if (error) throw new Error(error.message);
+  if (Object.keys(fields).length) {
+    const { error } = await admin.from("profiles").update(fields).eq("id", userId);
+    if (error) throw new Error(error.message);
+  }
 
-  if (link) await sendWelcomeEmail(email, input.full_name ?? null, link);
+  if (created || opts.resend) {
+    const link = confirmLink(await createEmailToken(userId, "invite"));
+    await sendWelcomeEmail(email, input.full_name ?? null, link);
+  }
   return { userId, created };
 }
 
+/** Link de redefinição de senha (null se o e-mail não existir). */
 export async function createRecoveryLink(email: string) {
-  const admin = createAdminClient();
-  const { data, error } = await admin.auth.admin.generateLink({ type: "recovery", email: email.trim().toLowerCase() });
-  if (error || !data.properties?.hashed_token) return null;
-  return confirmLink(data.properties.hashed_token, "recovery");
+  const userId = await findUserByEmail(email);
+  if (!userId) return null;
+  return confirmLink(await createEmailToken(userId, "recovery"));
 }

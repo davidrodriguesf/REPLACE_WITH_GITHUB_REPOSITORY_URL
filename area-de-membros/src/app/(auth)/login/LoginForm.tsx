@@ -15,7 +15,7 @@ export function LoginForm({ next, linkError, inactive }: { next?: string; linkEr
       <input type="hidden" name="next" value={next ?? ""} />
       <div>
         <label className="label" htmlFor="email">E-mail</label>
-        <input className="input" id="email" name="email" type="email" autoComplete="email" required />
+        <input className="input" id="email" name="email" type="email" autoComplete="email" defaultValue={state?.email} required />
       </div>
       <div>
         <label className="label" htmlFor="password">Senha</label>

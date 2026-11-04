@@ -2,7 +2,7 @@
 
 App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos, quiz, prova online, certificados, PDI (plano de desenvolvimento individual), agenda de eventos, biblioteca e comunidade**. Funciona no celular, com menu inferior e visual de aplicativo, e no computador.
 
-**Stack:** Next.js 15 · Supabase (banco e login) · Resend (e-mails) · Vercel (hospedagem)
+**Stack:** Next.js 15 · Neon (banco Postgres) · login próprio (senha criptografada) · Resend (e-mails) · Netlify (hospedagem)
 
 ## O que tem
 
@@ -33,7 +33,7 @@ App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos
 - **Relatórios**: progresso por colaborador e por curso, atrasados e média das provas, com **exportação em CSV** (abre no Excel).
 - Biblioteca, eventos, canais da comunidade, categorias e mentores.
 
-## Como os acessos funcionam
+## Regras de acesso
 - Cada colaborador tem uma **função** (ex.: Vendedor). A função define a **trilha**.
 - Um curso fica visível para a pessoa se for "para todos", se for da função dela, se estiver na trilha dela ou se tiver sido atribuído a ela.
 - O **certificado** é emitido sozinho quando a pessoa conclui todas as aulas e, se o curso tiver prova final, é aprovada nela.
@@ -41,48 +41,53 @@ App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos
 
 ## Instalação
 
-### 1. Supabase
-1. Crie um projeto em [supabase.com](https://supabase.com).
-2. Abra **SQL Editor**, cole o conteúdo de [`supabase/schema.sql`](supabase/schema.sql) e clique em **Run**. O script pode ser rodado de novo sem problemas.
-3. Em **Authentication › Sign In / Providers**, desative **Allow new users to sign up**. Só entra quem o RH convidar.
-4. Em **Authentication › Email**, defina **Email OTP Expiration** como `86400` (24 h), que é a validade do convite.
-5. Em **Authentication › URL Configuration**, coloque o domínio do app em **Site URL**.
-6. Copie a URL, a `anon key` e a `service_role key` em **Project Settings › API**.
+### 1. Banco de dados (Neon)
+1. No [Neon](https://console.neon.tech), abra o projeto e vá em **SQL Editor**.
+2. Cole todo o conteúdo de [`database/schema.sql`](database/schema.sql) e clique em **Run**. O script pode ser rodado de novo sem problemas.
+3. Em **Connect**, com **Connection pooling** ligado, copie a *connection string*. O endereço tem `-pooler`. Ela vai na variável `DATABASE_URL`.
 
-### 2. Resend
-Crie a conta, verifique o domínio da empresa e gere uma API Key.
+> Por segurança, se a senha do banco já apareceu em algum print ou mensagem, clique em **Reset password** no Neon e use a nova string.
 
-### 3. Primeiro acesso (admin)
-1. No Supabase, vá em **Authentication › Users › Add user** e crie o seu usuário.
-2. No SQL Editor, rode:
-   ```sql
-   update public.profiles set role = 'admin' where email = 'seu@email.com';
-   ```
-3. Entre no app, abra o menu (⋯) e clique em **Painel administrativo**.
+### 2. E-mails (Resend)
+Crie a conta em [resend.com](https://resend.com), verifique o domínio da empresa e gere uma API Key. Sem ela, o app funciona, mas os links de convite e de senha aparecem só no log do servidor.
+
+### 3. Hospedagem (Netlify)
+1. Em [netlify.com](https://netlify.com), clique em **Add new site › Import from Git** e escolha este repositório.
+2. Em **Base directory**, coloque `area-de-membros`. O Netlify detecta o Next.js sozinho.
+3. Em **Site configuration › Environment variables**, cadastre as variáveis do [`.env.example`](.env.example). As obrigatórias são `DATABASE_URL`, `SETUP_KEY`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY` e `EMAIL_FROM`.
+4. Faça o deploy e, se quiser, conecte um domínio próprio, como `academia.suaempresa.com.br`.
+
+### 4. Primeiro acesso (admin)
+1. Abra `https://SEU-SITE/primeiro-acesso`.
+2. Informe a chave `SETUP_KEY` e crie a conta de administrador(a). Essa tela só funciona enquanto não existir nenhum admin.
+3. No menu (⋯), entre em **Painel administrativo**.
 
 Ordem sugerida: **Funções → Categorias e mentores → Cursos (aulas e prova) → Trilhas → Colaboradores (convites)**.
 
-### 4. Deploy na Vercel
-1. Importe o repositório e defina o **Root Directory** como `area-de-membros`.
-2. Cadastre as variáveis do `.env.example`.
-3. Conecte o domínio da empresa.
+### Como o login funciona
+- As senhas são guardadas com **scrypt**, nunca em texto.
+- A sessão fica num cookie seguro e dura 30 dias. Trocar a senha encerra as outras sessões.
+- Convites valem 7 dias e o link de redefinição de senha vale 2 horas. Os dois são de **uso único**.
+- A cada consulta, o app se identifica no banco como o colaborador logado. As regras de acesso (RLS) do `schema.sql` decidem o que cada pessoa vê, e o gestor só enxerga a própria equipe.
 
 ### Rodar localmente
 ```bash
 cd area-de-membros
-cp .env.example .env.local   # preencha
+cp .env.example .env.local   # preencha DATABASE_URL e SETUP_KEY
 npm install
 npm run dev
 ```
 
 ## Personalizar
 - **Nome, logo e assinatura do certificado**: variáveis `NEXT_PUBLIC_*` no `.env`.
-- **Cores**: em `src/app/globals.css`, troque as escalas `--color-navy-*` (cor principal) e `--color-gold-*` (destaque).
+- **Cores** (padrão: roxo da PestX): em `src/app/globals.css`, troque a escala `--color-brand-*`.
 - **Capas**: use imagens 16:9 para os cursos e 2:3 para a biblioteca. Sem imagem, o app gera uma capa tipográfica.
 
 ## Estrutura
 ```
-supabase/schema.sql              banco, regras de acesso (RLS), correção de provas e certificados
+database/schema.sql              banco, login, regras de acesso (RLS), correção de provas e certificados
+src/lib/db/                      conexão com o Neon, consultas e login (sessões, convites, senhas)
+src/app/primeiro-acesso/         criação do primeiro administrador
 src/app/(app)/                   telas do colaborador (início, catálogo, cursos, trilhas, agenda...)
 src/app/(app)/equipe/            visão do gestor
 src/app/admin/                   painel do RH

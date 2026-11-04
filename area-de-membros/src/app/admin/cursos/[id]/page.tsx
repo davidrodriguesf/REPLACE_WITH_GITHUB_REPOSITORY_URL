@@ -63,7 +63,7 @@ export default async function CursoAdmin({ params }: { params: Promise<{ id: str
             <h2 className="h-section">Avaliações</h2>
             {quizzes.map((x) => (
               <Link key={x.id} href={`/admin/cursos/${course.id}/avaliacoes/${x.id}`} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-4 hover:shadow-md">
-                <span className={`grid h-11 w-11 place-items-center rounded-xl ${x.kind === "exam" ? "bg-gold-100 text-gold-600" : "bg-navy-50 text-navy-800"}`}><IconQuiz /></span>
+                <span className={`grid h-11 w-11 place-items-center rounded-xl ${x.kind === "exam" ? "bg-brand-100 text-brand-700" : "bg-brand-50 text-navy-800"}`}><IconQuiz /></span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold text-navy-950">{x.title}{!x.is_published && <span className="ml-2 text-xs text-amber-700">rascunho</span>}</span>
                   <span className="text-sm text-slate-500">

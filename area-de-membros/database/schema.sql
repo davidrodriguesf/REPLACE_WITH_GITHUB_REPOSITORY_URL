@@ -1,9 +1,59 @@
 -- =====================================================================
--- UNIVERSIDADE CORPORATIVA — esquema do banco (Supabase / Postgres)
+-- UNIVERSIDADE CORPORATIVA — esquema do banco (Neon / Postgres)
 -- Colaboradores, funções, trilhas, cursos, quiz/prova, certificados,
 -- PDI (plano de desenvolvimento), biblioteca, comunidade e eventos.
--- Cole tudo no Supabase → SQL Editor → Run. Pode rodar mais de uma vez.
+-- Cole tudo no Neon → SQL Editor → Run. Pode rodar mais de uma vez.
 -- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- AUTENTICAÇÃO (login próprio do app)
+-- O app conecta como dono do banco e, a cada consulta de um colaborador,
+-- troca para o papel "authenticated" com o id dele. Assim as regras de
+-- acesso (RLS) abaixo valem para tudo o que ele vê e altera.
+-- ---------------------------------------------------------------------
+do $$
+begin
+  if not exists (select 1 from pg_roles where rolname = 'anon') then create role anon nologin; end if;
+  if not exists (select 1 from pg_roles where rolname = 'authenticated') then create role authenticated nologin; end if;
+  execute format('grant anon, authenticated to %I', current_user);
+end $$;
+
+create schema if not exists auth;
+
+create table if not exists auth.users (
+  id                 uuid primary key default gen_random_uuid(),
+  email              text not null unique,
+  password_hash      text,             -- scrypt; nulo até a pessoa criar a senha
+  raw_user_meta_data jsonb not null default '{}',
+  last_sign_in_at    timestamptz,
+  created_at         timestamptz not null default now()
+);
+
+create table if not exists auth.sessions (
+  token_hash text primary key,        -- sha256 do token guardado no cookie
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  expires_at timestamptz not null,
+  created_at timestamptz not null default now()
+);
+create index if not exists sessions_user_idx on auth.sessions (user_id);
+
+create table if not exists auth.tokens (
+  token_hash text primary key,        -- sha256 do token enviado por e-mail
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  purpose    text not null check (purpose in ('invite', 'recovery')),
+  expires_at timestamptz not null,
+  used_at    timestamptz,
+  created_at timestamptz not null default now()
+);
+
+-- Quem está fazendo a consulta (preenchido pelo app a cada transação)
+create or replace function auth.uid()
+returns uuid language sql stable as $$
+  select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
+$$;
+
+grant usage on schema auth to anon, authenticated;
+grant execute on function auth.uid() to anon, authenticated;
 
 -- ---------------------------------------------------------------------
 -- FUNÇÕES (cargos) E PERFIS
@@ -735,6 +785,13 @@ create policy rsvps_delete on public.event_rsvps for delete to authenticated usi
 revoke execute on function public.get_quiz(uuid), public.submit_quiz(uuid, jsonb), public.issue_certificate(uuid),
   public.trending_courses(int), public.learning_report(uuid) from anon;
 
+-- Permissões dos papéis usados pelo app (as linhas visíveis são filtradas pelo RLS)
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on all tables in schema public to authenticated;
+grant execute on all functions in schema public to authenticated;
+grant select on public.member_profiles to authenticated;
+grant execute on function public.verify_certificate(text) to anon;
+
 -- =====================================================================
 -- DADOS INICIAIS
 -- =====================================================================
@@ -751,6 +808,6 @@ insert into public.categories (name, position) values
 on conflict (name) do nothing;
 
 -- =====================================================================
--- DEPOIS DE CRIAR SUA CONTA, torne-se administrador(a):
---   update public.profiles set role = 'admin' where email = 'seu@email.com';
+-- PRIMEIRO ACESSO: abra /primeiro-acesso no app e crie a conta de
+-- administrador(a) usando a chave SETUP_KEY definida nas variáveis.
 -- =====================================================================

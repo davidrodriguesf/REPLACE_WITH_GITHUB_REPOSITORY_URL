@@ -24,7 +24,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
     <div className="mx-auto max-w-3xl space-y-6">
       <Link href="/agenda" className="inline-flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-navy-900"><IconChevronLeft className="w-4 h-4" />Agenda</Link>
       <div className="overflow-hidden rounded-3xl border border-slate-200">
-        <div className="relative aspect-[16/8] bg-gradient-to-br from-navy-800 to-navy-950">
+        <div className="relative aspect-[16/8] bg-gradient-to-br from-brand-600 to-brand-900">
           {event.cover_url && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={event.cover_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
@@ -32,7 +32,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
           {isLive(event) && <span className="absolute left-4 top-4 rounded-full bg-red-600 px-3 py-1 text-xs font-bold text-white">● AO VIVO</span>}
         </div>
         <div className="space-y-5 p-6">
-          {event.host && <p className="text-sm font-bold uppercase tracking-wider text-gold-600">{event.host}</p>}
+          {event.host && <p className="text-sm font-bold uppercase tracking-wider text-brand-700">{event.host}</p>}
           <h1 className="text-3xl font-bold leading-tight text-navy-950">{event.title}</h1>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex items-center gap-4"><span className="icon-box"><IconCalendar className="w-6 h-6 text-slate-500" /></span><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">Data</p><p className="text-[17px]">{formatDate(event.starts_at, { weekday: "long", day: "2-digit", month: "long" })}</p></div></div>

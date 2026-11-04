@@ -37,11 +37,11 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           <div className="flex-1 min-w-0">
             <p className="font-semibold">
               {author?.full_name ?? "Membro"}
-              {author?.role === "admin" && <span className="badge bg-navy-50 text-navy-800 ml-2">Equipe</span>}
+              {author?.role === "admin" && <span className="badge bg-brand-50 text-navy-800 ml-2">Equipe</span>}
             </p>
             <p className="text-xs text-muted">{formatDateTime(post.created_at)}</p>
           </div>
-          {post.pinned && <span className="badge bg-navy-950 text-white"><IconPin className="w-3 h-3" />Fixado</span>}
+          {post.pinned && <span className="badge bg-brand-600 text-white"><IconPin className="w-3 h-3" />Fixado</span>}
         </header>
         <h1 className="text-xl sm:text-2xl font-bold mt-4">{post.title}</h1>
         <div className="prose-lite mt-3">{post.body}</div>
@@ -75,7 +75,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
                 <div className="rounded-2xl bg-slate-50 px-4 py-3">
                   <p className="text-sm font-semibold">
                     {a?.full_name ?? "Membro"}
-                    {a?.role === "admin" && <span className="badge bg-navy-50 text-navy-800 ml-2">Equipe</span>}
+                    {a?.role === "admin" && <span className="badge bg-brand-50 text-navy-800 ml-2">Equipe</span>}
                   </p>
                   <p className="text-sm prose-lite mt-1">{c.body}</p>
                 </div>

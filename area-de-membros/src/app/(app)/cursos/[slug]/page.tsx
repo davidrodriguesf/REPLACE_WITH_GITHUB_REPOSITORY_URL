@@ -56,8 +56,8 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           <div className="flex flex-wrap gap-2">
             {course.completed && <span className="badge bg-emerald-50 text-emerald-700"><IconCheck className="w-4 h-4" />Concluído</span>}
             {!course.completed && course.started && <span className="badge bg-emerald-50 text-emerald-700"><IconCheck className="w-4 h-4" />Inscrito · {course.pct}%</span>}
-            {!!inTrail?.length && <span className="badge bg-navy-50 text-navy-800">Na sua trilha</span>}
-            {course.dueDate && !course.completed && <span className="badge bg-gold-100 text-gold-600">Obrigatório até {formatDate(course.dueDate)}</span>}
+            {!!inTrail?.length && <span className="badge bg-brand-50 text-navy-800">Na sua trilha</span>}
+            {course.dueDate && !course.completed && <span className="badge bg-brand-100 text-brand-700">Obrigatório até {formatDate(course.dueDate)}</span>}
             {course.categoryName && <span className="badge bg-slate-100 text-slate-600">{course.categoryName}</span>}
           </div>
         </div>
@@ -94,12 +94,12 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
               return (
                 <li key={m.id}>
                   <Link href={first ? `/cursos/${course.slug}/aula/${first.id}` : "#"} className="flex items-center gap-4 border-b border-slate-200 py-4">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-navy-950 font-bold text-white">{i + 1}</span>
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand-600 font-bold text-white">{i + 1}</span>
                     <span className="flex-1 min-w-0">
                       <span className="block text-[17px] font-medium text-navy-950 truncate">{m.title}</span>
                       <span className="block text-slate-500">{ml.length} aula{ml.length === 1 ? "" : "s"}</span>
                     </span>
-                    <span className="grid h-10 w-10 place-items-center rounded-full border-2 border-navy-950 text-navy-950"><IconPlay className="w-5 h-5" /></span>
+                    <span className="grid h-10 w-10 place-items-center rounded-full border-2 border-brand-600 text-navy-950"><IconPlay className="w-5 h-5" /></span>
                   </Link>
                 </li>
               );

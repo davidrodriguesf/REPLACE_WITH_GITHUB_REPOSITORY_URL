@@ -40,13 +40,13 @@ export default async function Inicio({ searchParams }: { searchParams: Promise<{
       </div>
 
       {trail && (
-        <Link href={`/trilhas/${trail.id}`} className="group block rounded-3xl bg-gradient-to-br from-navy-950 via-navy-900 to-navy-700 p-6 sm:p-8 text-white shadow-lg shadow-navy-950/20">
+        <Link href={`/trilhas/${trail.id}`} className="group block rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 p-6 sm:p-8 text-white shadow-lg shadow-navy-950/20">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="flex items-center gap-2 text-sm font-semibold text-gold-500"><IconRoute className="w-5 h-5" /> Sua trilha{trail.roleNames[0] ? ` · ${trail.roleNames[0]}` : ""}</p>
+              <p className="flex items-center gap-2 text-sm font-semibold text-brand-100"><IconRoute className="w-5 h-5" /> Sua trilha{trail.roleNames[0] ? ` · ${trail.roleNames[0]}` : ""}</p>
               <h2 className="mt-2 text-2xl sm:text-3xl font-bold leading-tight">{trail.title}</h2>
               {trail.next ? (
-                <p className="mt-2 text-white/70">Próximo passo: <span className="text-white font-semibold">{trail.next.title}</span></p>
+                <p className="mt-2 text-white/80">Próximo passo: <span className="text-white font-semibold">{trail.next.title}</span></p>
               ) : (
                 <p className="mt-2 text-emerald-300 font-semibold">Trilha concluída. Parabéns!</p>
               )}
@@ -54,10 +54,10 @@ export default async function Inicio({ searchParams }: { searchParams: Promise<{
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/10 transition group-hover:bg-white/20"><IconChevronRight /></span>
           </div>
           <div className="mt-6 flex items-center gap-4">
-            <div className="h-2.5 flex-1 rounded-full bg-white/15 overflow-hidden"><div className="h-full rounded-full bg-gold-500" style={{ width: `${trail.pct}%` }} /></div>
+            <div className="h-2.5 flex-1 rounded-full bg-white/15 overflow-hidden"><div className="h-full rounded-full bg-white" style={{ width: `${trail.pct}%` }} /></div>
             <span className="font-bold tabular-nums">{trail.pct}%</span>
           </div>
-          <p className="mt-2 text-sm text-white/60">{trail.doneCount} de {trail.steps.length} cursos concluídos</p>
+          <p className="mt-2 text-sm text-white/75">{trail.doneCount} de {trail.steps.length} cursos concluídos</p>
         </Link>
       )}
 
@@ -66,7 +66,7 @@ export default async function Inicio({ searchParams }: { searchParams: Promise<{
           {required.map((c) => (
             <div key={c.id} className={rowItem}>
               <CourseCard course={c} />
-              {c.dueDate && <p className="mt-1 px-0.5 text-sm font-semibold text-gold-600">Prazo: {formatDate(c.dueDate)}</p>}
+              {c.dueDate && <p className="mt-1 px-0.5 text-sm font-semibold text-brand-700">Prazo: {formatDate(c.dueDate)}</p>}
             </div>
           ))}
         </Row>

@@ -8,7 +8,7 @@ export function Avatar({ name, url, size = 40, square = false, dark = false }: {
   }
   return (
     <span
-      className={`${radius} ${dark || square ? "bg-navy-700 text-white" : "bg-navy-100 text-navy-800"} font-bold grid place-items-center shrink-0`}
+      className={`${radius} ${dark || square ? "bg-brand-600 text-white" : "bg-brand-100 text-navy-800"} font-bold grid place-items-center shrink-0`}
       style={{ width: size, height: size, fontSize: size * 0.36 }}
     >
       {initials(name)}

@@ -10,12 +10,12 @@ function layout({ title, intro, ctaLabel, ctaUrl, footer }: { title: string; int
   return `<!doctype html><html><body style="margin:0;background:#f4f4f7;font-family:Arial,Helvetica,sans-serif;color:#1f2937">
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 12px"><tr><td align="center">
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden">
-      <tr><td style="background:#0c1b2c;padding:24px 32px;color:#fff;font-size:20px;font-weight:bold">${escapeHtml(SITE_NAME)}</td></tr>
+      <tr><td style="background:#6d28d9;padding:24px 32px;color:#fff;font-size:20px;font-weight:bold">${escapeHtml(SITE_NAME)}</td></tr>
       <tr><td style="padding:32px">
         <h1 style="margin:0 0 16px;font-size:22px">${title}</h1>
         <div style="font-size:15px;line-height:1.6;color:#374151">${intro}</div>
-        <p style="margin:28px 0"><a href="${ctaUrl}" style="background:#0c1b2c;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:bold;display:inline-block">${ctaLabel}</a></p>
-        <p style="font-size:12px;color:#6b7280;line-height:1.5">Se o botão não funcionar, copie e cole este link no navegador:<br><a href="${ctaUrl}" style="color:#12263c;word-break:break-all">${ctaUrl}</a></p>
+        <p style="margin:28px 0"><a href="${ctaUrl}" style="background:#6d28d9;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:bold;display:inline-block">${ctaLabel}</a></p>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Se o botão não funcionar, copie e cole este link no navegador:<br><a href="${ctaUrl}" style="color:#6d28d9;word-break:break-all">${ctaUrl}</a></p>
         ${footer ? `<p style="font-size:12px;color:#6b7280">${footer}</p>` : ""}
       </td></tr>
     </table>
@@ -25,7 +25,8 @@ function layout({ title, intro, ctaLabel, ctaUrl, footer }: { title: string; int
 async function send(to: string, subject: string, html: string) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    console.warn(`[email] RESEND_API_KEY ausente. E-mail para ${to} não enviado: "${subject}"`);
+    const link = html.match(/href="([^"]+)"/)?.[1];
+    console.warn(`[email] RESEND_API_KEY ausente. E-mail para ${to} não enviado: "${subject}"${link ? ` · link: ${link}` : ""}`);
     return { skipped: true };
   }
   const resend = new Resend(key);

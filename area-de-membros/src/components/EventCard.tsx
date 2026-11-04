@@ -20,14 +20,14 @@ export function EventCard({ event, className = "", children }: { event: EventIte
   return (
     <div className={`overflow-hidden rounded-2xl border border-slate-200 bg-white ${className}`}>
       <Link href={`/agenda/${event.id}`} className="block">
-        <div className="relative aspect-[16/9] bg-gradient-to-br from-navy-800 to-navy-950">
+        <div className="relative aspect-[16/9] bg-gradient-to-br from-brand-600 to-brand-900">
           {event.cover_url && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={event.cover_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
           )}
           {!event.cover_url && (
             <div className="absolute inset-0 flex flex-col justify-end p-5 pt-14 text-white">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-500">{event.host || "Evento"}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-200">{event.host || "Evento"}</p>
               <p className="mt-1 font-serif text-xl uppercase leading-tight line-clamp-2">{event.title}</p>
             </div>
           )}

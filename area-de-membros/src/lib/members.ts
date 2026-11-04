@@ -1,5 +1,5 @@
 import "server-only";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Db as SupabaseClient } from "@/lib/db/client";
 import type { MemberProfile } from "@/lib/types";
 
 /** Busca nome/foto dos autores (sem expor e-mails) e devolve um mapa id -> perfil. */

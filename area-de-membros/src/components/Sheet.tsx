@@ -4,7 +4,7 @@ import { IconChevronDown } from "./Icons";
 /** Página com cara de "gaveta" (bottom sheet) no celular e cartão central no computador. */
 export function Sheet({ backHref, children, footer }: { backHref: string; children: React.ReactNode; footer?: React.ReactNode }) {
   return (
-    <div className="-mx-4 sm:mx-0 -mt-6 sm:mt-0 min-h-[calc(100dvh-72px)] bg-navy-900 sm:bg-transparent pt-4 sm:pt-0">
+    <div className="-mx-4 sm:mx-0 -mt-6 sm:mt-0 min-h-[calc(100dvh-72px)] bg-navy-50 sm:bg-transparent pt-4 sm:pt-0">
       <div className="relative mx-auto max-w-3xl rounded-t-[28px] sm:rounded-3xl bg-white sm:border sm:border-slate-200 sm:shadow-xl sm:shadow-navy-950/5 pb-32 sm:pb-6">
         <div className="sticky top-[72px] z-10 flex justify-center rounded-t-[28px] bg-white pt-3 pb-2 sm:static">
           <span className="h-1.5 w-12 rounded-full bg-slate-300" />

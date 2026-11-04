@@ -93,7 +93,7 @@ export default async function Desenvolvimento({ searchParams }: { searchParams: 
           <div className="grid gap-3 sm:grid-cols-2">
             {courses.filter((c) => c.certificateId).slice(0, 4).map((c) => (
               <Link key={c.id} href={`/certificados/${c.certificateId}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 p-4 hover:shadow-md">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gold-100 text-gold-600"><IconAward /></span>
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-brand-100 text-brand-700"><IconAward /></span>
                 <span className="min-w-0"><span className="block font-bold text-navy-950 truncate">{c.title}</span><span className="text-sm text-slate-500">Certificado de conclusão</span></span>
               </Link>
             ))}

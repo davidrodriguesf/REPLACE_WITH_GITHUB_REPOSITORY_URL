@@ -37,7 +37,7 @@ export default async function TrilhaAdmin({ params }: { params: Promise<{ id: st
           <h2 className="h-section">Cursos da trilha (em ordem)</h2>
           {steps.map((s, i) => (
             <div key={s.course_id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 p-3">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-navy-950 text-sm font-bold text-white">{i + 1}</span>
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">{i + 1}</span>
               <span className="min-w-0 flex-1 font-semibold text-navy-950">
                 {s.courses?.title}
                 {s.courses && !s.courses.is_published && <span className="ml-2 text-xs font-bold text-amber-700">rascunho</span>}

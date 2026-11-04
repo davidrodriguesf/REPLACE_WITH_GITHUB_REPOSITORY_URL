@@ -33,7 +33,7 @@ export default async function QuizPage({ params }: { params: Promise<{ slug: str
     <div className="mx-auto max-w-2xl space-y-6">
       <Link href={backHref} className="inline-flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-navy-900"><IconChevronLeft className="w-4 h-4" />Voltar ao curso</Link>
       <div>
-        <p className="text-sm font-bold uppercase tracking-wider text-gold-600">{quiz.kind === "exam" ? "Prova final" : "Quiz"}</p>
+        <p className="text-sm font-bold uppercase tracking-wider text-brand-700">{quiz.kind === "exam" ? "Prova final" : "Quiz"}</p>
         <h1 className="h-page mt-1">{quiz.title}</h1>
         {quiz.description && <p className="mt-2 text-slate-600">{quiz.description}</p>}
       </div>

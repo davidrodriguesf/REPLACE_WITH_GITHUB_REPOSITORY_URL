@@ -127,7 +127,7 @@ export function QuizRunner({ quizId, title, kind, passingScore, timeLimit, attem
           </span>
         )}
       </div>
-      <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full bg-navy-900 transition-all" style={{ width: `${((i + 1) / questions.length) * 100}%` }} /></div>
+      <div className="h-2 rounded-full bg-slate-200 overflow-hidden"><div className="h-full bg-brand-600 transition-all" style={{ width: `${((i + 1) / questions.length) * 100}%` }} /></div>
 
       {q && (
         <fieldset className="space-y-3">
@@ -135,9 +135,9 @@ export function QuizRunner({ quizId, title, kind, passingScore, timeLimit, attem
           {q.options.map((o, n) => {
             const sel = answers[q.id] === o.id;
             return (
-              <label key={o.id} className={`flex cursor-pointer items-center gap-4 rounded-2xl border-2 p-4 text-[16px] transition ${sel ? "border-navy-900 bg-navy-50" : "border-slate-200 hover:border-slate-300"}`}>
+              <label key={o.id} className={`flex cursor-pointer items-center gap-4 rounded-2xl border-2 p-4 text-[16px] transition ${sel ? "border-brand-600 bg-brand-50" : "border-slate-200 hover:border-slate-300"}`}>
                 <input type="radio" name={q.id} value={o.id} checked={sel} onChange={() => setAnswers((a) => ({ ...a, [q.id]: o.id }))} className="sr-only" />
-                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full font-bold ${sel ? "bg-navy-900 text-white" : "bg-slate-100 text-slate-600"}`}>{String.fromCharCode(65 + n)}</span>
+                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full font-bold ${sel ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600"}`}>{String.fromCharCode(65 + n)}</span>
                 <span className="text-navy-900">{o.text}</span>
               </label>
             );

@@ -58,11 +58,11 @@ export function CourseForm({ course, categories, roles, instructors, selectedRol
       <fieldset className="rounded-2xl border border-slate-200 p-4 space-y-3">
         <legend className="px-1 text-sm font-bold">Quem pode ver</legend>
         <div className="grid gap-2 sm:grid-cols-2">
-          <label className={`rounded-xl border p-3 cursor-pointer ${audience === "all" ? "border-navy-900 bg-navy-50" : "border-slate-200"}`}>
+          <label className={`rounded-xl border p-3 cursor-pointer ${audience === "all" ? "border-brand-600 bg-brand-50" : "border-slate-200"}`}>
             <input type="radio" name="audience" value="all" checked={audience === "all"} onChange={() => setAudience("all")} className="mr-2" />
             <strong>Todos os colaboradores</strong>
           </label>
-          <label className={`rounded-xl border p-3 cursor-pointer ${audience === "roles" ? "border-navy-900 bg-navy-50" : "border-slate-200"}`}>
+          <label className={`rounded-xl border p-3 cursor-pointer ${audience === "roles" ? "border-brand-600 bg-brand-50" : "border-slate-200"}`}>
             <input type="radio" name="audience" value="roles" checked={audience === "roles"} onChange={() => setAudience("roles")} className="mr-2" />
             <strong>Só algumas funções</strong>
           </label>

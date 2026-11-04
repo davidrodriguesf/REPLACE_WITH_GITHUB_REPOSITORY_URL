@@ -38,7 +38,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
 
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`badge ${plan.status === "completed" ? "bg-emerald-50 text-emerald-700" : plan.status === "cancelled" ? "bg-slate-100 text-slate-500" : "bg-navy-50 text-navy-800"}`}>{planStatusLabel[plan.status]}</span>
+          <span className={`badge ${plan.status === "completed" ? "bg-emerald-50 text-emerald-700" : plan.status === "cancelled" ? "bg-slate-100 text-slate-500" : "bg-brand-50 text-navy-800"}`}>{planStatusLabel[plan.status]}</span>
           {plan.due_date && <span className="badge bg-slate-100 text-slate-600">Prazo {formatDate(plan.due_date)}</span>}
           {!isOwner && owner && <span className="badge bg-slate-100 text-slate-600">{owner.full_name}</span>}
         </div>
@@ -56,7 +56,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
         {gl.map((g) => (
           <div key={g.id} className={`rounded-2xl border p-5 ${g.status === "done" ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200"}`}>
             <div className="flex items-start gap-3">
-              <span className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full ${g.status === "done" ? "bg-emerald-600 text-white" : g.status === "doing" ? "bg-gold-500 text-white" : "border-2 border-slate-300"}`}>
+              <span className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full ${g.status === "done" ? "bg-emerald-600 text-white" : g.status === "doing" ? "bg-brand-600 text-white" : "border-2 border-slate-300"}`}>
                 {g.status === "done" && <IconCheck className="w-4 h-4" />}
               </span>
               <div className="min-w-0 flex-1">
@@ -75,7 +75,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
                     <input type="hidden" name="goal_id" value={g.id} />
                     <input type="hidden" name="plan_id" value={plan.id} />
                     <input type="hidden" name="status" value={s} />
-                    <button className={`rounded-full px-3.5 py-1.5 text-sm font-semibold cursor-pointer ${g.status === s ? "bg-navy-950 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{goalStatusLabel[s]}</button>
+                    <button className={`rounded-full px-3.5 py-1.5 text-sm font-semibold cursor-pointer ${g.status === s ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>{goalStatusLabel[s]}</button>
                   </form>
                 ))}
                 {canManage && (

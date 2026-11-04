@@ -105,8 +105,8 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
                   const current = l.id === lesson.id;
                   const n = ordered.indexOf(l) + 1;
                   return (
-                    <Link key={l.id} href={`/cursos/${slug}/aula/${l.id}`} className={`flex items-center gap-3 rounded-2xl border p-2.5 transition ${current ? "border-navy-900 bg-navy-50" : "border-slate-200 hover:bg-slate-50"}`}>
-                      <span className={`grid h-14 w-20 shrink-0 place-items-center rounded-xl text-sm font-bold ${done.has(l.id) ? "bg-emerald-600 text-white" : current ? "bg-navy-950 text-white" : "bg-navy-900/90 text-white/80"}`}>
+                    <Link key={l.id} href={`/cursos/${slug}/aula/${l.id}`} className={`flex items-center gap-3 rounded-2xl border p-2.5 transition ${current ? "border-brand-600 bg-brand-50" : "border-slate-200 hover:bg-slate-50"}`}>
+                      <span className={`grid h-14 w-20 shrink-0 place-items-center rounded-xl text-sm font-bold ${done.has(l.id) ? "bg-emerald-600 text-white" : current ? "bg-brand-600 text-white" : "bg-brand-600/90 text-white/80"}`}>
                         {done.has(l.id) ? <IconCheck className="w-6 h-6" /> : current ? <IconPlay className="w-6 h-6" /> : n}
                       </span>
                       <span className="flex-1 min-w-0">
@@ -121,7 +121,7 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
           ))}
           {exam && (
             <Link href={`/cursos/${slug}/avaliacao/${exam.id}`} className="flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 p-3 hover:bg-slate-50">
-              <span className="grid h-14 w-20 shrink-0 place-items-center rounded-xl bg-gold-100 text-gold-600"><IconQuiz className="w-6 h-6" /></span>
+              <span className="grid h-14 w-20 shrink-0 place-items-center rounded-xl bg-brand-100 text-brand-700"><IconQuiz className="w-6 h-6" /></span>
               <span><span className="block font-semibold text-navy-950">{exam.title}</span><span className="text-sm text-slate-500">Prova final · nota mínima {exam.passing_score}%</span></span>
             </Link>
           )}

@@ -1,19 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
-import type { EmailOtpType } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/server";
+import { consumeEmailToken, createSession } from "@/lib/db/auth";
 
-/** Recebe o link do e-mail (convite / recuperação), valida o token e cria a sessão. */
+/** Link do e-mail (convite ou redefinição): valida o token, cria a sessão e leva para criar a senha. */
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = req.nextUrl;
-  const token_hash = searchParams.get("token_hash");
-  const type = searchParams.get("type") as EmailOtpType | null;
-  const nextParam = searchParams.get("next") || "/inicio";
-  const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/inicio";
-
-  if (token_hash && type) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.verifyOtp({ type, token_hash });
-    if (!error) return NextResponse.redirect(new URL(next, origin));
+  const token = searchParams.get("token");
+  const nextParam = searchParams.get("next") || "/definir-senha";
+  const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/definir-senha";
+  if (token) {
+    const userId = await consumeEmailToken(token);
+    if (userId) {
+      await createSession(userId);
+      return NextResponse.redirect(new URL(next, origin));
+    }
   }
   return NextResponse.redirect(new URL("/login?erro=link", origin));
 }

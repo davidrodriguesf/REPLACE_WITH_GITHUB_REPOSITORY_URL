@@ -1,17 +1,17 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/db/server";
+import { signIn } from "@/lib/db/auth";
 import { createRecoveryLink } from "@/lib/access";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { str } from "@/lib/utils";
 
-export type FormState = { error?: string; success?: string } | undefined;
+export type FormState = { error?: string; success?: string; email?: string } | undefined;
 
 export async function login(_: FormState, form: FormData): Promise<FormState> {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email: str(form, "email").toLowerCase(), password: str(form, "password") });
-  if (error) return { error: "E-mail ou senha incorretos." };
+  const r = await signIn(str(form, "email"), str(form, "password"));
+  if (r.error) return { error: r.error, email: str(form, "email") };
   const next = str(form, "next");
   redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/inicio");
 }
@@ -42,8 +42,9 @@ export async function setPassword(_: FormState, form: FormData): Promise<FormSta
   if (password !== confirm) return { error: "As senhas não conferem." };
   const supabase = await createClient();
   const name = str(form, "full_name");
-  const { data, error } = await supabase.auth.updateUser({ password });
-  if (error) return { error: "Não foi possível salvar. Seu link pode ter expirado — peça um novo em “Esqueci minha senha”." };
-  if (name && data.user) await supabase.from("profiles").update({ full_name: name }).eq("id", data.user.id);
+  const { data } = await supabase.auth.getUser();
+  if (!data.user) return { error: "Seu link expirou. Peça um novo em “Esqueci minha senha”." };
+  await supabase.auth.updateUser({ password });
+  if (name) await supabase.from("profiles").update({ full_name: name }).eq("id", data.user.id);
   redirect("/inicio?bemvindo=1");
 }

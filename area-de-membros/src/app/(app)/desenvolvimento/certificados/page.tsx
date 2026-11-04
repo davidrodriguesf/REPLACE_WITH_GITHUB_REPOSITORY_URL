@@ -19,7 +19,7 @@ export default async function Certificados() {
           {list.map((c) => (
             <li key={c.id}>
               <Link href={`/certificados/${c.id}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 p-5 hover:shadow-md">
-                <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gold-100 text-gold-600"><IconAward className="w-7 h-7" /></span>
+                <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand-100 text-brand-700"><IconAward className="w-7 h-7" /></span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-lg font-bold text-navy-950">{c.courses?.title}</span>
                   <span className="text-sm text-slate-500">Emitido em {formatDate(c.issued_at)}{c.hours ? ` · ${c.hours}h` : ""} · código {c.code}</span>

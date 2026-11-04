@@ -65,7 +65,7 @@ export default async function Colaboradores({ searchParams }: { searchParams: Pr
                     </td>
                     <td className="text-sm">
                       {(p.job_role_id && roleName.get(p.job_role_id)) || <span className="text-slate-400">Sem função</span>}
-                      {p.role !== "employee" && <span className="badge ml-2 !px-2 !py-0.5 !text-xs bg-navy-50 text-navy-800">{p.role === "admin" ? "Admin" : "Gestor"}</span>}
+                      {p.role !== "employee" && <span className="badge ml-2 !px-2 !py-0.5 !text-xs bg-brand-50 text-navy-800">{p.role === "admin" ? "Admin" : "Gestor"}</span>}
                       <p className="text-xs text-slate-500">{p.manager_id ? `Gestor: ${mgrName.get(p.manager_id) ?? "—"}` : p.department ?? ""}</p>
                     </td>
                     <td className="w-52">

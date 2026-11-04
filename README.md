@@ -47,4 +47,4 @@ No Claude Code na web, cadastre as chaves como variáveis de ambiente do ambient
 
 A pasta [`area-de-membros/`](area-de-membros/) contém o app interno de desenvolvimento dos colaboradores:
 trilhas por função, cursos, quiz e prova online, certificados, PDI, agenda, biblioteca e comunidade.
-Guia completo em [`area-de-membros/README.md`](area-de-membros/README.md). Na Vercel, use **Root Directory = `area-de-membros`**.
+Guia completo em [`area-de-membros/README.md`](area-de-membros/README.md). No Netlify, use **Base directory = `area-de-membros`**. Banco de dados: Neon.

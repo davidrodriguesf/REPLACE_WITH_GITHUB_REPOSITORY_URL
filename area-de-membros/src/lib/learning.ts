@@ -1,5 +1,5 @@
 import "server-only";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Db as SupabaseClient } from "@/lib/db/client";
 import type { Course, Instructor, Trail } from "@/lib/types";
 
 export type LearnCourse = Course & {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Db as SupabaseClient } from "@/lib/db/client";
 import { getReport, rowDone } from "@/lib/reports";
 import { getPlans, planStatusLabel } from "@/lib/development";
 import { removeAssignment } from "@/app/(app)/equipe/actions";

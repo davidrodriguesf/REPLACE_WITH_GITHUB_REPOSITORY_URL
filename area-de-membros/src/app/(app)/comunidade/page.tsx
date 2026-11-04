@@ -37,9 +37,9 @@ export default async function CommunityPage({ searchParams }: { searchParams: Pr
       <aside>
         <h1 className="h-page mb-4 lg:hidden">Comunidade</h1>
         <nav className="flex lg:flex-col gap-1 overflow-x-auto pb-2 -mx-4 px-4 lg:mx-0 lg:px-0">
-          <Link href="/comunidade" className={`rounded-xl px-3 py-2 text-sm font-medium whitespace-nowrap ${!current ? "bg-navy-950 text-white" : "hover:bg-slate-100"}`}>Tudo</Link>
+          <Link href="/comunidade" className={`rounded-xl px-3 py-2 text-sm font-medium whitespace-nowrap ${!current ? "bg-brand-600 text-white" : "hover:bg-slate-100"}`}>Tudo</Link>
           {spaces.map((s) => (
-            <Link key={s.id} href={`/comunidade?espaco=${s.slug}`} className={`rounded-xl px-3 py-2 text-sm font-medium whitespace-nowrap ${current?.id === s.id ? "bg-navy-950 text-white" : "hover:bg-slate-100"}`}>
+            <Link key={s.id} href={`/comunidade?espaco=${s.slug}`} className={`rounded-xl px-3 py-2 text-sm font-medium whitespace-nowrap ${current?.id === s.id ? "bg-brand-600 text-white" : "hover:bg-slate-100"}`}>
               # {s.name}
             </Link>
           ))}
@@ -56,17 +56,17 @@ export default async function CommunityPage({ searchParams }: { searchParams: Pr
         {posts.map((p) => {
           const author = members.get(p.author_id);
           return (
-            <article key={p.id} className={`card p-4 sm:p-5 ${p.pinned ? "border-navy-100 bg-navy-50/60" : ""}`}>
+            <article key={p.id} className={`card p-4 sm:p-5 ${p.pinned ? "border-brand-100 bg-brand-50/60" : ""}`}>
               <header className="flex items-center gap-3">
                 <Avatar name={author?.full_name} url={author?.avatar_url} size={38} />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-sm">
                     {author?.full_name ?? "Membro"}
-                    {author?.role === "admin" && <span className="badge bg-navy-50 text-navy-800 ml-2">Equipe</span>}
+                    {author?.role === "admin" && <span className="badge bg-brand-50 text-navy-800 ml-2">Equipe</span>}
                   </p>
                   <p className="text-xs text-muted">{spaceName.get(p.space_id)} · {timeAgo(p.created_at)}</p>
                 </div>
-                {p.pinned && <span className="badge bg-navy-950 text-white"><IconPin className="w-3 h-3" />Fixado</span>}
+                {p.pinned && <span className="badge bg-brand-600 text-white"><IconPin className="w-3 h-3" />Fixado</span>}
               </header>
               <Link href={`/comunidade/${p.id}`} className="block mt-3">
                 <h2 className="font-semibold text-slate-900 hover:text-navy-700">{p.title}</h2>

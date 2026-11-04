@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/db/server";
 import { CertificateArt } from "@/components/Certificate";
 import { SITE_NAME, formatDate } from "@/lib/utils";
 

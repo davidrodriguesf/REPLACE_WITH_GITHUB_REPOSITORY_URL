@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveTrail } from "../actions";
+import { FileField } from "@/components/FileField";
 import { FormMessage, SubmitButton } from "@/components/ui";
 import type { Trail } from "@/lib/types";
 
@@ -20,8 +21,7 @@ export function TrailForm({ trail, roles, selected }: { trail?: Trail; roles: { 
       </div>
       <div className="grid gap-3 sm:grid-cols-[1fr_100px]">
         <div>
-          <label className="label">URL da capa (opcional)</label>
-          <input className="input" name="cover_url" type="url" defaultValue={trail?.cover_url ?? ""} />
+          <FileField name="cover" label="Capa (opcional, 16:9)" current={trail?.cover_url} />
         </div>
         <div>
           <label className="label">Ordem</label>

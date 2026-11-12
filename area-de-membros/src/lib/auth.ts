@@ -30,6 +30,13 @@ export async function requireAdmin() {
   return current;
 }
 
+/** Super admin do PestX (marketplace). */
+export async function requireSuperAdmin() {
+  const current = await requireUser();
+  if (!current.profile.is_super_admin) redirect("/admin");
+  return current;
+}
+
 /** Gestor ou admin. */
 export async function requireManager() {
   const current = await requireUser();

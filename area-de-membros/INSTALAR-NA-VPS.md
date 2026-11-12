@@ -1,4 +1,4 @@
-# Academia Foco — instalar na VPS
+# Academia PestX — instalar na VPS
 
 Vai na mesma VPS do mapa, do rastreio e do app do técnico (**187.77.228.157**, nginx). O instalador
 só **acrescenta** um site novo: não mexe no n8n, no Hermes, no mapa, no rastreio, no técnico nem no
@@ -40,9 +40,24 @@ sudo bash instalar-academia.sh academia.pestx.com.br
 
 1. Abra **https://academia.pestx.com.br/primeiro-acesso**.
 2. **Passo 1:** cole a SETUP_KEY e clique em **Preparar banco de dados**. Isso cria as tabelas no Neon.
-3. **Passo 2:** crie a sua conta de administrador(a).
-4. No menu (⋯), entre em **Painel administrativo**. Ordem sugerida: Funções → Categorias e mentores →
-   Cursos (aulas e prova) → Trilhas → Colaboradores (convites).
+3. Entre em **https://academia.pestx.com.br/login** com o **e-mail e senha do PestX**. Quem tem acesso
+   "Total" no PestX vira administrador da sua empresa; o super admin do PestX também cuida do marketplace.
+4. No menu (⋯), entre em **Painel administrativo**. Ordem sugerida: Empresa e certificado → Categorias e mentores →
+   Cursos (aulas e prova) → Trilhas. Os colaboradores entram sozinhos com o login do PestX.
+
+O login do PestX é ligado sozinho: o instalador encontra a chave pública do Supabase do PestX no app do técnico
+desta VPS. Se ele avisar que não encontrou, rode `sudo bash instalar-academia.sh academia.pestx.com.br --configurar-pestx`
+e cole a `SUPABASE_ANON_KEY` do `src/config.js` do app do técnico (é a chave pública, a mesma do navegador).
+
+## 4b. Pagamento do marketplace (Asaas)
+
+```bash
+sudo bash instalar-academia.sh academia.pestx.com.br --configurar-asaas
+```
+
+Cole a chave de API do Asaas (ela não aparece na tela). No final ele mostra a **URL e o token do webhook**:
+cadastre no Asaas em *Integrações › Webhooks* (eventos de cobrança). Sem o webhook, o admin da empresa ainda pode
+clicar em "Já paguei: conferir pagamento" na tela do marketplace.
 
 ## 5. E-mails dos convites (depois, opcional)
 
@@ -54,7 +69,7 @@ journalctl -u academia | grep link
 ```
 
 Para ligar o envio por e-mail, edite `/opt/academia/academia.env` e preencha `RESEND_API_KEY` e
-`EMAIL_FROM` (ex.: `"Academia Foco <academia@pestx.com.br>"`). O domínio precisa estar verificado no
+`EMAIL_FROM` (ex.: `"Academia PestX <academia@envio.pestx.com.br>"`). O domínio precisa estar verificado no
 Resend. Depois rode `sudo systemctl restart academia`.
 
 ---
@@ -76,11 +91,10 @@ sudo bash instalar-academia.sh academia.pestx.com.br
 Ele baixa o código novo, compila e troca a versão. Mantém o `academia.env` (banco e chave), o site do nginx,
 o HTTPS e todos os dados, que ficam no Neon. A versão anterior fica guardada em `/opt/academia/app.anterior`.
 
-## Mudar nome, assinatura do certificado ou cores
+## Nome, logo, cor e assinatura do certificado
 
-- **Nome e assinatura:** edite as linhas `NEXT_PUBLIC_*` em `/opt/academia/academia.env` e rode o
-  instalador de novo. Esses valores entram na compilação, então só reiniciar não basta.
-- **Cores:** ficam no código (`src/app/globals.css`); é só me pedir.
+Cada empresa ajusta em *Painel administrativo › Empresa e certificado* (vêm do PestX; lá só se personaliza).
+Os arquivos enviados (capas, PDFs, fotos, assinaturas) ficam em `/opt/academia/arquivos` — inclua essa pasta no backup.
 
 ## Se algo der errado
 

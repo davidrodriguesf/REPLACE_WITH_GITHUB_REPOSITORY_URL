@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Academia Foco (universidade corporativa) — instalação na VPS.
+# Academia PestX (universidade corporativa do PestX ERP, multi-empresa) — instalação na VPS.
 #
 #   sudo bash instalar-na-vps.sh academia.pestx.com.br
 #
@@ -55,6 +55,48 @@ if [[ "${2:-}" == "--configurar-email" ]]; then
   echo "E-mail configurado: os convites agora saem de \"${NOME:-Academia} <$REMET>\"."
   echo "Teste: convide alguém no painel e confira a caixa de entrada (e o spam)."
   echo "Se não chegar:  journalctl -u $SERVICO -n 30 --no-pager | grep -i email"
+  exit 0
+fi
+
+# ------------------------------------------------------------ pagamento do marketplace (Asaas)
+#   sudo bash instalar-na-vps.sh academia.pestx.com.br --configurar-asaas
+if [[ "${2:-}" == "--configurar-asaas" ]]; then
+  [[ -f "$ENVF" ]] || { echo "Ainda não instalado. Rode primeiro sem --configurar-asaas." >&2; exit 1; }
+  echo "No Asaas: Integrações > Chaves de API > Gerar chave. Cole quando aparecer 'ASAAS_API_KEY:' (não aparece na tela)."
+  read -r -s -p "ASAAS_API_KEY: " AKEY
+  echo ""
+  AKEY="$(printf '%s' "$AKEY" | tr -d '\r[:space:]"'"'"'')"
+  [[ "$AKEY" == *aact_* ]] || { echo "Isso não parece uma chave do Asaas (tem 'aact_'). Nada foi alterado." >&2; exit 1; }
+  AENV=production
+  [[ "$AKEY" == *hmlg* ]] && AENV=sandbox
+  TOKEN="$(grep '^ASAAS_WEBHOOK_TOKEN=' "$ENVF" | cut -d= -f2- | tr -d '"')"
+  [[ ${#TOKEN} -ge 16 ]] || TOKEN="$(head -c 32 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)"
+  grep -v -e '^ASAAS_API_KEY=' -e '^ASAAS_ENV=' -e '^ASAAS_WEBHOOK_TOKEN=' "$ENVF" > "$ENVF.novo"
+  printf "ASAAS_API_KEY='%s'\nASAAS_ENV=\"%s\"\nASAAS_WEBHOOK_TOKEN=\"%s\"\n" "$AKEY" "$AENV" "$TOKEN" >> "$ENVF.novo"
+  chown root:"$USUARIO" "$ENVF.novo"; chmod 640 "$ENVF.novo"; mv "$ENVF.novo" "$ENVF"
+  systemctl restart "$SERVICO"
+  echo "Asaas configurado ($AENV)."
+  echo ""
+  echo "Falta 1 passo no Asaas: Integrações > Webhooks > Adicionar"
+  echo "  URL:                     https://$DOMINIO/api/asaas/webhook"
+  echo "  Token de autenticação:   $TOKEN"
+  echo "  Eventos:                 Cobranças (todos)  ·  Fila de sincronização: ligada"
+  exit 0
+fi
+
+# ------------------------------------------------------------ login do PestX (chave pública do Supabase do PestX)
+#   sudo bash instalar-na-vps.sh academia.pestx.com.br --configurar-pestx
+if [[ "${2:-}" == "--configurar-pestx" ]]; then
+  [[ -f "$ENVF" ]] || { echo "Ainda não instalado. Rode primeiro sem --configurar-pestx." >&2; exit 1; }
+  echo "Cole a chave pública (anon) do Supabase do PestX — a mesma do app do técnico (src/config.js, SUPABASE_ANON_KEY)."
+  read -r -p "PESTX_SUPABASE_ANON_KEY: " PKEY
+  PKEY="$(printf '%s' "$PKEY" | tr -d '\r[:space:]"'"'"'')"
+  [[ "$PKEY" == eyJ* ]] || { echo "Isso não parece a chave anon (começa com eyJ). Nada foi alterado." >&2; exit 1; }
+  grep -v '^PESTX_SUPABASE_ANON_KEY=' "$ENVF" > "$ENVF.novo"
+  printf 'PESTX_SUPABASE_ANON_KEY="%s"\n' "$PKEY" >> "$ENVF.novo"
+  chown root:"$USUARIO" "$ENVF.novo"; chmod 640 "$ENVF.novo"; mv "$ENVF.novo" "$ENVF"
+  systemctl restart "$SERVICO"
+  echo "Login do PestX ligado. Entre em https://$DOMINIO/login com o e-mail e senha do PestX."
   exit 0
 fi
 
@@ -133,12 +175,12 @@ if [[ ! -f "$ENVF" ]]; then
   CHAVE_NOVA="$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 24)"
   umask 077
   cat > "$ENVF" <<EOF
-# Academia Foco — configuração (só nesta VPS; não versionar). Valores entre aspas.
+# Academia PestX — configuração (só nesta VPS; não versionar). Valores entre aspas.
 DATABASE_URL='$DBURL'
 SETUP_KEY="$CHAVE_NOVA"
 NEXT_PUBLIC_SITE_URL="https://$DOMINIO"
-NEXT_PUBLIC_SITE_NAME="Academia Foco"
-NEXT_PUBLIC_COMPANY_NAME="Foco Dedetizadora"
+NEXT_PUBLIC_SITE_NAME="Academia PestX"
+NEXT_PUBLIC_COMPANY_NAME="PestX"
 NEXT_PUBLIC_LOGO_URL=""
 NEXT_PUBLIC_SUPPORT_URL=""
 NEXT_PUBLIC_CERT_SIGNER=""
@@ -150,8 +192,38 @@ EOF
   umask 022
 else
   sed -i "s#^NEXT_PUBLIC_SITE_URL=.*#NEXT_PUBLIC_SITE_URL=\"https://$DOMINIO\"#" "$ENVF"
+  # nome novo: Academia Foco → Academia PestX
+  sed -i 's#^NEXT_PUBLIC_SITE_NAME="Academia Foco"#NEXT_PUBLIC_SITE_NAME="Academia PestX"#' "$ENVF"
   echo "     $ENVF já existe — mantido (só o endereço foi conferido)"
 fi
+# Arquivos enviados (capas, PDFs, fotos, assinaturas) e integrações do PestX/Asaas
+grep -q '^UPLOAD_DIR=' "$ENVF" || printf 'UPLOAD_DIR="%s"\n' "$BASE/arquivos" >> "$ENVF"
+grep -q '^PESTX_SUPABASE_URL=' "$ENVF" || printf 'PESTX_SUPABASE_URL="https://whtpqghzjqshtnraedat.supabase.co"\n' >> "$ENVF"
+grep -q '^ASAAS_WEBHOOK_TOKEN=' "$ENVF" || printf 'ASAAS_WEBHOOK_TOKEN="%s"\n' "$(head -c 32 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)" >> "$ENVF"
+if ! grep -q '^PESTX_SUPABASE_ANON_KEY="eyJ' "$ENVF"; then
+  # a chave anon é pública (vai no navegador do app do técnico, publicado nesta mesma VPS): procura nos arquivos dele
+  ANON="$(node -e '
+    const fs = require("fs"), path = require("path");
+    const re = /eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g;
+    const walk = (d, n = 0) => { if (n > 6) return []; let out = [];
+      for (const e of (() => { try { return fs.readdirSync(d, { withFileTypes: true }); } catch { return []; } })()) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory() && !["node_modules", ".git"].includes(e.name)) out = out.concat(walk(p, n + 1));
+        else if (/\.(js|mjs|html)$/.test(e.name)) out.push(p); }
+      return out; };
+    for (const f of [...walk("/root/tecnico-app"), ...walk("/var/www")]) {
+      let t = ""; try { t = fs.readFileSync(f, "utf8"); } catch { continue; }
+      for (const m of t.match(re) || []) { try { const p = JSON.parse(Buffer.from(m.split(".")[1], "base64url"));
+        if (p.ref === "whtpqghzjqshtnraedat" && p.role === "anon") { console.log(m); process.exit(0); } } catch {} } }' 2>/dev/null || true)"
+  if [[ -n "$ANON" ]]; then
+    sed -i '/^PESTX_SUPABASE_ANON_KEY=/d' "$ENVF"; printf 'PESTX_SUPABASE_ANON_KEY="%s"\n' "$ANON" >> "$ENVF"
+    echo "     login do PestX ligado (chave pública encontrada no app do técnico)"
+  else
+    echo "     ATENÇÃO: chave pública do PestX não encontrada. Ligue o login do PestX com:" >&2
+    echo "       sudo bash $0 $DOMINIO --configurar-pestx" >&2
+  fi
+fi
+mkdir -p "$BASE/arquivos"; chown "$USUARIO:$USUARIO" "$BASE/arquivos"; chmod 750 "$BASE/arquivos"
 grep -q '^PORT=' "$ENVF" || {
   PORTA=""
   for p in $(seq 8840 8870); do
@@ -252,6 +324,13 @@ else
 fi
 if [[ -f "$ALVO" ]]; then
   echo "     $ALVO já existe — mantido (o certbot pode ter acrescentado o HTTPS nele)"
+  # envio de arquivos (capas, PDFs): limite de 2 MB da versão antiga → 60 MB
+  if grep -q 'client_max_body_size 2m;' "$ALVO"; then
+    cp -p "$ALVO" "$ALVO.anterior"
+    sed -i 's/client_max_body_size 2m;/client_max_body_size 60m;/; s/proxy_read_timeout 60s;/proxy_read_timeout 120s;/' "$ALVO"
+    echo "     limite de envio de arquivos aumentado para 60 MB"
+    if ! nginx -t 2>/dev/null; then mv "$ALVO.anterior" "$ALVO"; echo "     nginx -t reclamou; limite antigo mantido" >&2; else rm -f "$ALVO.anterior"; fi
+  fi
 else
   sed -e "s/__DOMINIO__/$DOMINIO/g" -e "s/__PORTA__/$PORTA/g" "$TPL/nginx-academia.conf" > "$ALVO"
   chmod 644 "$ALVO"
@@ -295,6 +374,8 @@ if [[ -z "$CHAVE_NOVA" ]]; then
   echo "  ver a chave:  sudo grep SETUP_KEY $ENVF"
 fi
 echo ""
+echo "Login: o mesmo e-mail e senha do PestX (o administrador do PestX vira administrador aqui)."
+grep -q "^ASAAS_API_KEY=" "$ENVF" || echo "Pagamento do marketplace (Asaas): sudo bash $0 $DOMINIO --configurar-asaas"
 echo "Links de convite (enquanto o Resend não estiver configurado):  journalctl -u $SERVICO | grep link"
 echo "Conferir:   systemctl status $SERVICO   ·   journalctl -u $SERVICO -f"
 echo "Voltar à versão anterior:  sudo rm -rf $BASE/app && sudo mv $BASE/app.anterior $BASE/app && sudo systemctl restart $SERVICO"

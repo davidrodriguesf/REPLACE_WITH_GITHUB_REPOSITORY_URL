@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveEvent } from "../actions";
+import { FileField } from "@/components/FileField";
 import { FormMessage, SubmitButton } from "@/components/ui";
 import type { EventItem } from "@/lib/types";
 
@@ -38,10 +39,7 @@ export function EventForm({ event, startsLocal, endsLocal }: { event?: EventItem
         <label className="label">Descrição</label>
         <textarea className="input" name="description" defaultValue={event?.description ?? ""} />
       </div>
-      <div>
-        <label className="label">URL da capa</label>
-        <input className="input" name="cover_url" type="url" defaultValue={event?.cover_url ?? ""} />
-      </div>
+      <FileField name="cover" label="Capa (16:9, opcional)" current={event?.cover_url} />
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" name="is_published" defaultChecked={event?.is_published ?? true} /> Publicado
       </label>

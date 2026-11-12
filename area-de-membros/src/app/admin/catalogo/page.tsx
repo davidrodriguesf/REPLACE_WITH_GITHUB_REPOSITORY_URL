@@ -1,17 +1,20 @@
 import { requireAdmin } from "@/lib/auth";
 import { deleteCategory, deleteInstructor, saveCategory, saveInstructor } from "../actions";
 import { Avatar } from "@/components/Avatar";
+import { FileField } from "@/components/FileField";
 import { ConfirmButton, SubmitButton } from "@/components/ui";
 import type { Category, Instructor } from "@/lib/types";
 
-export default async function CatalogoAdmin() {
-  const { supabase } = await requireAdmin();
+export default async function CatalogoAdmin({ searchParams }: { searchParams: Promise<{ erro?: string }> }) {
+  const { supabase, profile } = await requireAdmin();
+  const { erro } = await searchParams;
   const [{ data: cats }, { data: inst }] = await Promise.all([
-    supabase.from("categories").select("*").order("position"),
-    supabase.from("instructors").select("*").order("name"),
+    supabase.from("categories").select("*").eq("company_id", profile.company_id).order("position"),
+    supabase.from("instructors").select("*").eq("company_id", profile.company_id).order("name"),
   ]);
   return (
     <div className="grid grid-cols-1 gap-10 xl:grid-cols-2">
+      {erro && <p className="xl:col-span-2 rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-700">{erro}</p>}
       <section className="space-y-3">
         <h1 className="h-row">Categorias</h1>
         <p className="text-slate-500">Cada categoria vira uma fileira no Início e no Catálogo.</p>
@@ -49,7 +52,7 @@ export default async function CatalogoAdmin() {
               <input type="hidden" name="id" value={i.id} />
               <input className="input" name="name" defaultValue={i.name} required aria-label="Nome" />
               <input className="input" name="title" defaultValue={i.title ?? ""} placeholder="Cargo" />
-              <input className="input" name="avatar_url" type="url" defaultValue={i.avatar_url ?? ""} placeholder="URL da foto" />
+              <FileField name="avatar" label="Foto" current={i.avatar_url} aspect="aspect-square" />
               <textarea className="input min-h-20" name="bio" defaultValue={i.bio ?? ""} placeholder="Mini bio" />
               <SubmitButton variant="secondary">Salvar</SubmitButton>
             </form>
@@ -63,7 +66,7 @@ export default async function CatalogoAdmin() {
           <p className="font-bold text-navy-950">Novo mentor</p>
           <input className="input" name="name" placeholder="Nome" required />
           <input className="input" name="title" placeholder="Cargo (ex.: Diretor Comercial)" />
-          <input className="input" name="avatar_url" type="url" placeholder="URL da foto" />
+          <FileField name="avatar" label="Foto" aspect="aspect-square" />
           <SubmitButton pendingText="...">Adicionar</SubmitButton>
         </form>
       </section>

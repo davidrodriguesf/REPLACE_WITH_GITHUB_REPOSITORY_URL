@@ -17,6 +17,8 @@ export type Profile = {
   hired_at: string | null;
   role: Role;
   is_active: boolean;
+  company_id: string | null;
+  is_super_admin: boolean;
   created_at: string;
 };
 
@@ -48,6 +50,10 @@ export type Course = {
   is_featured: boolean;
   is_published: boolean;
   position: number;
+  company_id: string | null;
+  is_marketplace: boolean;
+  price: number | null;
+  material_url: string | null;
   created_at: string;
 };
 

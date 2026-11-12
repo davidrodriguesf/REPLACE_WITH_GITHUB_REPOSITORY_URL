@@ -2,13 +2,14 @@ import Link from "next/link";
 import { AuthFrame } from "@/components/AuthFrame";
 import { hasAnyAdmin, isDatabaseReady } from "@/lib/db/auth";
 import { PrepareForm, SetupForm } from "./Form";
+import { pestxEnabled } from "@/lib/pestx";
 
 export const metadata = { title: "Primeiro acesso" };
 export const dynamic = "force-dynamic";
 
 export default async function PrimeiroAcesso() {
   const ready = await isDatabaseReady();
-  const done = ready && (await hasAnyAdmin());
+  const done = ready && (pestxEnabled() || (await hasAnyAdmin()));
   return (
     <AuthFrame>
       <h1 className="text-3xl font-bold text-navy-950 mb-1">Primeiro acesso</h1>
@@ -20,7 +21,7 @@ export default async function PrimeiroAcesso() {
         </>
       ) : done ? (
         <>
-          <p className="text-slate-500 mb-6">A plataforma já foi configurada.</p>
+          <p className="text-slate-500 mb-6">A plataforma já foi configurada.{pestxEnabled() ? " Entre com o mesmo e-mail e senha do PestX: o administrador do PestX vira administrador aqui." : ""}</p>
           <Link href="/login" className="btn btn-primary w-full">Ir para o login</Link>
         </>
       ) : (

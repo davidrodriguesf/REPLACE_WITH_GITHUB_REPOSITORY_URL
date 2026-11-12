@@ -11,7 +11,7 @@ import type { Lesson, Module, Quiz } from "@/lib/types";
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { supabase, user } = await requireUser();
+  const { supabase, user, profile } = await requireUser();
   const { courses } = await getLearning(supabase, user.id);
   const course = courses.find((c) => c.slug === slug);
   if (!course) notFound();
@@ -60,6 +60,9 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             {course.dueDate && !course.completed && <span className="badge bg-brand-100 text-brand-700">Obrigatório até {formatDate(course.dueDate)}</span>}
             {course.categoryName && <span className="badge bg-slate-100 text-slate-600">{course.categoryName}</span>}
           </div>
+          {profile.role === "admin" && (course.is_marketplace ? profile.is_super_admin : course.company_id === profile.company_id) && (
+            <Link href={`/admin/cursos/${course.id}`} className="btn btn-secondary btn-sm">Editar curso</Link>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-x-6 gap-y-3 border-b border-slate-200 pb-6">
@@ -69,6 +72,13 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <span className="flex items-center gap-3 text-[17px] text-slate-600"><span className="icon-box"><IconClock /></span>{course.workload_hours ? `${course.workload_hours}h` : formatMinutes(course.totalMinutes)}</span>
           )}
         </div>
+
+        {course.material_url && (
+          <a href={course.material_url} target="_blank" rel="noreferrer" className="card flex items-center gap-3 p-4 hover:shadow-md">
+            <span className="icon-box"><IconBook /></span>
+            <span className="flex-1"><span className="block font-semibold text-navy-950">Apostila do curso</span><span className="text-sm text-slate-500">PDF para ler ou baixar</span></span>
+          </a>
+        )}
 
         {course.description && (
           <section>

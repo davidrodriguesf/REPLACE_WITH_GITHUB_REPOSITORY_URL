@@ -1,8 +1,28 @@
-# Universidade Corporativa
+# Academia PestX
 
-App interno de desenvolvimento dos colaboradores: **trilhas por função, cursos, quiz, prova online, certificados, PDI (plano de desenvolvimento individual), agenda de eventos, biblioteca e comunidade**. Funciona no celular, com menu inferior e visual de aplicativo, e no computador.
+Universidade corporativa que faz parte do **SaaS PestX ERP**. Cada empresa cliente do PestX tem a sua Academia
+(cursos, trilhas, comunidade e certificados só dela), entra com o **mesmo login do PestX** e pode comprar cursos
+prontos no **marketplace** do PestX para a equipe.
 
-**Stack:** Next.js 15 · Neon (banco Postgres) · login próprio (senha criptografada) · Resend (e-mails) · Netlify (hospedagem)
+App de desenvolvimento dos colaboradores: **trilhas por função, cursos, quiz, prova online, certificados, PDI (plano de desenvolvimento individual), agenda de eventos, biblioteca e comunidade**. Funciona no celular, com menu inferior e visual de aplicativo, e no computador.
+
+**Stack:** Next.js 15 · Neon (banco Postgres) · login do PestX (Supabase do PestX, só leitura) · Asaas (pagamentos) · Resend (e-mails) · VPS (nginx)
+
+## Multi-empresa (SaaS PestX)
+- **Login:** e-mail e senha do PestX. No login, a Academia lê do PestX (somente leitura, com o token da própria pessoa)
+  o colaborador (`usuarios_empresa`), o tipo de acesso (`usuarios_app`) e a empresa (`empresas`). Nada é gravado no PestX.
+- **Empresa = `empresas.id` do PestX.** Todas as tabelas da Academia têm `company_id`, e o RLS do banco isola as empresas.
+- **Papéis:** acesso "Total" no PestX (ou `admin_empresa`) → administrador da empresa na Academia. `super_admin` → também
+  administra o marketplace. A função do PestX (`funcoes_exercidas`) vira a função na Academia (e define a trilha).
+- **Quem não tem login no PestX** pode ser convidado por e-mail pela própria Academia (senha própria).
+- **Marketplace:** o super admin do PestX cria cursos com preço; o admin da empresa compra em *Painel › Marketplace*,
+  paga no Asaas (Pix, boleto ou cartão) e o curso é liberado sozinho para a equipe quando o webhook confirma.
+- **Certificado com a marca da empresa:** nome, logo, cor, CNPJ e a assinatura do **responsável legal** (do PestX ou enviada
+  em *Painel › Empresa e certificado*).
+- **Arquivos:** capa, apostila/PDF, material da aula, foto do mentor, logo e assinatura são enviados pelo formulário
+  (ficam na VPS, em `UPLOAD_DIR`). Só os vídeos continuam por link (YouTube, Vimeo, Panda, Bunny...).
+- **Atualização do banco:** ao iniciar, o app aplica `database/schema.sql` sozinho quando ele muda (o arquivo é idempotente).
+  Instalações antigas (uma empresa só) têm os dados passados para a primeira empresa que entrar.
 
 ## O que tem
 
@@ -84,7 +104,7 @@ npm run dev
 ```
 
 ## Personalizar
-- **Nome, logo e assinatura do certificado**: variáveis `NEXT_PUBLIC_*` no `.env`.
+- **Nome, logo, cor e assinatura do certificado**: cada empresa ajusta em *Painel › Empresa e certificado*.
 - **Cores** (padrão: roxo da PestX): em `src/app/globals.css`, troque a escala `--color-brand-*`.
 - **Capas**: use imagens 16:9 para os cursos e 2:3 para a biblioteca. Sem imagem, o app gera uma capa tipográfica.
 

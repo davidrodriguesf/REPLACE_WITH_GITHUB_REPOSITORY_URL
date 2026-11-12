@@ -54,7 +54,7 @@ const PK: Record<string, string[]> = {
 };
 
 // Funções que devolvem várias linhas (as demais devolvem um valor)
-const SET_FUNCTIONS = new Set(["learning_report", "trending_courses", "verify_certificate"]);
+const SET_FUNCTIONS = new Set(["learning_report", "trending_courses", "verify_certificate", "marketplace_catalog"]);
 
 const IDENT = /^[a-z_][a-z0-9_]*$/;
 function ident(name: string) {

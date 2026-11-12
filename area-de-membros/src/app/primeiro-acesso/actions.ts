@@ -7,6 +7,8 @@ import { createSession, createUser, hasAnyAdmin, isDatabaseReady, setUserPasswor
 import { SCHEMA_SQL } from "@/lib/db/schema-sql";
 import { revalidatePath } from "next/cache";
 import { str } from "@/lib/utils";
+import { ensureLocalCompany } from "@/lib/company";
+import { pestxEnabled } from "@/lib/pestx";
 
 export type SetupState = { error?: string; values?: { full_name: string; email: string } } | undefined;
 
@@ -38,6 +40,7 @@ export async function createFirstAdmin(_: SetupState, form: FormData): Promise<S
   const fail = (error: string) => ({ error, values });
   if (!(await isDatabaseReady())) return fail("Prepare o banco de dados primeiro.");
   if (await hasAnyAdmin()) return fail("Já existe um administrador. Use a tela de login.");
+  if (pestxEnabled()) return fail("Esta Academia usa o login do PestX: entre em /login com o seu e-mail e senha do PestX.");
   if (!keyMatches(str(form, "setup_key"))) return fail("Chave de instalação incorreta (variável SETUP_KEY, mínimo 12 caracteres).");
   const email = str(form, "email").toLowerCase();
   const name = str(form, "full_name");
@@ -48,6 +51,7 @@ export async function createFirstAdmin(_: SetupState, form: FormData): Promise<S
   const userId = await createUser(email, name);
   await setUserPassword(userId, password);
   await createAdminClient().from("profiles").update({ role: "admin", full_name: name, department: "Recursos Humanos" }).eq("id", userId);
+  await ensureLocalCompany(userId, str(form, "company_name") || "Minha empresa");
   await createSession(userId);
   redirect("/admin");
 }

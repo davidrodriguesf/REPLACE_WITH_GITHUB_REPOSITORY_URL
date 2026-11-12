@@ -1,5 +1,6 @@
 -- =====================================================================
--- UNIVERSIDADE CORPORATIVA — esquema do banco (Neon / Postgres)
+-- ACADEMIA PESTX — esquema do banco (Neon / Postgres)
+-- Multi-empresa: cada empresa do PestX (empresas.id) é um "tenant" aqui.
 -- Colaboradores, funções, trilhas, cursos, quiz/prova, certificados,
 -- PDI (plano de desenvolvimento), biblioteca, comunidade e eventos.
 -- Cole tudo no Neon → SQL Editor → Run. Pode rodar mais de uma vez.
@@ -56,6 +57,28 @@ grant usage on schema auth to anon, authenticated;
 grant execute on function auth.uid() to anon, authenticated;
 
 -- ---------------------------------------------------------------------
+-- EMPRESAS (o id é o mesmo de empresas.id no PestX)
+-- ---------------------------------------------------------------------
+create table if not exists public.companies (
+  id                uuid primary key,
+  name              text not null,
+  pestx             jsonb not null default '{}', -- dados lidos do PestX no login (nome, logo, CNPJ, responsável legal)
+  -- personalizações feitas na Academia (vazio = usa o que vem do PestX)
+  custom_name       text,
+  logo_url          text,
+  brand_color       text,
+  signer_name       text,
+  signer_title      text,
+  signature_url     text,
+  cnpj              text,
+  billing_email     text,
+  asaas_customer_id text,
+  is_platform       boolean not null default false, -- a "empresa" PestX do super admin
+  created_at        timestamptz not null default now(),
+  updated_at        timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------
 -- FUNÇÕES (cargos) E PERFIS
 -- ---------------------------------------------------------------------
 create table if not exists public.job_roles (
@@ -83,16 +106,37 @@ create table if not exists public.profiles (
   is_active   boolean not null default true,
   created_at  timestamptz not null default now()
 );
+alter table public.profiles add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.profiles add column if not exists is_super_admin boolean not null default false;
+alter table public.profiles add column if not exists pestx_user_id uuid;
+create unique index if not exists profiles_pestx_idx on public.profiles (pestx_user_id) where pestx_user_id is not null;
+create index if not exists profiles_company_idx on public.profiles (company_id);
 create index if not exists profiles_email_idx on public.profiles (lower(email));
+
+-- Empresa de quem está consultando
+create or replace function public.my_company()
+returns uuid language sql stable security definer set search_path = public as $$
+  select company_id from public.profiles where id = auth.uid();
+$$;
+create or replace function public.company_of(uid uuid)
+returns uuid language sql stable security definer set search_path = public as $$
+  select company_id from public.profiles where id = uid;
+$$;
+
+alter table public.job_roles add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.job_roles alter column company_id set default public.my_company();
+alter table public.job_roles drop constraint if exists job_roles_name_key;
+create unique index if not exists job_roles_company_name_idx on public.job_roles (company_id, name);
 create index if not exists profiles_manager_idx on public.profiles (manager_id);
 create index if not exists profiles_job_role_idx on public.profiles (job_role_id);
 
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, email, full_name)
+  insert into public.profiles (id, email, full_name, company_id)
   values (new.id, lower(new.email),
-          coalesce(nullif(new.raw_user_meta_data->>'full_name', ''), split_part(new.email, '@', 1)))
+          coalesce(nullif(new.raw_user_meta_data->>'full_name', ''), split_part(new.email, '@', 1)),
+          nullif(new.raw_user_meta_data->>'company_id', '')::uuid)
   on conflict (id) do nothing;
   return new;
 end $$;
@@ -102,7 +146,13 @@ create trigger on_auth_user_created after insert on auth.users
 
 create or replace function public.is_admin()
 returns boolean language sql stable security definer set search_path = public as $$
-  select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin' and is_active);
+  select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin' and is_active and company_id is not null);
+$$;
+
+-- Super admin do PestX: cuida do marketplace (cursos oferecidos para todas as empresas)
+create or replace function public.is_super_admin()
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.profiles where id = auth.uid() and is_super_admin and is_active);
 $$;
 
 create or replace function public.is_manager_of(uid uuid)
@@ -116,7 +166,13 @@ $$;
 
 create or replace function public.can_view_user(uid uuid)
 returns boolean language sql stable security definer set search_path = public as $$
-  select uid = auth.uid() or public.is_admin() or public.is_manager_of(uid);
+  select uid = auth.uid() or (public.is_admin() and public.company_of(uid) = public.my_company()) or public.is_manager_of(uid);
+$$;
+
+-- Admin da empresa ou gestor direto
+create or replace function public.can_manage_user(uid uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select (public.is_admin() and public.company_of(uid) = public.my_company()) or public.is_manager_of(uid);
 $$;
 
 create or replace function public.my_job_role()
@@ -136,6 +192,12 @@ begin
     new.department := old.department;
     new.hired_at := old.hired_at;
   end if;
+  if auth.uid() is not null then
+    -- empresa, super admin e vínculo com o PestX só mudam pelo login (servidor)
+    new.company_id := old.company_id;
+    new.is_super_admin := old.is_super_admin;
+    new.pestx_user_id := old.pestx_user_id;
+  end if;
   new.email := old.email;
   return new;
 end $$;
@@ -147,7 +209,7 @@ create trigger profiles_protect before update on public.profiles
 create or replace view public.member_profiles as
   select p.id, p.full_name, p.avatar_url, p.bio, p.role, p.department, p.created_at, j.name as job_role
   from public.profiles p left join public.job_roles j on j.id = p.job_role_id
-  where p.is_active;
+  where p.is_active and p.company_id = public.my_company();
 revoke all on public.member_profiles from anon;
 grant select on public.member_profiles to authenticated;
 
@@ -159,6 +221,10 @@ create table if not exists public.categories (
   name     text not null unique,
   position int not null default 0
 );
+alter table public.categories add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.categories alter column company_id set default public.my_company();
+alter table public.categories drop constraint if exists categories_name_key;
+create unique index if not exists categories_company_name_idx on public.categories (company_id, name);
 
 create table if not exists public.instructors (
   id         uuid primary key default gen_random_uuid(),
@@ -168,6 +234,8 @@ create table if not exists public.instructors (
   bio        text,
   created_at timestamptz not null default now()
 );
+alter table public.instructors add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.instructors alter column company_id set default public.my_company();
 
 create table if not exists public.courses (
   id                   uuid primary key default gen_random_uuid(),
@@ -186,6 +254,46 @@ create table if not exists public.courses (
   position             int not null default 0,
   created_at           timestamptz not null default now()
 );
+-- company_id = dona do curso. Curso do marketplace: is_marketplace = true e company_id nulo (é do PestX).
+alter table public.courses add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.courses alter column company_id set default public.my_company();
+alter table public.courses add column if not exists is_marketplace boolean not null default false;
+alter table public.courses add column if not exists price numeric(10,2);
+alter table public.courses add column if not exists material_url text; -- apostila / PDF do curso
+create index if not exists courses_company_idx on public.courses (company_id);
+
+-- Cursos do marketplace que a empresa comprou (ou ganhou do PestX)
+create table if not exists public.course_licenses (
+  company_id uuid not null references public.companies(id) on delete cascade,
+  course_id  uuid not null references public.courses(id) on delete cascade,
+  audience   text not null default 'all' check (audience in ('all', 'trail')), -- trail = só por trilha/atribuição
+  order_id   uuid,
+  created_at timestamptz not null default now(),
+  primary key (company_id, course_id)
+);
+
+-- Compras no marketplace (cobrança no Asaas)
+create table if not exists public.orders (
+  id               uuid primary key default gen_random_uuid(),
+  company_id       uuid not null references public.companies(id) on delete cascade,
+  course_id        uuid not null references public.courses(id) on delete restrict,
+  amount           numeric(10,2) not null,
+  status           text not null default 'pending' check (status in ('pending', 'paid', 'cancelled', 'refunded')),
+  asaas_payment_id text unique,
+  invoice_url      text,
+  created_by       uuid references public.profiles(id) on delete set null,
+  created_at       timestamptz not null default now(),
+  paid_at          timestamptz
+);
+create index if not exists orders_company_idx on public.orders (company_id, created_at desc);
+
+-- Pode editar o curso: admin da empresa dona, ou super admin (cursos do marketplace)
+create or replace function public.can_edit_course(c uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.courses co where co.id = c and (
+    (co.company_id = public.my_company() and not co.is_marketplace and public.is_admin())
+    or (co.is_marketplace and public.is_super_admin())));
+$$;
 
 create table if not exists public.course_job_roles (
   course_id   uuid not null references public.courses(id) on delete cascade,
@@ -246,6 +354,12 @@ create table if not exists public.trails (
   position    int not null default 0,
   created_at  timestamptz not null default now()
 );
+alter table public.trails add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.trails alter column company_id set default public.my_company();
+create or replace function public.trail_company(tid uuid)
+returns uuid language sql stable security definer set search_path = public as $$
+  select company_id from public.trails where id = tid;
+$$;
 
 create table if not exists public.trail_job_roles (
   trail_id    uuid not null references public.trails(id) on delete cascade,
@@ -273,15 +387,29 @@ create table if not exists public.assignments (
 
 create or replace function public.has_course_access(c uuid)
 returns boolean language sql stable security definer set search_path = public as $$
-  select public.is_admin() or exists (
+  select exists (
     select 1 from public.courses co
     join public.profiles me on me.id = auth.uid() and me.is_active
-    where co.id = c and co.is_published and (
-      co.audience = 'all'
-      or exists (select 1 from public.course_job_roles r where r.course_id = c and r.job_role_id = me.job_role_id)
-      or exists (select 1 from public.trail_courses tc join public.trail_job_roles tj on tj.trail_id = tc.trail_id
-                 where tc.course_id = c and tj.job_role_id = me.job_role_id)
-      or exists (select 1 from public.assignments a where a.course_id = c and a.user_id = me.id)
+    where co.id = c and (
+      (co.is_marketplace and me.is_super_admin)
+      or (me.role = 'admin' and not co.is_marketplace and co.company_id = me.company_id)
+      or (me.role = 'admin' and co.is_marketplace
+          and exists (select 1 from public.course_licenses li where li.course_id = c and li.company_id = me.company_id))
+      or (
+        -- o curso está no "alcance" da empresa: próprio e publicado, ou comprado no marketplace
+        ((not co.is_marketplace and co.company_id = me.company_id and co.is_published)
+          or (co.is_marketplace and exists (select 1 from public.course_licenses li where li.course_id = c and li.company_id = me.company_id)))
+        and (
+          (not co.is_marketplace and co.audience = 'all')
+          or (not co.is_marketplace and exists (select 1 from public.course_job_roles r where r.course_id = c and r.job_role_id = me.job_role_id))
+          or (co.is_marketplace and exists (select 1 from public.course_licenses li where li.course_id = c and li.company_id = me.company_id and li.audience = 'all'))
+          or exists (select 1 from public.trail_courses tc
+                     join public.trail_job_roles tj on tj.trail_id = tc.trail_id
+                     join public.trails t on t.id = tc.trail_id and t.company_id = me.company_id
+                     where tc.course_id = c and tj.job_role_id = me.job_role_id)
+          or exists (select 1 from public.assignments a where a.course_id = c and a.user_id = me.id)
+        )
+      )
     )
   );
 $$;
@@ -311,6 +439,11 @@ create table if not exists public.quizzes (
   created_at         timestamptz not null default now()
 );
 create index if not exists quizzes_course_idx on public.quizzes (course_id);
+
+create or replace function public.quiz_course(qid uuid)
+returns uuid language sql stable security definer set search_path = public as $$
+  select course_id from public.quizzes where id = qid;
+$$;
 
 create table if not exists public.quiz_questions (
   id          uuid primary key default gen_random_uuid(),
@@ -346,7 +479,7 @@ create or replace function public.get_quiz(qid uuid)
 returns jsonb language plpgsql stable security definer set search_path = public as $$
 declare q record;
 begin
-  select * into q from public.quizzes where id = qid and (is_published or public.is_admin());
+  select * into q from public.quizzes where id = qid and (is_published or public.can_edit_course(course_id));
   if q is null or not public.has_course_access(q.course_id) then
     raise exception 'Avaliação não encontrada';
   end if;
@@ -413,6 +546,9 @@ create table if not exists public.certificates (
   issued_at  timestamptz not null default now(),
   unique (user_id, course_id)
 );
+-- empresa que emitiu (a do colaborador no momento da conclusão)
+alter table public.certificates add column if not exists company_id uuid references public.companies(id) on delete set null;
+alter table public.certificates alter column company_id set default public.my_company();
 
 -- Emite o certificado se: todas as aulas concluídas e prova (se houver) aprovada
 create or replace function public.issue_certificate(cid uuid)
@@ -447,14 +583,35 @@ begin
 end $$;
 
 -- Verificação pública (qualquer pessoa com o código)
+drop function if exists public.verify_certificate(text);
 create or replace function public.verify_certificate(cert_code text)
-returns table (full_name text, course_title text, hours numeric, issued_at timestamptz, code text)
+returns table (full_name text, course_title text, hours numeric, issued_at timestamptz, code text, company_name text, company_id uuid)
 language sql stable security definer set search_path = public as $$
-  select p.full_name, c.title, ce.hours, ce.issued_at, ce.code
+  select p.full_name, c.title, ce.hours, ce.issued_at, ce.code,
+         coalesce(co.custom_name, co.pestx->>'name', co.name), co.id
   from public.certificates ce
   join public.profiles p on p.id = ce.user_id
   join public.courses c on c.id = ce.course_id
+  left join public.companies co on co.id = coalesce(ce.company_id, p.company_id)
   where ce.code = upper(trim(cert_code));
+$$;
+
+-- Vitrine do marketplace para o admin da empresa (mostra também o que ainda não comprou)
+create or replace function public.marketplace_catalog()
+returns table (id uuid, slug text, title text, subtitle text, description text, cover_url text,
+               workload_hours numeric, price numeric, is_published boolean, lessons int, modules int,
+               licensed boolean, pending_invoice text)
+language sql stable security definer set search_path = public as $$
+  select c.id, c.slug, c.title, c.subtitle, c.description, c.cover_url, c.workload_hours, c.price, c.is_published,
+    (select count(*)::int from public.lessons l where l.course_id = c.id),
+    (select count(*)::int from public.modules m where m.course_id = c.id),
+    exists (select 1 from public.course_licenses li where li.course_id = c.id and li.company_id = public.my_company()),
+    (select o.invoice_url from public.orders o where o.course_id = c.id and o.company_id = public.my_company()
+       and o.status = 'pending' order by o.created_at desc limit 1)
+  from public.courses c
+  where c.is_marketplace and (c.is_published or public.is_super_admin())
+    and (public.is_admin() or public.is_super_admin())
+  order by c.position, c.title;
 $$;
 grant execute on function public.verify_certificate(text) to anon, authenticated;
 
@@ -551,7 +708,7 @@ create or replace function public.protect_goal()
 returns trigger language plpgsql security definer set search_path = public as $$
 declare owner uuid := public.plan_owner(new.plan_id);
 begin
-  if auth.uid() is not null and not public.is_admin() and not public.is_manager_of(owner) then
+  if auth.uid() is not null and not public.can_manage_user(owner) then
     new.title := old.title; new.description := old.description; new.due_date := old.due_date;
     new.course_id := old.course_id; new.position := old.position; new.plan_id := old.plan_id;
   end if;
@@ -576,6 +733,8 @@ create table if not exists public.library_items (
   position    int not null default 0,
   created_at  timestamptz not null default now()
 );
+alter table public.library_items add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.library_items alter column company_id set default public.my_company();
 
 -- ---------------------------------------------------------------------
 -- COMUNIDADE
@@ -589,6 +748,10 @@ create table if not exists public.spaces (
   position         int not null default 0,
   created_at       timestamptz not null default now()
 );
+alter table public.spaces add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.spaces alter column company_id set default public.my_company();
+alter table public.spaces drop constraint if exists spaces_slug_key;
+create unique index if not exists spaces_company_slug_idx on public.spaces (company_id, slug);
 
 create table if not exists public.posts (
   id         uuid primary key default gen_random_uuid(),
@@ -652,6 +815,8 @@ create table if not exists public.events (
   created_at   timestamptz not null default now()
 );
 create index if not exists events_starts_idx on public.events (starts_at);
+alter table public.events add column if not exists company_id uuid references public.companies(id) on delete cascade;
+alter table public.events alter column company_id set default public.my_company();
 
 create table if not exists public.event_rsvps (
   event_id   uuid not null references public.events(id) on delete cascade,
@@ -670,7 +835,7 @@ begin
     'course_instructors','modules','lessons','trails','trail_job_roles','trail_courses','assignments',
     'lesson_progress','quizzes','quiz_questions','quiz_options','quiz_attempts','certificates',
     'development_plans','plan_goals','plan_notes','library_items','spaces','posts','comments','post_likes',
-    'events','event_rsvps'] loop
+    'events','event_rsvps','companies','course_licenses','orders'] loop
     execute format('alter table public.%I enable row level security', t);
   end loop;
 end $$;
@@ -683,47 +848,83 @@ begin
   end loop;
 end $$;
 
--- Leitura geral + escrita só do admin
+-- Tabelas da empresa: leitura de quem é da empresa + escrita só do admin dela
 do $$
 declare t text;
 begin
-  foreach t in array array['job_roles','categories','instructors','course_instructors','library_items','spaces'] loop
-    execute format('create policy %I on public.%I for select to authenticated using (true)', t || '_select', t);
-    execute format('create policy %I on public.%I for all to authenticated using (public.is_admin()) with check (public.is_admin())', t || '_admin', t);
+  foreach t in array array['job_roles','library_items','spaces'] loop
+    execute format('create policy %I on public.%I for select to authenticated using (company_id = public.my_company())', t || '_select', t);
+    execute format('create policy %I on public.%I for all to authenticated using (public.is_admin() and company_id = public.my_company()) with check (public.is_admin() and company_id = public.my_company())', t || '_admin', t);
   end loop;
 end $$;
 
--- Perfis
+-- Categorias e mentores: os da empresa + os usados nos cursos do marketplace que ela acessa
+create policy categories_select on public.categories for select to authenticated using (
+  company_id = public.my_company()
+  or exists (select 1 from public.courses c where c.category_id = categories.id and c.is_marketplace));
+create policy categories_admin on public.categories for all to authenticated
+  using (public.is_admin() and company_id = public.my_company()) with check (public.is_admin() and company_id = public.my_company());
+create policy instructors_select on public.instructors for select to authenticated using (
+  company_id = public.my_company()
+  or exists (select 1 from public.course_instructors ci where ci.instructor_id = instructors.id and public.has_course_access(ci.course_id)));
+create policy instructors_admin on public.instructors for all to authenticated
+  using (public.is_admin() and company_id = public.my_company()) with check (public.is_admin() and company_id = public.my_company());
+create policy course_instructors_select on public.course_instructors for select to authenticated using (public.has_course_access(course_id));
+create policy course_instructors_admin on public.course_instructors for all to authenticated
+  using (public.can_edit_course(course_id)) with check (public.can_edit_course(course_id));
+
+-- Empresas, licenças e pedidos (gravados pelo servidor; aqui só a leitura)
+create policy companies_select on public.companies for select to authenticated using (id = public.my_company() or public.is_super_admin());
+create policy licenses_select on public.course_licenses for select to authenticated using (company_id = public.my_company() or public.is_super_admin());
+create policy licenses_update on public.course_licenses for update to authenticated
+  using (public.is_admin() and company_id = public.my_company()) with check (public.is_admin() and company_id = public.my_company());
+create policy orders_select on public.orders for select to authenticated
+  using ((public.is_admin() and company_id = public.my_company()) or public.is_super_admin());
+
+-- Perfis (só da própria empresa)
 create policy profiles_select on public.profiles for select to authenticated using (public.can_view_user(id));
 create policy profiles_update on public.profiles for update to authenticated
-  using (id = auth.uid() or public.is_admin()) with check (id = auth.uid() or public.is_admin());
-create policy profiles_admin_delete on public.profiles for delete to authenticated using (public.is_admin());
+  using (id = auth.uid() or (public.is_admin() and company_id = public.my_company()))
+  with check (id = auth.uid() or (public.is_admin() and company_id = public.my_company()));
+create policy profiles_admin_delete on public.profiles for delete to authenticated using (public.is_admin() and company_id = public.my_company());
 
--- Cursos e conteúdo: só o que o colaborador pode acessar
+-- Cursos e conteúdo: só o que o colaborador pode acessar; edita o admin da empresa dona (ou o super admin, no marketplace)
 create policy courses_select on public.courses for select to authenticated using (public.has_course_access(id));
-create policy courses_admin on public.courses for all to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy course_roles_select on public.course_job_roles for select to authenticated using (true);
-create policy course_roles_admin on public.course_job_roles for all to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy courses_admin on public.courses for all to authenticated
+  using ((public.is_admin() and not is_marketplace and company_id = public.my_company()) or (is_marketplace and company_id is null and public.is_super_admin()))
+  with check ((public.is_admin() and not is_marketplace and company_id = public.my_company()) or (is_marketplace and company_id is null and public.is_super_admin()));
+create policy course_roles_select on public.course_job_roles for select to authenticated using (public.has_course_access(course_id));
+create policy course_roles_admin on public.course_job_roles for all to authenticated
+  using (public.can_edit_course(course_id)) with check (public.can_edit_course(course_id));
 create policy modules_select on public.modules for select to authenticated using (public.has_course_access(course_id));
-create policy modules_admin on public.modules for all to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy modules_admin on public.modules for all to authenticated using (public.can_edit_course(course_id)) with check (public.can_edit_course(course_id));
 create policy lessons_select on public.lessons for select to authenticated using (public.has_course_access(course_id));
-create policy lessons_admin on public.lessons for all to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy lessons_admin on public.lessons for all to authenticated using (public.can_edit_course(course_id)) with check (public.can_edit_course(course_id));
 
--- Trilhas: o colaborador vê as da sua função
+-- Trilhas: o colaborador vê as da sua função (só da empresa)
 create policy trails_select on public.trails for select to authenticated using (
-  public.is_admin() or exists (select 1 from public.trail_job_roles tj where tj.trail_id = trails.id and tj.job_role_id = public.my_job_role())
-  or exists (select 1 from public.profiles p join public.trail_job_roles tj on tj.job_role_id = p.job_role_id
-             where tj.trail_id = trails.id and public.is_manager_of(p.id)));
-create policy trails_admin on public.trails for all to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy trail_roles_select on public.trail_job_roles for select to authenticated using (true);
-create policy trail_roles_admin on public.trail_job_roles for all to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy trail_courses_select on public.trail_courses for select to authenticated using (true);
-create policy trail_courses_admin on public.trail_courses for all to authenticated using (public.is_admin()) with check (public.is_admin());
+  company_id = public.my_company() and (
+    public.is_admin() or exists (select 1 from public.trail_job_roles tj where tj.trail_id = trails.id and tj.job_role_id = public.my_job_role())
+    or exists (select 1 from public.profiles p join public.trail_job_roles tj on tj.job_role_id = p.job_role_id
+               where tj.trail_id = trails.id and public.is_manager_of(p.id))));
+create policy trails_admin on public.trails for all to authenticated
+  using (public.is_admin() and company_id = public.my_company()) with check (public.is_admin() and company_id = public.my_company());
+create policy trail_roles_select on public.trail_job_roles for select to authenticated
+  using (public.trail_company(trail_id) = public.my_company());
+create policy trail_roles_admin on public.trail_job_roles for all to authenticated
+  using (public.is_admin() and public.trail_company(trail_id) = public.my_company())
+  with check (public.is_admin() and public.trail_company(trail_id) = public.my_company());
+create policy trail_courses_select on public.trail_courses for select to authenticated
+  using (public.trail_company(trail_id) = public.my_company());
+create policy trail_courses_admin on public.trail_courses for all to authenticated
+  using (public.is_admin() and public.trail_company(trail_id) = public.my_company())
+  with check (public.is_admin() and public.has_course_access(course_id)
+              and public.trail_company(trail_id) = public.my_company());
 
 -- Atribuições: admin ou gestor do colaborador
 create policy assignments_select on public.assignments for select to authenticated using (public.can_view_user(user_id));
 create policy assignments_write on public.assignments for all to authenticated
-  using (public.is_admin() or public.is_manager_of(user_id)) with check (public.is_admin() or public.is_manager_of(user_id));
+  using (public.can_manage_user(user_id)) with check (public.can_manage_user(user_id) and public.has_course_access(course_id));
 
 -- Progresso
 create policy progress_select on public.lesson_progress for select to authenticated using (public.can_view_user(user_id));
@@ -733,57 +934,71 @@ create policy progress_delete on public.lesson_progress for delete to authentica
 
 -- Avaliações (gabarito só para admin; colaborador usa get_quiz/submit_quiz)
 create policy quizzes_select on public.quizzes for select to authenticated
-  using ((is_published and public.has_course_access(course_id)) or public.is_admin());
-create policy quizzes_admin on public.quizzes for all to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy questions_admin on public.quiz_questions for all to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy options_admin on public.quiz_options for all to authenticated using (public.is_admin()) with check (public.is_admin());
+  using ((is_published and public.has_course_access(course_id)) or public.can_edit_course(course_id));
+create policy quizzes_admin on public.quizzes for all to authenticated using (public.can_edit_course(course_id)) with check (public.can_edit_course(course_id));
+create policy questions_admin on public.quiz_questions for all to authenticated
+  using (public.can_edit_course(public.quiz_course(quiz_id))) with check (public.can_edit_course(public.quiz_course(quiz_id)));
+create policy options_admin on public.quiz_options for all to authenticated
+  using (public.can_edit_course(public.quiz_course((select q.quiz_id from public.quiz_questions q where q.id = question_id))))
+  with check (public.can_edit_course(public.quiz_course((select q.quiz_id from public.quiz_questions q where q.id = question_id))));
 create policy attempts_select on public.quiz_attempts for select to authenticated using (public.can_view_user(user_id));
-create policy attempts_admin_delete on public.quiz_attempts for delete to authenticated using (public.is_admin());
+create policy attempts_admin_delete on public.quiz_attempts for delete to authenticated using (public.is_admin() and public.can_view_user(user_id));
 
 -- Certificados (emitidos só pela função issue_certificate)
 create policy certificates_select on public.certificates for select to authenticated using (public.can_view_user(user_id));
-create policy certificates_admin_delete on public.certificates for delete to authenticated using (public.is_admin());
+create policy certificates_admin_delete on public.certificates for delete to authenticated using (public.is_admin() and public.can_view_user(user_id));
 
 -- PDI
 create policy plans_select on public.development_plans for select to authenticated using (public.can_view_user(user_id));
 create policy plans_write on public.development_plans for all to authenticated
-  using (public.is_admin() or public.is_manager_of(user_id)) with check (public.is_admin() or public.is_manager_of(user_id));
+  using (public.can_manage_user(user_id)) with check (public.can_manage_user(user_id));
 create policy goals_select on public.plan_goals for select to authenticated using (public.can_view_user(public.plan_owner(plan_id)));
 create policy goals_update on public.plan_goals for update to authenticated
   using (public.can_view_user(public.plan_owner(plan_id))) with check (public.can_view_user(public.plan_owner(plan_id)));
 create policy goals_insert on public.plan_goals for insert to authenticated
-  with check (public.is_admin() or public.is_manager_of(public.plan_owner(plan_id)));
+  with check (public.can_manage_user(public.plan_owner(plan_id)));
 create policy goals_delete on public.plan_goals for delete to authenticated
-  using (public.is_admin() or public.is_manager_of(public.plan_owner(plan_id)));
+  using (public.can_manage_user(public.plan_owner(plan_id)));
 create policy notes_select on public.plan_notes for select to authenticated using (public.can_view_user(public.plan_owner(plan_id)));
 create policy notes_insert on public.plan_notes for insert to authenticated
   with check (author_id = auth.uid() and public.can_view_user(public.plan_owner(plan_id)));
-create policy notes_delete on public.plan_notes for delete to authenticated using (author_id = auth.uid() or public.is_admin());
+create policy notes_delete on public.plan_notes for delete to authenticated using (author_id = auth.uid() or public.can_manage_user(public.plan_owner(plan_id)));
 
--- Comunidade
-create policy posts_select on public.posts for select to authenticated using (true);
+-- Comunidade (só da empresa)
+create policy posts_select on public.posts for select to authenticated
+  using (exists (select 1 from public.spaces s where s.id = space_id and s.company_id = public.my_company()));
 create policy posts_insert on public.posts for insert to authenticated
-  with check (author_id = auth.uid() and (public.is_admin() or exists (select 1 from public.spaces s where s.id = space_id and not s.admin_only_posts)));
+  with check (author_id = auth.uid() and exists (select 1 from public.spaces s where s.id = space_id
+    and s.company_id = public.my_company() and (public.is_admin() or not s.admin_only_posts)));
 create policy posts_update on public.posts for update to authenticated
-  using (author_id = auth.uid() or public.is_admin()) with check (author_id = auth.uid() or public.is_admin());
-create policy posts_delete on public.posts for delete to authenticated using (author_id = auth.uid() or public.is_admin());
-create policy comments_select on public.comments for select to authenticated using (true);
-create policy comments_insert on public.comments for insert to authenticated with check (author_id = auth.uid());
-create policy comments_delete on public.comments for delete to authenticated using (author_id = auth.uid() or public.is_admin());
-create policy likes_select on public.post_likes for select to authenticated using (true);
-create policy likes_insert on public.post_likes for insert to authenticated with check (user_id = auth.uid());
+  using (author_id = auth.uid() or (public.is_admin() and exists (select 1 from public.spaces s where s.id = space_id and s.company_id = public.my_company())))
+  with check (author_id = auth.uid() or (public.is_admin() and exists (select 1 from public.spaces s where s.id = space_id and s.company_id = public.my_company())));
+create policy posts_delete on public.posts for delete to authenticated
+  using (author_id = auth.uid() or (public.is_admin() and exists (select 1 from public.spaces s where s.id = space_id and s.company_id = public.my_company())));
+create policy comments_select on public.comments for select to authenticated using (exists (select 1 from public.posts p where p.id = post_id));
+create policy comments_insert on public.comments for insert to authenticated
+  with check (author_id = auth.uid() and exists (select 1 from public.posts p where p.id = post_id));
+create policy comments_delete on public.comments for delete to authenticated
+  using (author_id = auth.uid() or (public.is_admin() and exists (select 1 from public.posts p where p.id = post_id)));
+create policy likes_select on public.post_likes for select to authenticated using (exists (select 1 from public.posts p where p.id = post_id));
+create policy likes_insert on public.post_likes for insert to authenticated
+  with check (user_id = auth.uid() and exists (select 1 from public.posts p where p.id = post_id));
 create policy likes_delete on public.post_likes for delete to authenticated using (user_id = auth.uid());
 
--- Eventos
-create policy events_select on public.events for select to authenticated using (is_published or public.is_admin());
-create policy events_admin on public.events for all to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy rsvps_select on public.event_rsvps for select to authenticated using (true);
-create policy rsvps_insert on public.event_rsvps for insert to authenticated with check (user_id = auth.uid());
-create policy rsvps_delete on public.event_rsvps for delete to authenticated using (user_id = auth.uid() or public.is_admin());
+-- Eventos (só da empresa)
+create policy events_select on public.events for select to authenticated
+  using (company_id = public.my_company() and (is_published or public.is_admin()));
+create policy events_admin on public.events for all to authenticated
+  using (public.is_admin() and company_id = public.my_company()) with check (public.is_admin() and company_id = public.my_company());
+create policy rsvps_select on public.event_rsvps for select to authenticated using (exists (select 1 from public.events e where e.id = event_id));
+create policy rsvps_insert on public.event_rsvps for insert to authenticated
+  with check (user_id = auth.uid() and exists (select 1 from public.events e where e.id = event_id));
+create policy rsvps_delete on public.event_rsvps for delete to authenticated
+  using (user_id = auth.uid() or (public.is_admin() and exists (select 1 from public.events e where e.id = event_id)));
 
 -- Funções internas não precisam ser chamadas por visitantes
 revoke execute on function public.get_quiz(uuid), public.submit_quiz(uuid, jsonb), public.issue_certificate(uuid),
-  public.trending_courses(int), public.learning_report(uuid) from anon;
+  public.trending_courses(int), public.learning_report(uuid), public.marketplace_catalog() from anon;
 
 -- Permissões dos papéis usados pelo app (as linhas visíveis são filtradas pelo RLS)
 grant usage on schema public to anon, authenticated;
@@ -793,21 +1008,42 @@ grant select on public.member_profiles to authenticated;
 grant execute on function public.verify_certificate(text) to anon;
 
 -- =====================================================================
--- DADOS INICIAIS
+-- EMPRESA NOVA: canais da comunidade e categorias padrão
 -- =====================================================================
-insert into public.spaces (slug, name, description, admin_only_posts, position) values
-  ('avisos',       'Avisos',        'Comunicados oficiais da empresa',       true,  0),
-  ('geral',        'Geral',         'Converse com os colegas',               false, 1),
-  ('apresentacoes','Apresentações', 'Chegou agora? Conte quem você é',       false, 2),
-  ('duvidas',      'Dúvidas',       'Pergunte e ajude os colegas',           false, 3),
-  ('conquistas',   'Conquistas',    'Compartilhe certificados e resultados', false, 4)
-on conflict (slug) do nothing;
+create or replace function public.seed_company(cid uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not exists (select 1 from public.spaces where company_id = cid) then
+    insert into public.spaces (company_id, slug, name, description, admin_only_posts, position) values
+      (cid, 'avisos',        'Avisos',        'Comunicados oficiais da empresa',       true,  0),
+      (cid, 'geral',         'Geral',         'Converse com os colegas',               false, 1),
+      (cid, 'apresentacoes', 'Apresentações', 'Chegou agora? Conte quem você é',       false, 2),
+      (cid, 'duvidas',       'Dúvidas',       'Pergunte e ajude os colegas',           false, 3),
+      (cid, 'conquistas',    'Conquistas',    'Compartilhe certificados e resultados', false, 4);
+  end if;
+  if not exists (select 1 from public.categories where company_id = cid) then
+    insert into public.categories (company_id, name, position) values
+      (cid, 'Integração', 0), (cid, 'Vendas', 1), (cid, 'Atendimento', 2), (cid, 'Liderança', 3), (cid, 'Ferramentas', 4);
+  end if;
+end $$;
 
-insert into public.categories (name, position) values
-  ('Integração', 0), ('Vendas', 1), ('Atendimento', 2), ('Liderança', 3), ('Ferramentas', 4)
-on conflict (name) do nothing;
+-- Versão antiga (uma empresa só): o que foi criado antes passa a ser da primeira empresa que entrar
+create or replace function public.adopt_orphans(cid uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  update public.profiles set company_id = cid where company_id is null;
+  update public.job_roles set company_id = cid where company_id is null;
+  update public.categories set company_id = cid where company_id is null;
+  update public.instructors set company_id = cid where company_id is null;
+  update public.courses set company_id = cid where company_id is null and not is_marketplace;
+  update public.trails set company_id = cid where company_id is null;
+  update public.library_items set company_id = cid where company_id is null;
+  update public.spaces set company_id = cid where company_id is null;
+  update public.events set company_id = cid where company_id is null;
+  update public.certificates ce set company_id = cid where ce.company_id is null;
+end $$;
+revoke execute on function public.seed_company(uuid), public.adopt_orphans(uuid) from public, anon, authenticated;
 
--- =====================================================================
--- PRIMEIRO ACESSO: abra /primeiro-acesso no app e crie a conta de
--- administrador(a) usando a chave SETUP_KEY definida nas variáveis.
--- =====================================================================
+-- Versão do esquema aplicada (uso interno do servidor)
+create table if not exists public.app_meta (key text primary key, value text not null);
+revoke all on public.app_meta from anon, authenticated;

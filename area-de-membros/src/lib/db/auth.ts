@@ -54,9 +54,9 @@ export async function destroySession() {
 }
 
 // ---------- login ----------
-export async function signIn(email: string, password: string) {
-  const rows = await service().sql<{ id: string; password_hash: string | null; is_active: boolean | null }>(
-    "select u.id, u.password_hash, p.is_active from auth.users u left join public.profiles p on p.id = u.id where u.email = lower($1)",
+export async function signIn(email: string, password: string, opts: { requireCompany?: boolean } = {}) {
+  const rows = await service().sql<{ id: string; password_hash: string | null; is_active: boolean | null; company_id: string | null }>(
+    "select u.id, u.password_hash, p.is_active, p.company_id from auth.users u left join public.profiles p on p.id = u.id where u.email = lower($1)",
     [email.trim()],
   );
   const u = rows[0];
@@ -64,6 +64,7 @@ export async function signIn(email: string, password: string) {
   const ok = await verifyPassword(password, u?.password_hash ?? DUMMY_HASH);
   if (!u || !ok) return { error: "E-mail ou senha incorretos." };
   if (u.is_active === false) return { error: "Seu acesso está desativado. Fale com o RH." };
+  if (opts.requireCompany && !u.company_id) return { error: "Entre com o seu e-mail e senha do PestX." };
   await createSession(u.id);
   return { userId: u.id };
 }

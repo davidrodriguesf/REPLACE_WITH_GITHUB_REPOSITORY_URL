@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { publicUrl } from "@/lib/public-url";
 
 // Páginas abertas sem login. A sessão é validada de verdade no servidor (requireUser).
-const PUBLIC = ["/login", "/esqueci-senha", "/auth", "/certificado", "/primeiro-acesso"];
+const PUBLIC = ["/login", "/esqueci-senha", "/auth", "/certificado", "/primeiro-acesso", "/arquivos", "/api/asaas"];
 
 
 export function middleware(request: NextRequest) {

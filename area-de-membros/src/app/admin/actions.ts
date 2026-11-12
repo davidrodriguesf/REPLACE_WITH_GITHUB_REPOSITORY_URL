@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
+import { UploadError, fileField } from "@/lib/uploads";
 import { inviteEmployee } from "@/lib/access";
 import { localInputToIso, slugify, str, strOrNull } from "@/lib/utils";
 
@@ -12,10 +13,19 @@ const intOr = (v: string, d = 0) => (Number.isFinite(parseInt(v, 10)) ? parseInt
 const numOrNull = (v: string) => (v && Number.isFinite(Number(v.replace(",", "."))) ? Number(v.replace(",", ".")) : null);
 const ids = (form: FormData, key: string) => form.getAll(key).map(String).filter(Boolean);
 const done = (path = "/") => revalidatePath(path, "layout");
+const uploadMsg = (e: unknown) => (e instanceof UploadError ? e.message : null);
+/** Pasta dos arquivos: a da empresa (ou "plataforma" nos cursos do marketplace). */
+const folderOf = (p: { company_id: string | null }) => p.company_id || "plataforma";
+/** Ações sem tela de retorno: volta para a página com ?erro= quando o arquivo é inválido. */
+function backWithError(path: string, e: unknown): never {
+  const m = uploadMsg(e);
+  if (!m) throw e;
+  redirect(`${path}?erro=${encodeURIComponent(m)}`);
+}
 
 // ---------------- Colaboradores ----------------
 export async function inviteEmployeeAction(_: AdminState, form: FormData): Promise<AdminState> {
-  await requireAdmin();
+  const { profile } = await requireAdmin();
   const email = str(form, "email").toLowerCase();
   if (!email.includes("@")) return { error: "Informe um e-mail válido." };
   try {
@@ -27,7 +37,7 @@ export async function inviteEmployeeAction(_: AdminState, form: FormData): Promi
       manager_id: strOrNull(form, "manager_id"),
       role: (str(form, "role") || "employee") as "employee" | "manager" | "admin",
       hired_at: strOrNull(form, "hired_at"),
-    });
+    }, { companyId: profile.company_id! });
     done("/admin");
     return { success: r.created ? `Convite enviado para ${email}.` : `${email} já tinha conta: dados atualizados.` };
   } catch (e) {
@@ -58,8 +68,8 @@ export async function updateEmployee(_: AdminState, form: FormData): Promise<Adm
 }
 
 export async function resendInvite(form: FormData) {
-  await requireAdmin();
-  await inviteEmployee({ email: str(form, "email") }, { resend: true });
+  const { profile } = await requireAdmin();
+  await inviteEmployee({ email: str(form, "email") }, { resend: true, companyId: profile.company_id! });
   done("/admin");
 }
 
@@ -82,9 +92,11 @@ export async function deleteJobRole(form: FormData) {
 
 // ---------------- Trilhas ----------------
 export async function saveTrail(_: AdminState, form: FormData): Promise<AdminState> {
-  const { supabase } = await requireAdmin();
+  const { supabase, profile } = await requireAdmin();
   const id = str(form, "id");
-  const row = { title: str(form, "title"), description: strOrNull(form, "description"), cover_url: strOrNull(form, "cover_url"), position: intOr(str(form, "position")) };
+  let cover: string | null;
+  try { cover = await fileField(form, "cover", "image", folderOf(profile)); } catch (e) { const m = uploadMsg(e); if (m) return { error: m }; throw e; }
+  const row = { title: str(form, "title"), description: strOrNull(form, "description"), cover_url: cover, position: intOr(str(form, "position")) };
   if (!row.title) return { error: "Dê um nome à trilha." };
   const res = id ? await supabase.from("trails").update(row).eq("id", id).select("id").single() : await supabase.from("trails").insert(row).select("id").single();
   if (res.error) return { error: res.error.message };
@@ -131,17 +143,30 @@ export async function removeTrailCourse(form: FormData) {
 
 // ---------------- Cursos ----------------
 export async function saveCourse(_: AdminState, form: FormData): Promise<AdminState> {
-  const { supabase } = await requireAdmin();
+  const { supabase, profile } = await requireAdmin();
   const id = str(form, "id");
   const title = str(form, "title");
   if (!title) return { error: "Informe o título." };
-  const audience = str(form, "audience") === "roles" ? "roles" : "all";
-  const row = {
+  const marketplace = str(form, "marketplace") === "1";
+  if (marketplace && !profile.is_super_admin) return { error: "Só o super admin do PestX edita cursos do marketplace." };
+  const price = numOrNull(str(form, "price").replace(/[^\d,.]/g, "").replace(/\.(?=\d{3}(\D|$))/g, ""));
+  if (marketplace && (!price || price < 5)) return { error: "Informe o preço (mínimo R$ 5,00)." };
+  const audience = marketplace ? "all" : str(form, "audience") === "roles" ? "roles" : "all";
+  let cover: string | null, material: string | null;
+  try {
+    const folder = marketplace ? "plataforma" : folderOf(profile);
+    cover = await fileField(form, "cover", "image", folder);
+    material = await fileField(form, "material", "pdf", folder);
+  } catch (e) { const m = uploadMsg(e); if (m) return { error: m }; throw e; }
+  const slugBase = slugify(str(form, "slug") || title);
+  const row: Record<string, unknown> = {
     title,
-    slug: slugify(str(form, "slug") || title),
+    slug: slugBase,
     subtitle: strOrNull(form, "subtitle"),
     description: strOrNull(form, "description"),
-    cover_url: strOrNull(form, "cover_url"),
+    cover_url: cover,
+    material_url: material,
+    ...(marketplace ? { price } : {}),
     category_id: strOrNull(form, "category_id"),
     audience,
     workload_hours: numOrNull(str(form, "workload_hours")),
@@ -150,12 +175,18 @@ export async function saveCourse(_: AdminState, form: FormData): Promise<AdminSt
     is_published: form.get("is_published") === "on",
     position: intOr(str(form, "position")),
   };
-  const res = id ? await supabase.from("courses").update(row).eq("id", id).select("id").single() : await supabase.from("courses").insert(row).select("id").single();
-  if (res.error) return { error: res.error.code === "23505" ? "Já existe um curso com esse endereço (slug)." : res.error.message };
+  const insertRow = marketplace ? { ...row, company_id: null, is_marketplace: true } : row;
+  let res = id ? await supabase.from("courses").update(row).eq("id", id).select("id").single() : await supabase.from("courses").insert(insertRow).select("id").single();
+  if (res.error?.code === "23505" && !id && !str(form, "slug")) {
+    // o endereço é único entre todas as empresas: acrescenta um sufixo
+    const slug = `${slugBase}-${Math.random().toString(36).slice(2, 6)}`;
+    res = await supabase.from("courses").insert({ ...insertRow, slug }).select("id").single();
+  }
+  if (res.error) return { error: res.error.code === "23505" ? "Já existe um curso com esse endereço (slug). Troque o endereço." : res.error.message };
   const courseId = res.data.id as string;
   await supabase.from("course_job_roles").delete().eq("course_id", courseId);
   const roles = ids(form, "job_role_ids");
-  if (audience === "roles" && roles.length) await supabase.from("course_job_roles").insert(roles.map((r) => ({ course_id: courseId, job_role_id: r })));
+  if (!marketplace && audience === "roles" && roles.length) await supabase.from("course_job_roles").insert(roles.map((r) => ({ course_id: courseId, job_role_id: r })));
   await supabase.from("course_instructors").delete().eq("course_id", courseId);
   const inst = ids(form, "instructor_ids");
   if (inst.length) await supabase.from("course_instructors").insert(inst.map((iid, i) => ({ course_id: courseId, instructor_id: iid, position: i })));
@@ -166,9 +197,11 @@ export async function saveCourse(_: AdminState, form: FormData): Promise<AdminSt
 
 export async function deleteCourse(form: FormData) {
   const { supabase } = await requireAdmin();
-  await supabase.from("courses").delete().eq("id", str(form, "id"));
+  const { error } = await supabase.from("courses").delete().eq("id", str(form, "id"));
   done();
-  redirect("/admin/cursos");
+  // curso do marketplace já vendido não pode ser apagado (pedidos ficam guardados)
+  if (error) redirect(`/admin/cursos/${str(form, "id")}?erro=${encodeURIComponent("Este curso já foi vendido e não pode ser excluído. Tire de venda (desmarque \"À venda\").")}`);
+  redirect(form.get("marketplace") ? "/admin/marketplace" : "/admin/cursos");
 }
 
 export async function saveModule(form: FormData) {
@@ -187,11 +220,15 @@ export async function deleteModule(form: FormData) {
 }
 
 export async function saveLesson(_: AdminState, form: FormData): Promise<AdminState> {
-  const { supabase } = await requireAdmin();
+  const { supabase, profile } = await requireAdmin();
   const id = str(form, "id");
   const courseId = str(form, "course_id");
   const title = str(form, "title");
   if (!title) return { error: "Informe o título da aula." };
+  const { data: co } = await supabase.from("courses").select("is_marketplace").eq("id", courseId).maybeSingle();
+  let attachment: string | null;
+  try { attachment = await fileField(form, "attachment", "doc", co?.is_marketplace ? "plataforma" : folderOf(profile)); }
+  catch (e) { const m = uploadMsg(e); if (m) return { error: m }; throw e; }
   const row = {
     module_id: str(form, "module_id"),
     course_id: courseId,
@@ -199,7 +236,7 @@ export async function saveLesson(_: AdminState, form: FormData): Promise<AdminSt
     description: strOrNull(form, "description"),
     video_url: strOrNull(form, "video_url"),
     content: strOrNull(form, "content"),
-    attachment_url: strOrNull(form, "attachment_url"),
+    attachment_url: attachment,
     duration_minutes: str(form, "duration_minutes") ? intOr(str(form, "duration_minutes")) : null,
     position: intOr(str(form, "position")),
   };
@@ -293,9 +330,11 @@ export async function deleteCategory(form: FormData) {
 }
 
 export async function saveInstructor(form: FormData) {
-  const { supabase } = await requireAdmin();
+  const { supabase, profile } = await requireAdmin();
   const id = str(form, "id");
-  const row = { name: str(form, "name"), title: strOrNull(form, "title"), avatar_url: strOrNull(form, "avatar_url"), bio: strOrNull(form, "bio") };
+  let avatar: string | null = null;
+  try { avatar = await fileField(form, "avatar", "image", folderOf(profile)); } catch (e) { backWithError("/admin/catalogo", e); }
+  const row = { name: str(form, "name"), title: strOrNull(form, "title"), avatar_url: avatar, bio: strOrNull(form, "bio") };
   if (!row.name) return;
   if (id) await supabase.from("instructors").update(row).eq("id", id);
   else await supabase.from("instructors").insert(row);
@@ -309,14 +348,19 @@ export async function deleteInstructor(form: FormData) {
 }
 
 export async function saveLibraryItem(form: FormData) {
-  const { supabase } = await requireAdmin();
+  const { supabase, profile } = await requireAdmin();
   const id = str(form, "id");
+  let file: string | null = null, cover: string | null = null;
+  try {
+    file = await fileField(form, "file", "doc", folderOf(profile));
+    cover = await fileField(form, "cover", "image", folderOf(profile));
+  } catch (e) { backWithError("/admin/biblioteca", e); }
   const row = {
     title: str(form, "title"),
     author: strOrNull(form, "author"),
     description: strOrNull(form, "description"),
-    cover_url: strOrNull(form, "cover_url"),
-    file_url: strOrNull(form, "file_url"),
+    cover_url: cover,
+    file_url: file,
     category: strOrNull(form, "category"),
     position: intOr(str(form, "position")),
   };
@@ -334,7 +378,9 @@ export async function deleteLibraryItem(form: FormData) {
 
 // ---------------- Eventos ----------------
 export async function saveEvent(_: AdminState, form: FormData): Promise<AdminState> {
-  const { supabase, user } = await requireAdmin();
+  const { supabase, user, profile } = await requireAdmin();
+  let cover: string | null;
+  try { cover = await fileField(form, "cover", "image", folderOf(profile)); } catch (e) { const m = uploadMsg(e); if (m) return { error: m }; throw e; }
   const id = str(form, "id");
   const startsAt = localInputToIso(str(form, "starts_at"));
   if (!str(form, "title") || !startsAt) return { error: "Informe título e data de início." };
@@ -346,7 +392,7 @@ export async function saveEvent(_: AdminState, form: FormData): Promise<AdminSta
     ends_at: localInputToIso(str(form, "ends_at")),
     location: strOrNull(form, "location"),
     meeting_url: strOrNull(form, "meeting_url"),
-    cover_url: strOrNull(form, "cover_url"),
+    cover_url: cover,
     is_published: form.get("is_published") === "on",
   };
   const { error } = id ? await supabase.from("events").update(row).eq("id", id) : await supabase.from("events").insert({ ...row, created_by: user.id });

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { createExam, deleteCourse, deleteModule, saveModule } from "../../actions";
 import { ConfirmButton, SubmitButton } from "@/components/ui";
@@ -8,18 +8,22 @@ import type { Course, Lesson, Module, Quiz } from "@/lib/types";
 import { CourseForm } from "../CourseForm";
 import { QuickQuizForm } from "./QuickQuizForm";
 
-export default async function CursoAdmin({ params }: { params: Promise<{ id: string }> }) {
+export default async function CursoAdmin({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ erro?: string }> }) {
   const { id } = await params;
-  const { supabase } = await requireAdmin();
+  const { erro } = await searchParams;
+  const { supabase, profile } = await requireAdmin();
   const { data: course } = await supabase.from("courses").select("*").eq("id", id).maybeSingle<Course>();
   if (!course) notFound();
+  const mk = course.is_marketplace;
+  // curso comprado no marketplace: a empresa usa, mas quem edita é o PestX
+  if (mk && !profile.is_super_admin) redirect(`/cursos/${course.slug}`);
   const [{ data: m }, { data: l }, { data: q }, { data: cats }, { data: roles }, { data: inst }, { data: cr }, { data: ci }] = await Promise.all([
     supabase.from("modules").select("*").eq("course_id", id).order("position").order("created_at"),
     supabase.from("lessons").select("*").eq("course_id", id).order("position").order("created_at"),
     supabase.from("quizzes").select("*, quiz_questions(count)").eq("course_id", id).order("created_at"),
-    supabase.from("categories").select("id, name").order("position"),
+    supabase.from("categories").select("id, name").eq("company_id", profile.company_id).order("position"),
     supabase.from("job_roles").select("id, name").order("name"),
-    supabase.from("instructors").select("id, name").order("name"),
+    supabase.from("instructors").select("id, name").eq("company_id", profile.company_id).order("name"),
     supabase.from("course_job_roles").select("job_role_id").eq("course_id", id),
     supabase.from("course_instructors").select("instructor_id").eq("course_id", id).order("position"),
   ]);
@@ -33,22 +37,26 @@ export default async function CursoAdmin({ params }: { params: Promise<{ id: str
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/admin/cursos" className="inline-flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-navy-900"><IconChevronLeft className="w-4 h-4" />Cursos</Link>
-          <h1 className="h-page mt-1">{course.title}</h1>
+          <Link href={mk ? "/admin/marketplace" : "/admin/cursos"} className="inline-flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-navy-900"><IconChevronLeft className="w-4 h-4" />{mk ? "Marketplace" : "Cursos"}</Link>
+          <h1 className="h-page mt-1">Editar curso: {course.title}</h1>
+          {mk && <p className="text-sm font-semibold text-brand-700">Curso do marketplace · R$ {Number(course.price ?? 0).toFixed(2).replace(".", ",")}</p>}
         </div>
         <div className="flex gap-2">
           <Link href={`/cursos/${course.slug}`} className="btn btn-light">Ver como colaborador</Link>
           <form action={deleteCourse}>
             <input type="hidden" name="id" value={course.id} />
+            {mk && <input type="hidden" name="marketplace" value="1" />}
             <ConfirmButton message="Excluir o curso, aulas, provas, progresso e certificados? Não dá para desfazer.">Excluir</ConfirmButton>
           </form>
         </div>
       </div>
 
+      {erro && <p className="rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-700">{erro}</p>}
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
         <section>
           <h2 className="h-section mb-3">Dados do curso</h2>
           <CourseForm
+            marketplace={mk}
             course={course}
             categories={(cats ?? []) as { id: string; name: string }[]}
             roles={(roles ?? []) as { id: string; name: string }[]}

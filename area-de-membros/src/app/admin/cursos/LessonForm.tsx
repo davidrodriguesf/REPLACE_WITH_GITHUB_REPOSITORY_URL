@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveLesson } from "../actions";
+import { FileField } from "@/components/FileField";
 import { FormMessage, SubmitButton } from "@/components/ui";
 import type { Lesson, Module } from "@/lib/types";
 
@@ -45,10 +46,7 @@ export function LessonForm({ courseId, modules, lesson, moduleId }: { courseId: 
         <label className="label">Conteúdo / texto de apoio</label>
         <textarea className="input min-h-40" name="content" defaultValue={lesson?.content ?? ""} />
       </div>
-      <div>
-        <label className="label">Link do material complementar (PDF, planilha...)</label>
-        <input className="input" name="attachment_url" type="url" defaultValue={lesson?.attachment_url ?? ""} placeholder="https://..." />
-      </div>
+      <FileField name="attachment" kind="doc" label="Material da aula (PDF, Word, Excel ou PowerPoint)" current={lesson?.attachment_url} hint="Até 50 MB. O colaborador abre ou baixa direto na aula." />
       <FormMessage state={state} />
       <SubmitButton>{lesson ? "Salvar aula" : "Adicionar aula"}</SubmitButton>
     </form>

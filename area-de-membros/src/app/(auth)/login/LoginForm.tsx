@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { login } from "../actions";
 import { FormMessage, SubmitButton } from "@/components/ui";
 
-export function LoginForm({ next, linkError, inactive }: { next?: string; linkError?: boolean; inactive?: boolean }) {
+export function LoginForm({ next, linkError, inactive, pestx }: { next?: string; linkError?: boolean; inactive?: boolean; pestx?: boolean }) {
   const [state, action] = useActionState(
     login,
     inactive ? { error: "Seu acesso está desativado. Fale com o RH." } : linkError ? { error: "Link inválido ou expirado. Peça um novo em “Esqueci minha senha”." } : undefined,
@@ -26,6 +26,12 @@ export function LoginForm({ next, linkError, inactive }: { next?: string; linkEr
       <p className="text-center text-sm">
         <Link href="/esqueci-senha" className="link">Esqueci minha senha / primeiro acesso</Link>
       </p>
+      {pestx && (
+        <p className="text-center text-xs text-slate-500">
+          Esqueceu a senha do PestX? Troque em <a className="link" href="https://app.pestx.com.br" target="_blank" rel="noreferrer">app.pestx.com.br</a>.
+          O link acima é só para quem foi convidado direto pela Academia.
+        </p>
+      )}
     </form>
   );
 }

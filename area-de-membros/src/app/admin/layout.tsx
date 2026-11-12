@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <AppShell profile={profile} jobRole={(jr?.name as string | undefined) ?? "Administrador(a)"}>
       <p className="mb-3 text-sm font-bold uppercase tracking-wider text-brand-700">Painel administrativo</p>
-      <AdminNav />
+      <AdminNav superAdmin={profile.is_super_admin} />
       {children}
     </AppShell>
   );

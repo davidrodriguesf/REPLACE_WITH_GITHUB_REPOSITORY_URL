@@ -1,4 +1,4 @@
-export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Universidade Corporativa";
+export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Academia PestX";
 export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || SITE_NAME;
 export const TIMEZONE = "America/Sao_Paulo";
 /** Offset de Brasília (sem horário de verão desde 2019). */

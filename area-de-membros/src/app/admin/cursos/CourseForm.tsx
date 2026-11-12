@@ -2,19 +2,23 @@
 
 import { useActionState, useState } from "react";
 import { saveCourse } from "../actions";
+import { FileField } from "@/components/FileField";
 import { FormMessage, SubmitButton } from "@/components/ui";
 import type { Course } from "@/lib/types";
 
 type Opt = { id: string; name: string };
 
-export function CourseForm({ course, categories, roles, instructors, selectedRoles = [], selectedInstructors = [] }: {
+export function CourseForm({ course, categories, roles, instructors, selectedRoles = [], selectedInstructors = [], marketplace = false }: {
   course?: Course; categories: Opt[]; roles: Opt[]; instructors: Opt[]; selectedRoles?: string[]; selectedInstructors?: string[];
+  /** curso do marketplace do PestX (só o super admin cria/edita) */
+  marketplace?: boolean;
 }) {
   const [state, action] = useActionState(saveCourse, undefined);
   const [audience, setAudience] = useState(course?.audience ?? "all");
   return (
     <form action={action} className="card p-5 space-y-4">
       {course && <input type="hidden" name="id" value={course.id} />}
+      {marketplace && <input type="hidden" name="marketplace" value="1" />}
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label className="label">Título *</label>
@@ -34,10 +38,16 @@ export function CourseForm({ course, categories, roles, instructors, selectedRol
         <textarea className="input" name="description" defaultValue={course?.description ?? ""} />
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
-        <div className="sm:col-span-2">
-          <label className="label">URL da capa (16:9)</label>
-          <input className="input" name="cover_url" type="url" defaultValue={course?.cover_url ?? ""} placeholder="https://..." />
+        <div className="sm:col-span-3 grid gap-3 sm:grid-cols-2">
+          <FileField name="cover" label="Capa do curso (imagem 16:9)" current={course?.cover_url} hint="PNG, JPG ou WEBP até 8 MB. Sem capa, o app gera uma com o título." />
+          <FileField name="material" kind="pdf" label="Apostila / material do curso (PDF, opcional)" current={course?.material_url} hint="Até 50 MB. Aparece na página do curso para baixar." />
         </div>
+        {marketplace && (
+          <div>
+            <label className="label">Preço para as empresas (R$) *</label>
+            <input className="input" name="price" inputMode="decimal" defaultValue={course?.price ?? ""} placeholder="Ex.: 197,00" required />
+          </div>
+        )}
         <div>
           <label className="label">Categoria</label>
           <select className="input" name="category_id" defaultValue={course?.category_id ?? ""}>
@@ -55,7 +65,7 @@ export function CourseForm({ course, categories, roles, instructors, selectedRol
         </div>
       </div>
 
-      <fieldset className="rounded-2xl border border-slate-200 p-4 space-y-3">
+      {!marketplace && <fieldset className="rounded-2xl border border-slate-200 p-4 space-y-3">
         <legend className="px-1 text-sm font-bold">Quem pode ver</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           <label className={`rounded-xl border p-3 cursor-pointer ${audience === "all" ? "border-brand-600 bg-brand-50" : "border-slate-200"}`}>
@@ -75,7 +85,7 @@ export function CourseForm({ course, categories, roles, instructors, selectedRol
           </div>
         )}
         <p className="text-xs text-slate-500">Cursos que estão numa trilha ou foram atribuídos a alguém ficam visíveis para essas pessoas de qualquer forma.</p>
-      </fieldset>
+      </fieldset>}
 
       {instructors.length > 0 && (
         <fieldset>
@@ -89,7 +99,7 @@ export function CourseForm({ course, categories, roles, instructors, selectedRol
       )}
 
       <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold">
-        <label className="flex items-center gap-2"><input type="checkbox" name="is_published" defaultChecked={course?.is_published ?? false} />Publicado</label>
+        <label className="flex items-center gap-2"><input type="checkbox" name="is_published" defaultChecked={course?.is_published ?? false} />{marketplace ? "À venda no marketplace" : "Publicado"}</label>
         <label className="flex items-center gap-2"><input type="checkbox" name="certificate_enabled" defaultChecked={course?.certificate_enabled ?? true} />Emite certificado</label>
         <label className="flex items-center gap-2"><input type="checkbox" name="is_featured" defaultChecked={course?.is_featured ?? false} />Destaque em "Recomendados"</label>
       </div>

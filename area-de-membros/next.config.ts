@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   output: "standalone",
   eslint: { ignoreDuringBuilds: true },
   images: { remotePatterns: [{ protocol: "https", hostname: "**" }] },
+  experimental: {
+    // envio de capas, PDFs e assinaturas pelos formulários
+    serverActions: { bodySizeLimit: "60mb" },
+    middlewareClientMaxBodySize: "60mb",
+  },
 };
 
 export default nextConfig;

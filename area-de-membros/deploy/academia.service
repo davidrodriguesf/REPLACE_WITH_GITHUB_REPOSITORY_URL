@@ -1,5 +1,5 @@
 [Unit]
-Description=Academia Foco - universidade corporativa (Next.js)
+Description=Academia PestX - universidade corporativa (Next.js)
 After=network-online.target
 Wants=network-online.target
 
@@ -15,10 +15,10 @@ ExecStart=__BASE__/node/bin/node __BASE__/app/server.js
 Restart=always
 RestartSec=5
 
-# só grava no cache do próprio app
+# só grava no cache do próprio app e na pasta de arquivos enviados
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=__BASE__/app/.next/cache
+ReadWritePaths=__BASE__/app/.next/cache __BASE__/arquivos
 ProtectHome=true
 PrivateTmp=true
 

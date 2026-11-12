@@ -23,18 +23,22 @@ export type EmployeeInput = {
  * Convida (ou atualiza) um colaborador. Conta nova → e-mail para criar a senha.
  * Chame somente depois de verificar que quem pede é admin.
  */
-export async function inviteEmployee(input: EmployeeInput, opts: { resend?: boolean } = {}) {
+export async function inviteEmployee(input: EmployeeInput, opts: { resend?: boolean; companyId: string }) {
   const admin = createAdminClient();
   const email = input.email.trim().toLowerCase();
   let userId = await findUserByEmail(email);
   const created = !userId;
-  if (!userId) userId = await createUser(email, input.full_name ?? null);
+  if (userId) {
+    // nunca mexe em quem é de outra empresa
+    const rows = await admin.sql<{ company_id: string | null }>("select company_id from public.profiles where id = $1", [userId]);
+    if (rows[0]?.company_id && rows[0].company_id !== opts.companyId) throw new Error("Este e-mail já está cadastrado em outra empresa.");
+  } else userId = await createUser(email, input.full_name ?? null);
 
-  const fields: Record<string, unknown> = {};
+  const fields: Record<string, unknown> = { company_id: opts.companyId };
   for (const k of ["full_name", "job_role_id", "department", "manager_id", "role", "hired_at"] as const) {
     if (input[k] !== undefined) fields[k] = input[k] || (k === "role" ? "employee" : null);
   }
-  if (Object.keys(fields).length) {
+  {
     const { error } = await admin.from("profiles").update(fields).eq("id", userId);
     if (error) throw new Error(error.message);
   }

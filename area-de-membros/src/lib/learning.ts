@@ -39,7 +39,11 @@ export async function getLearning(supabase: SupabaseClient, userId: string) {
     supabase.from("lesson_progress").select("lesson_id, completed_at").eq("user_id", userId),
     supabase.from("quizzes").select("course_id").eq("kind", "exam").eq("is_published", true),
   ]);
-  const list = (courses ?? []) as Course[];
+  // cursos do marketplace só aparecem para quem estuda se a empresa comprou (o super admin enxerga todos para editar)
+  const { data: myCompany } = await supabase.rpc("my_company");
+  const { data: lic } = await supabase.from("course_licenses").select("course_id").eq("company_id", myCompany);
+  const licensed = new Set((lic ?? []).map((l) => l.course_id as string));
+  const list = ((courses ?? []) as Course[]).filter((c) => !c.is_marketplace || licensed.has(c.id));
   const ids = list.map((c) => c.id);
   const [{ data: modules }, { data: lessons }] = ids.length
     ? await Promise.all([

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Profile } from "@/lib/types";
 import { SITE_NAME } from "@/lib/utils";
+import { getBranding } from "@/lib/company";
 import { Avatar } from "./Avatar";
 import { BottomNav, TopNav } from "./BottomNav";
 import { IconMenu } from "./Icons";
@@ -19,14 +20,23 @@ export function AppLogo({ size = 44 }: { size?: number }) {
   );
 }
 
-export function AppShell({ profile, jobRole, children }: { profile: Profile; jobRole: string | null; children: React.ReactNode }) {
+export async function AppShell({ profile, jobRole, children }: { profile: Profile; jobRole: string | null; children: React.ReactNode }) {
+  const company = await getBranding(profile.company_id);
   return (
     <div className="min-h-dvh pb-32 md:pb-12">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white text-navy-950 pt-[env(safe-area-inset-top)]">
         <div className="container-app h-[72px] flex items-center gap-4">
           <Link href="/inicio" className="flex items-center gap-3 min-w-0">
-            <AppLogo />
-            <span className="text-xl sm:text-2xl font-bold tracking-tight truncate">{SITE_NAME}</span>
+            {company?.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={company.logo_url} alt="" className="h-11 w-11 rounded-xl border border-slate-200 bg-white object-contain" />
+            ) : (
+              <AppLogo />
+            )}
+            <span className="min-w-0">
+              <span className="block text-lg sm:text-xl font-bold leading-tight tracking-tight truncate">{SITE_NAME}</span>
+              {company && <span className="block text-xs font-semibold text-slate-500 truncate">{company.name}</span>}
+            </span>
           </Link>
           <div className="flex-1 flex justify-center"><TopNav /></div>
           <MenuTrigger className="flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1.5 pl-4 text-navy-800 hover:bg-slate-50 transition cursor-pointer shrink-0">

@@ -1,0 +1,35 @@
+{
+  "_about": "Foco Dedetizadora. Valores em reais (BRL), informados pelo fundador em 21/11/2026. Cenario BASE: a operacao de hoje sem crescimento, para validar o modelo. O cenario de crescimento com IA entra depois, com premissas aprovadas pelo fundador.",
+  "company": "Foco Dedetizadora",
+  "currency": "BRL",
+  "unit": "servico",
+  "units": "servicos",
+  "start_month": "2027-01",
+  "cash_at_start": 0,
+  "raise": 3000000,
+  "raise_month": 1,
+  "price": 500,
+  "take_rate_pct": 100,
+  "cost_per_order": [
+    {"label": "produto (6%)", "pct_of_price": 6},
+    {"label": "combustivel (2%)", "pct_of_price": 2},
+    {"label": "tecnico (18%)", "pct_of_price": 18}
+  ],
+  "customers": {
+    "starting": 300,
+    "new_month_1": 200,
+    "new_growth_pct": [0, 0, 0],
+    "churn_monthly_pct": 66.67,
+    "orders_per_customer_month": 1
+  },
+  "cac": 100,
+  "payroll_overhead_pct": 0,
+  "payroll": [
+    {"role": "Equipe atual: 4 tecnicos, 2 vendedores, 1 biologo, 1 administrativo (com encargos)", "monthly": 51000, "start_month": 1}
+  ],
+  "opex": [
+    {"label": "custos fixos", "monthly": 6000}
+  ],
+  "one_off": [],
+  "use_of_funds": {}
+}

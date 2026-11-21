@@ -1,0 +1,26 @@
+{
+  "startup": {
+    "name": "Foco Dedetizadora",
+    "one_liner": "Controle de pragas com aquisi\u00e7\u00e3o, vendas, faturamento e back office operados por IA",
+    "sector": "controle de pragas / servi\u00e7os B2B e residenciais",
+    "stage": "seed",
+    "geography": "Distrito Federal, Brasil",
+    "raise": 3000000,
+    "instrument": "a definir"
+  },
+  "founder": {
+    "name": "David Rodrigues da Fonseca",
+    "email": "Contato@focodedetizadora.com.br",
+    "company_address": ""
+  },
+  "sec_user_agent": "David Rodrigues da Fonseca Contato@focodedetizadora.com.br",
+  "outreach": {
+    "daily_cap": 20,
+    "followup_days": [
+      3,
+      7
+    ],
+    "max_touches": 3,
+    "business_days": true
+  }
+}

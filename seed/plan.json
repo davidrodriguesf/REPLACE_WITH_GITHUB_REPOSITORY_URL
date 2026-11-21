@@ -1,0 +1,85 @@
+{
+  "created_by": "seed-plan",
+  "tagline": "",
+  "brand": {
+    "brand": "#2F6FEB",
+    "ink": "#0E1B33",
+    "accent": "#FFB020"
+  },
+  "sections": [
+    {
+      "key": "executive_summary",
+      "title": "Executive summary",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "problem",
+      "title": "Problem",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "solution",
+      "title": "Solution",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "market",
+      "title": "Market",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "competition",
+      "title": "Competition",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "business_model",
+      "title": "Business model",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "go_to_market",
+      "title": "Go-to-market",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "financial_plan",
+      "title": "Financial plan",
+      "text": "",
+      "pitch": "",
+      "points": []
+    },
+    {
+      "key": "use_of_funds",
+      "title": "Use of funds",
+      "text": "",
+      "pitch": "",
+      "points": []
+    }
+  ],
+  "team": [
+    {
+      "name": "David Rodrigues da Fonseca",
+      "role": "Founder",
+      "line": ""
+    }
+  ],
+  "numbers": {},
+  "flags": [],
+  "notes": [],
+  "built": null
+}

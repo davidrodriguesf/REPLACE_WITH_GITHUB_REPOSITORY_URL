@@ -1,0 +1,70 @@
+{
+ "created_by": "manual (pesquisa web em 21/11/2026; seed-scout nao se aplica: dedetizadoras nao tem app)",
+ "generated": "2026-11-21",
+ "note": "Dados de snippets de busca (Reclame Aqui, diretorios). Paginas nao abertas por bloqueio de rede: conferir no navegador antes de mostrar a investidores.",
+ "apps": [
+  {
+   "name": "Rentokil (rede nacional; DF, Goiânia, SC direto; ES por parceiros)",
+   "rating": null,
+   "ratings": null,
+   "weak_point": "Pós-venda e garantia: 52 reclamações ativas no Reclame Aqui, resposta média de 8 dias (dado nacional)",
+   "source": "https://www.reclameaqui.com.br/empresa/asseio-rentokil/lista-reclamacoes/"
+  },
+  {
+   "name": "Sanemix (rede nacional; atua em Florianópolis)",
+   "rating": null,
+   "ratings": null,
+   "weak_point": "Garantia não cumprida e não comparecimento: 77 reclamações no Reclame Aqui, resposta média de cerca de 30 dias",
+   "source": "https://www.reclameaqui.com.br/empresa/sanemix/lista-reclamacoes/"
+  },
+  {
+   "name": "Execute Dedetizadora (Santa Maria, DF)",
+   "rating": 4.8,
+   "ratings": 88,
+   "weak_point": "Sem site próprio nem orçamento online; venda só por telefone de diretório",
+   "source": "https://www.benditoguia.com.br/empresa/execute-dedetizadora-santa-maria-brasilia"
+  },
+  {
+   "name": "Ratintox Dedetizadora (Sudoeste/Cruzeiro, DF)",
+   "rating": 2.6,
+   "ratings": 5,
+   "weak_point": "Avaliações citam atendimento ruim e produto ineficaz; sem site oficial",
+   "source": "https://www.benditoguia.com.br/empresa/ratintox-dedetizadora-cruzeiro-sudoeste-octogonal-brasilia"
+  },
+  {
+   "name": "Nipon Dedetizadora (Brasília, DF)",
+   "rating": null,
+   "ratings": null,
+   "weak_point": "Reclame Aqui: dedetização incompleta e televendas insistente",
+   "source": "https://www.reclameaqui.com.br/nipon-utilidades-e-servicos/nao-fizeram-a-dedetizacao-completa-conforme-acertado-e-pago_U2N1PsDY2FveQiYO/"
+  },
+  {
+   "name": "GetNinjas (autônomos em Goiânia e DF)",
+   "rating": 4.72,
+   "ratings": 1416,
+   "weak_point": "Marketplace de autônomos, R$165 a R$218 por serviço: preço baixo, sem empresa responsável nem garantia padronizada",
+   "source": "https://www.getninjas.com.br/reformas-e-reparos/dedetizador/go/goiania"
+  },
+  {
+   "name": "Cometa Dedetização (Goiânia, GO)",
+   "rating": null,
+   "ratings": null,
+   "weak_point": "Não respondeu reclamação no Reclame Aqui; presença digital quase nula",
+   "source": "https://www.reclameaqui.com.br/cometa-dedetizadora/falta-de-transparencia_SNSyEhjDrNXuajJI/"
+  },
+  {
+   "name": "Nova Clean Dedetização (Serra, ES)",
+   "rating": null,
+   "ratings": 0,
+   "weak_point": "Nenhuma avaliação online; só listagem em diretório",
+   "source": "https://www.solutudo.com.br/empresas/es/serra/dedetizadoras/nova-clean-dedetizacao-e-controle-de-pragas-ltda-24664339"
+  },
+  {
+   "name": "Floripest Saúde Ambiental (Florianópolis, SC)",
+   "rating": null,
+   "ratings": 0,
+   "weak_point": "Nenhuma avaliação online; sem site nem WhatsApp",
+   "source": "https://www.ohub.com.br/empresa/dedetizadora-floripest-saude-ambientalflorianopolis%20-%20sc-679645"
+  }
+ ]
+}

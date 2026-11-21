@@ -19,7 +19,6 @@ Raising a $3,000,000 seed round on a a definir. Built Nov 21, 2026 from the file
 
 ## Checks
 
-- **Fix:** No seed/competitors.json: run /seed-scout first, then build again.
 - Note: Solution text: 24 is in none of the seed/ files. Check it.
 - Note: Solution points: 24 is in none of the seed/ files. Check it.
 - Note: Market text: 72, 62, 764, 382, 56 are in none of the seed/ files. Check them.
@@ -36,6 +35,9 @@ A Foco Dedetizadora é uma empresa de controle de pragas do Distrito Federal que
 ## 2. Problem
 
 Controle de pragas é um serviço obrigatório para restaurantes, condomínios e empresas e recorrente para muitas casas, mas o mercado é pulverizado: são 33.782 empresas no CNAE 8122-2/00, segundo o Sebrae, quase todas pequenas e locais. Nelas, vender, orçar, agendar, faturar e cobrar depende de pessoas no escritório. Isso deixa o atendimento lento (o cliente que pede orçamento à noite ou no fim de semana fica sem resposta), limita o crescimento ao tamanho da equipe administrativa e come a margem a cada nova cidade.
+
+What the competitors' own reviews say (seed/competitors.json, 2026-11-21):
+
 
 ## 3. Solution
 
@@ -70,7 +72,25 @@ Method: top-down TAM, bottom-up SAM, SOM 8% of SAM in 3 years. The inputs and wh
 
 ## 5. Competition
 
-O mercado é pulverizado: 33.782 empresas no CNAE 8122-2/00 segundo o Sebrae, com poucas redes nacionais e milhares de dedetizadoras locais que dependem de indicação e de um escritório para vender e atender. Nenhuma delas, até onde sabemos, opera vendas, faturamento e back office por IA. A vantagem da Foco é atender na hora pelo WhatsApp, aparecer primeiro no Google e nas respostas das IAs em cada cidade e crescer sem inchar o escritório. A análise dos concorrentes locais (notas e reclamações no Google) ainda será feita.
+O mercado é pulverizado: 33.782 empresas no CNAE 8122-2/00 segundo o Sebrae. Nas quatro praças do plano, os concorrentes caem em três grupos. As redes nacionais (Rentokil, Sanemix) têm marca, mas o Reclame Aqui mostra problemas de pós-venda: 52 reclamações ativas na Rentokil com resposta média de 8 dias, e 77 na Sanemix, com garantia não cumprida, não comparecimento e cerca de 30 dias para responder. As dedetizadoras locais (Execute e Ratintox no DF, Cometa em Goiânia, Nova Clean em Vitória, Floripest em Florianópolis) quase nunca têm site, preço online ou orçamento fora do telefone, e muitas não têm nenhuma avaliação. Os marketplaces de autônomos (GetNinjas, R$165 a R$218 em Goiânia) competem no preço, sem empresa responsável nem garantia. Nenhum concorrente encontrado responde e agenda na hora pelo WhatsApp com garantia acompanhada. Essa é a brecha da Foco: atendimento imediato por IA, preço claro, garantia monitorada e presença forte no Google e nas buscas por IA.
+
+- Redes nacionais: 52 a 77 reclamações, resposta lenta
+- Locais: sem site, sem preço, sem avaliações
+- Autônomos: preço baixo, sem garantia
+
+| App | Rating | Ratings | Low reviews | Weak point | Evidence |
+| --- | ---: | ---: | ---: | --- | --- |
+| Rentokil (rede nacional; DF, Goiânia, SC direto; ES por parceiros) |  |  |  | Pós-venda e garantia: 52 reclamações ativas no Reclame Aqui, resposta média de 8 dias (dado nacional) |  |
+| Sanemix (rede nacional; atua em Florianópolis) |  |  |  | Garantia não cumprida e não comparecimento: 77 reclamações no Reclame Aqui, resposta média de cerca de 30 dias |  |
+| Execute Dedetizadora (Santa Maria, DF) | 4.8 | 88 |  | Sem site próprio nem orçamento online; venda só por telefone de diretório |  |
+| Ratintox Dedetizadora (Sudoeste/Cruzeiro, DF) | 2.6 | 5 |  | Avaliações citam atendimento ruim e produto ineficaz; sem site oficial |  |
+| Nipon Dedetizadora (Brasília, DF) |  |  |  | Reclame Aqui: dedetização incompleta e televendas insistente |  |
+| GetNinjas (autônomos em Goiânia e DF) | 4.72 | 1,416 |  | Marketplace de autônomos, R$165 a R$218 por serviço: preço baixo, sem empresa responsável nem garantia padronizada |  |
+| Cometa Dedetização (Goiânia, GO) |  |  |  | Não respondeu reclamação no Reclame Aqui; presença digital quase nula |  |
+| Nova Clean Dedetização (Serra, ES) |  | 0 |  | Nenhuma avaliação online; só listagem em diretório |  |
+| Floripest Saúde Ambiental (Florianópolis, SC) |  | 0 |  | Nenhuma avaliação online; sem site nem WhatsApp |  |
+
+Sources: https://www.reclameaqui.com.br/empresa/asseio-rentokil/lista-reclamacoes/, https://www.reclameaqui.com.br/empresa/sanemix/lista-reclamacoes/, https://www.benditoguia.com.br/empresa/execute-dedetizadora-santa-maria-brasilia, https://www.benditoguia.com.br/empresa/ratintox-dedetizadora-cruzeiro-sudoeste-octogonal-brasilia, https://www.reclameaqui.com.br/nipon-utilidades-e-servicos/nao-fizeram-a-dedetizacao-completa-conforme-acertado-e-pago_U2N1PsDY2FveQiYO/, https://www.getninjas.com.br/reformas-e-reparos/dedetizador/go/goiania, https://www.reclameaqui.com.br/cometa-dedetizadora/falta-de-transparencia_SNSyEhjDrNXuajJI/, https://www.solutudo.com.br/empresas/es/serra/dedetizadoras/nova-clean-dedetizacao-e-controle-de-pragas-ltda-24664339, https://www.ohub.com.br/empresa/dedetizadora-floripest-saude-ambientalflorianopolis%20-%20sc-679645
 
 ## 6. Business model
 

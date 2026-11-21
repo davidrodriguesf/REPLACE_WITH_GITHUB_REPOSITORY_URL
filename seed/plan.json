@@ -42,9 +42,13 @@
     {
       "key": "competition",
       "title": "Competition",
-      "text": "O mercado \u00e9 pulverizado: 33.782 empresas no CNAE 8122-2/00 segundo o Sebrae, com poucas redes nacionais e milhares de dedetizadoras locais que dependem de indica\u00e7\u00e3o e de um escrit\u00f3rio para vender e atender. Nenhuma delas, at\u00e9 onde sabemos, opera vendas, faturamento e back office por IA. A vantagem da Foco \u00e9 atender na hora pelo WhatsApp, aparecer primeiro no Google e nas respostas das IAs em cada cidade e crescer sem inchar o escrit\u00f3rio. A an\u00e1lise dos concorrentes locais (notas e reclama\u00e7\u00f5es no Google) ainda ser\u00e1 feita.",
-      "pitch": "Milhares de dedetizadoras locais dependentes de escrit\u00f3rio; a Foco atende na hora e aparece primeiro.",
-      "points": []
+      "text": "O mercado \u00e9 pulverizado: 33.782 empresas no CNAE 8122-2/00 segundo o Sebrae. Nas quatro pra\u00e7as do plano, os concorrentes caem em tr\u00eas grupos. As redes nacionais (Rentokil, Sanemix) t\u00eam marca, mas o Reclame Aqui mostra problemas de p\u00f3s-venda: 52 reclama\u00e7\u00f5es ativas na Rentokil com resposta m\u00e9dia de 8 dias, e 77 na Sanemix, com garantia n\u00e3o cumprida, n\u00e3o comparecimento e cerca de 30 dias para responder. As dedetizadoras locais (Execute e Ratintox no DF, Cometa em Goi\u00e2nia, Nova Clean em Vit\u00f3ria, Floripest em Florian\u00f3polis) quase nunca t\u00eam site, pre\u00e7o online ou or\u00e7amento fora do telefone, e muitas n\u00e3o t\u00eam nenhuma avalia\u00e7\u00e3o. Os marketplaces de aut\u00f4nomos (GetNinjas, R$165 a R$218 em Goi\u00e2nia) competem no pre\u00e7o, sem empresa respons\u00e1vel nem garantia. Nenhum concorrente encontrado responde e agenda na hora pelo WhatsApp com garantia acompanhada. Essa \u00e9 a brecha da Foco: atendimento imediato por IA, pre\u00e7o claro, garantia monitorada e presen\u00e7a forte no Google e nas buscas por IA.",
+      "pitch": "Redes com p\u00f3s-venda ruim, locais sem presen\u00e7a digital, aut\u00f4nomos sem garantia: a Foco responde na hora e cumpre a garantia.",
+      "points": [
+        "Redes nacionais: 52 a 77 reclama\u00e7\u00f5es, resposta lenta",
+        "Locais: sem site, sem pre\u00e7o, sem avalia\u00e7\u00f5es",
+        "Aut\u00f4nomos: pre\u00e7o baixo, sem garantia"
+      ]
     },
     {
       "key": "business_model",
@@ -263,11 +267,121 @@
         }
       ],
       "notes": ""
-    }
+    },
+    "competitors": [
+      {
+        "name": "Rentokil (rede nacional; DF, Goi\u00e2nia, SC direto; ES por parceiros)",
+        "rating": null,
+        "ratings": null,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "P\u00f3s-venda e garantia: 52 reclama\u00e7\u00f5es ativas no Reclame Aqui, resposta m\u00e9dia de 8 dias (dado nacional)",
+        "top_count": null,
+        "weak_point": "P\u00f3s-venda e garantia: 52 reclama\u00e7\u00f5es ativas no Reclame Aqui, resposta m\u00e9dia de 8 dias (dado nacional)",
+        "source": "https://www.reclameaqui.com.br/empresa/asseio-rentokil/lista-reclamacoes/"
+      },
+      {
+        "name": "Sanemix (rede nacional; atua em Florian\u00f3polis)",
+        "rating": null,
+        "ratings": null,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Garantia n\u00e3o cumprida e n\u00e3o comparecimento: 77 reclama\u00e7\u00f5es no Reclame Aqui, resposta m\u00e9dia de cerca de 30 dias",
+        "top_count": null,
+        "weak_point": "Garantia n\u00e3o cumprida e n\u00e3o comparecimento: 77 reclama\u00e7\u00f5es no Reclame Aqui, resposta m\u00e9dia de cerca de 30 dias",
+        "source": "https://www.reclameaqui.com.br/empresa/sanemix/lista-reclamacoes/"
+      },
+      {
+        "name": "Execute Dedetizadora (Santa Maria, DF)",
+        "rating": 4.8,
+        "ratings": 88,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Sem site pr\u00f3prio nem or\u00e7amento online; venda s\u00f3 por telefone de diret\u00f3rio",
+        "top_count": null,
+        "weak_point": "Sem site pr\u00f3prio nem or\u00e7amento online; venda s\u00f3 por telefone de diret\u00f3rio",
+        "source": "https://www.benditoguia.com.br/empresa/execute-dedetizadora-santa-maria-brasilia"
+      },
+      {
+        "name": "Ratintox Dedetizadora (Sudoeste/Cruzeiro, DF)",
+        "rating": 2.6,
+        "ratings": 5,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Avalia\u00e7\u00f5es citam atendimento ruim e produto ineficaz; sem site oficial",
+        "top_count": null,
+        "weak_point": "Avalia\u00e7\u00f5es citam atendimento ruim e produto ineficaz; sem site oficial",
+        "source": "https://www.benditoguia.com.br/empresa/ratintox-dedetizadora-cruzeiro-sudoeste-octogonal-brasilia"
+      },
+      {
+        "name": "Nipon Dedetizadora (Bras\u00edlia, DF)",
+        "rating": null,
+        "ratings": null,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Reclame Aqui: dedetiza\u00e7\u00e3o incompleta e televendas insistente",
+        "top_count": null,
+        "weak_point": "Reclame Aqui: dedetiza\u00e7\u00e3o incompleta e televendas insistente",
+        "source": "https://www.reclameaqui.com.br/nipon-utilidades-e-servicos/nao-fizeram-a-dedetizacao-completa-conforme-acertado-e-pago_U2N1PsDY2FveQiYO/"
+      },
+      {
+        "name": "GetNinjas (aut\u00f4nomos em Goi\u00e2nia e DF)",
+        "rating": 4.72,
+        "ratings": 1416,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Marketplace de aut\u00f4nomos, R$165 a R$218 por servi\u00e7o: pre\u00e7o baixo, sem empresa respons\u00e1vel nem garantia padronizada",
+        "top_count": null,
+        "weak_point": "Marketplace de aut\u00f4nomos, R$165 a R$218 por servi\u00e7o: pre\u00e7o baixo, sem empresa respons\u00e1vel nem garantia padronizada",
+        "source": "https://www.getninjas.com.br/reformas-e-reparos/dedetizador/go/goiania"
+      },
+      {
+        "name": "Cometa Dedetiza\u00e7\u00e3o (Goi\u00e2nia, GO)",
+        "rating": null,
+        "ratings": null,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "N\u00e3o respondeu reclama\u00e7\u00e3o no Reclame Aqui; presen\u00e7a digital quase nula",
+        "top_count": null,
+        "weak_point": "N\u00e3o respondeu reclama\u00e7\u00e3o no Reclame Aqui; presen\u00e7a digital quase nula",
+        "source": "https://www.reclameaqui.com.br/cometa-dedetizadora/falta-de-transparencia_SNSyEhjDrNXuajJI/"
+      },
+      {
+        "name": "Nova Clean Dedetiza\u00e7\u00e3o (Serra, ES)",
+        "rating": null,
+        "ratings": 0,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Nenhuma avalia\u00e7\u00e3o online; s\u00f3 listagem em diret\u00f3rio",
+        "top_count": null,
+        "weak_point": "Nenhuma avalia\u00e7\u00e3o online; s\u00f3 listagem em diret\u00f3rio",
+        "source": "https://www.solutudo.com.br/empresas/es/serra/dedetizadoras/nova-clean-dedetizacao-e-controle-de-pragas-ltda-24664339"
+      },
+      {
+        "name": "Floripest Sa\u00fade Ambiental (Florian\u00f3polis, SC)",
+        "rating": null,
+        "ratings": 0,
+        "reviews_read": null,
+        "low_reviews": null,
+        "top_theme": null,
+        "top_label": "Nenhuma avalia\u00e7\u00e3o online; sem site nem WhatsApp",
+        "top_count": null,
+        "weak_point": "Nenhuma avalia\u00e7\u00e3o online; sem site nem WhatsApp",
+        "source": "https://www.ohub.com.br/empresa/dedetizadora-floripest-saude-ambientalflorianopolis%20-%20sc-679645"
+      }
+    ],
+    "competitors_generated": "2026-11-21",
+    "low_stars": 2
   },
-  "flags": [
-    "No seed/competitors.json: run /seed-scout first, then build again."
-  ],
+  "flags": [],
   "notes": [
     "Solution text: 24 is in none of the seed/ files. Check it.",
     "Solution points: 24 is in none of the seed/ files. Check it.",

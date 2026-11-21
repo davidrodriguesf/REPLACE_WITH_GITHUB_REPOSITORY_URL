@@ -28,9 +28,9 @@
     "starting": 300,
     "new_month_1": 200,
     "new_growth_pct": [
+      15,
       8,
-      5,
-      3
+      4
     ],
     "churn_monthly_pct": 66.67,
     "orders_per_customer_month": 1
@@ -42,6 +42,21 @@
       "role": "Escritorio fixo (hoje 2 vendedores, 1 biologo, 1 adm; com a IA: gestor de escritorio, tecnico de visitas e biologo), com encargos",
       "monthly": 27000,
       "start_month": 1
+    },
+    {
+      "role": "Base Goiania: biologo responsavel tecnico + tecnico de visitas",
+      "monthly": 12000,
+      "start_month": 4
+    },
+    {
+      "role": "Base Vitoria: biologo responsavel tecnico + tecnico de visitas",
+      "monthly": 12000,
+      "start_month": 10
+    },
+    {
+      "role": "Base Florianopolis: biologo responsavel tecnico + tecnico de visitas",
+      "monthly": 12000,
+      "start_month": 16
     }
   ],
   "opex": [
@@ -56,9 +71,29 @@
     {
       "label": "ferramentas de IA, WhatsApp API e software - estimativa",
       "monthly": 8000
+    },
+    {
+      "label": "aluguel e custos das 3 bases novas (media) - estimativa",
+      "monthly": 12000
     }
   ],
-  "one_off": [],
+  "one_off": [
+    {
+      "label": "lancamento Goiania e Entorno (base, veiculos, alvaras, estoque) - estimativa",
+      "month": 4,
+      "cost": 250000
+    },
+    {
+      "label": "lancamento Vitoria - estimativa",
+      "month": 10,
+      "cost": 250000
+    },
+    {
+      "label": "lancamento Florianopolis - estimativa",
+      "month": 16,
+      "cost": 250000
+    }
+  ],
   "use_of_funds": {
     "Motor de IA (SEO, busca por IA, vendas, back office)": 1200000,
     "Marketing (Google, Meta, prospeccao por IA)": 900000,

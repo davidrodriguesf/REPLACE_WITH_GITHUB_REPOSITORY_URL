@@ -36,7 +36,7 @@
       "churn_monthly_pct": 66.67,
       "orders_per_customer_month": 1
     },
-    "cac": 100,
+    "cac": 150,
     "payroll_overhead_pct": 0,
     "payroll": [
       {
@@ -47,17 +47,17 @@
       {
         "role": "Base Goiania: biologo responsavel tecnico + tecnico de visitas",
         "monthly": 12000,
-        "start_month": 4
+        "start_month": 2
       },
       {
         "role": "Base Vitoria: biologo responsavel tecnico + tecnico de visitas",
         "monthly": 12000,
-        "start_month": 10
+        "start_month": 3
       },
       {
         "role": "Base Florianopolis: biologo responsavel tecnico + tecnico de visitas",
         "monthly": 12000,
-        "start_month": 16
+        "start_month": 4
       }
     ],
     "opex": [
@@ -81,17 +81,17 @@
     "one_off": [
       {
         "label": "lancamento Goiania e Entorno (base, veiculos, alvaras, estoque) - estimativa",
-        "month": 4,
+        "month": 2,
         "cost": 250000
       },
       {
         "label": "lancamento Vitoria - estimativa",
-        "month": 10,
+        "month": 3,
         "cost": 250000
       },
       {
         "label": "lancamento Florianopolis - estimativa",
-        "month": 16,
+        "month": 4,
         "cost": 250000
       }
     ],
@@ -115,11 +115,11 @@
       "cost_of_revenue": 37714.29,
       "gross_profit": 112285.71,
       "payroll": 27000,
-      "marketing": 20000,
+      "marketing": 30000,
       "other_opex": 56000,
-      "opex": 103000,
-      "net": 9285.71,
-      "cash": 3009285.71
+      "opex": 113000,
+      "net": -714.29,
+      "cash": 2999285.71
     },
     {
       "month": 2,
@@ -132,12 +132,12 @@
       "revenue": 165000,
       "cost_of_revenue": 41485.71,
       "gross_profit": 123514.29,
-      "payroll": 27000,
-      "marketing": 23000,
-      "other_opex": 56000,
-      "opex": 106000,
-      "net": 17514.29,
-      "cash": 3026800
+      "payroll": 39000,
+      "marketing": 34500,
+      "other_opex": 306000,
+      "opex": 379500,
+      "net": -255985.71,
+      "cash": 2743300
     },
     {
       "month": 3,
@@ -150,12 +150,12 @@
       "revenue": 187500,
       "cost_of_revenue": 47142.86,
       "gross_profit": 140357.14,
-      "payroll": 27000,
-      "marketing": 26500,
-      "other_opex": 56000,
-      "opex": 109500,
-      "net": 30857.14,
-      "cash": 3057657.14
+      "payroll": 51000,
+      "marketing": 39750,
+      "other_opex": 306000,
+      "opex": 396750,
+      "net": -256392.86,
+      "cash": 2486907.14
     },
     {
       "month": 4,
@@ -168,12 +168,12 @@
       "revenue": 214500,
       "cost_of_revenue": 53931.43,
       "gross_profit": 160568.57,
-      "payroll": 39000,
-      "marketing": 30400,
+      "payroll": 63000,
+      "marketing": 45600,
       "other_opex": 306000,
-      "opex": 375400,
-      "net": -214831.43,
-      "cash": 2842825.71
+      "opex": 414600,
+      "net": -254031.43,
+      "cash": 2232875.71
     },
     {
       "month": 5,
@@ -186,12 +186,12 @@
       "revenue": 246500,
       "cost_of_revenue": 61977.14,
       "gross_profit": 184522.86,
-      "payroll": 39000,
-      "marketing": 35000,
+      "payroll": 63000,
+      "marketing": 52500,
       "other_opex": 56000,
-      "opex": 130000,
-      "net": 54522.86,
-      "cash": 2897348.57
+      "opex": 171500,
+      "net": 13022.86,
+      "cash": 2245898.57
     },
     {
       "month": 6,
@@ -204,12 +204,12 @@
       "revenue": 283000,
       "cost_of_revenue": 71154.29,
       "gross_profit": 211845.71,
-      "payroll": 39000,
-      "marketing": 40200,
+      "payroll": 63000,
+      "marketing": 60300,
       "other_opex": 56000,
-      "opex": 135200,
-      "net": 76645.71,
-      "cash": 2973994.28
+      "opex": 179300,
+      "net": 32545.71,
+      "cash": 2278444.28
     },
     {
       "month": 7,
@@ -222,12 +222,12 @@
       "revenue": 326000,
       "cost_of_revenue": 81965.71,
       "gross_profit": 244034.29,
-      "payroll": 39000,
-      "marketing": 46300,
+      "payroll": 63000,
+      "marketing": 69450,
       "other_opex": 56000,
-      "opex": 141300,
-      "net": 102734.29,
-      "cash": 3076728.57
+      "opex": 188450,
+      "net": 55584.29,
+      "cash": 2334028.57
     },
     {
       "month": 8,
@@ -240,12 +240,12 @@
       "revenue": 374500,
       "cost_of_revenue": 94160,
       "gross_profit": 280340,
-      "payroll": 39000,
-      "marketing": 53200,
+      "payroll": 63000,
+      "marketing": 79800,
       "other_opex": 56000,
-      "opex": 148200,
-      "net": 132140,
-      "cash": 3208868.57
+      "opex": 198800,
+      "net": 81540,
+      "cash": 2415568.57
     },
     {
       "month": 9,
@@ -258,12 +258,12 @@
       "revenue": 431000,
       "cost_of_revenue": 108365.71,
       "gross_profit": 322634.29,
-      "payroll": 39000,
-      "marketing": 61200,
+      "payroll": 63000,
+      "marketing": 91800,
       "other_opex": 56000,
-      "opex": 156200,
-      "net": 166434.29,
-      "cash": 3375302.86
+      "opex": 210800,
+      "net": 111834.29,
+      "cash": 2527402.86
     },
     {
       "month": 10,
@@ -276,12 +276,12 @@
       "revenue": 495500,
       "cost_of_revenue": 124582.86,
       "gross_profit": 370917.14,
-      "payroll": 51000,
-      "marketing": 70400,
-      "other_opex": 306000,
-      "opex": 427400,
-      "net": -56482.86,
-      "cash": 3318820
+      "payroll": 63000,
+      "marketing": 105600,
+      "other_opex": 56000,
+      "opex": 224600,
+      "net": 146317.14,
+      "cash": 2673720
     },
     {
       "month": 11,
@@ -294,12 +294,12 @@
       "revenue": 569500,
       "cost_of_revenue": 143188.57,
       "gross_profit": 426311.43,
-      "payroll": 51000,
-      "marketing": 80900,
+      "payroll": 63000,
+      "marketing": 121350,
       "other_opex": 56000,
-      "opex": 187900,
-      "net": 238411.43,
-      "cash": 3557231.43
+      "opex": 240350,
+      "net": 185961.43,
+      "cash": 2859681.43
     },
     {
       "month": 12,
@@ -312,12 +312,12 @@
       "revenue": 655000,
       "cost_of_revenue": 164685.71,
       "gross_profit": 490314.29,
-      "payroll": 51000,
-      "marketing": 93000,
+      "payroll": 63000,
+      "marketing": 139500,
       "other_opex": 56000,
-      "opex": 200000,
-      "net": 290314.29,
-      "cash": 3847545.72
+      "opex": 258500,
+      "net": 231814.29,
+      "cash": 3091495.72
     },
     {
       "month": 13,
@@ -330,12 +330,12 @@
       "revenue": 721000,
       "cost_of_revenue": 181280,
       "gross_profit": 539720,
-      "payroll": 51000,
-      "marketing": 100500,
+      "payroll": 63000,
+      "marketing": 150750,
       "other_opex": 56000,
-      "opex": 207500,
-      "net": 332220,
-      "cash": 4179765.72
+      "opex": 269750,
+      "net": 269970,
+      "cash": 3361465.72
     },
     {
       "month": 14,
@@ -348,12 +348,12 @@
       "revenue": 783000,
       "cost_of_revenue": 196868.57,
       "gross_profit": 586131.43,
-      "payroll": 51000,
-      "marketing": 108500,
+      "payroll": 63000,
+      "marketing": 162750,
       "other_opex": 56000,
-      "opex": 215500,
-      "net": 370631.43,
-      "cash": 4550397.15
+      "opex": 281750,
+      "net": 304381.43,
+      "cash": 3665847.15
     },
     {
       "month": 15,
@@ -366,12 +366,12 @@
       "revenue": 847000,
       "cost_of_revenue": 212960,
       "gross_profit": 634040,
-      "payroll": 51000,
-      "marketing": 117200,
+      "payroll": 63000,
+      "marketing": 175800,
       "other_opex": 56000,
-      "opex": 224200,
-      "net": 409840,
-      "cash": 4960237.15
+      "opex": 294800,
+      "net": 339240,
+      "cash": 4005087.15
     },
     {
       "month": 16,
@@ -385,11 +385,11 @@
       "cost_of_revenue": 230182.86,
       "gross_profit": 685317.14,
       "payroll": 63000,
-      "marketing": 126600,
-      "other_opex": 306000,
-      "opex": 495600,
-      "net": 189717.14,
-      "cash": 5149954.29
+      "marketing": 189900,
+      "other_opex": 56000,
+      "opex": 308900,
+      "net": 376417.14,
+      "cash": 4381504.29
     },
     {
       "month": 17,
@@ -403,11 +403,11 @@
       "cost_of_revenue": 248537.14,
       "gross_profit": 739962.86,
       "payroll": 63000,
-      "marketing": 136700,
+      "marketing": 205050,
       "other_opex": 56000,
-      "opex": 255700,
-      "net": 484262.86,
-      "cash": 5634217.15
+      "opex": 324050,
+      "net": 415912.86,
+      "cash": 4797417.15
     },
     {
       "month": 18,
@@ -421,11 +421,11 @@
       "cost_of_revenue": 268525.71,
       "gross_profit": 799474.29,
       "payroll": 63000,
-      "marketing": 147700,
+      "marketing": 221550,
       "other_opex": 56000,
-      "opex": 266700,
-      "net": 532774.29,
-      "cash": 6166991.44
+      "opex": 340550,
+      "net": 458924.29,
+      "cash": 5256341.44
     },
     {
       "month": 19,
@@ -439,11 +439,11 @@
       "cost_of_revenue": 290022.86,
       "gross_profit": 863477.14,
       "payroll": 63000,
-      "marketing": 159500,
+      "marketing": 239250,
       "other_opex": 56000,
-      "opex": 278500,
-      "net": 584977.14,
-      "cash": 6751968.58
+      "opex": 358250,
+      "net": 505227.14,
+      "cash": 5761568.58
     },
     {
       "month": 20,
@@ -457,11 +457,11 @@
       "cost_of_revenue": 313154.28,
       "gross_profit": 932345.72,
       "payroll": 63000,
-      "marketing": 172200,
+      "marketing": 258300,
       "other_opex": 56000,
-      "opex": 291200,
-      "net": 641145.72,
-      "cash": 7393114.3
+      "opex": 377300,
+      "net": 555045.72,
+      "cash": 6316614.3
     },
     {
       "month": 21,
@@ -475,11 +475,11 @@
       "cost_of_revenue": 338171.43,
       "gross_profit": 1006828.57,
       "payroll": 63000,
-      "marketing": 186000,
+      "marketing": 279000,
       "other_opex": 56000,
-      "opex": 305000,
-      "net": 701828.57,
-      "cash": 8094942.87
+      "opex": 398000,
+      "net": 608828.57,
+      "cash": 6925442.87
     },
     {
       "month": 22,
@@ -493,11 +493,11 @@
       "cost_of_revenue": 365325.71,
       "gross_profit": 1087674.29,
       "payroll": 63000,
-      "marketing": 200900,
+      "marketing": 301350,
       "other_opex": 56000,
-      "opex": 319900,
-      "net": 767774.29,
-      "cash": 8862717.16
+      "opex": 420350,
+      "net": 667324.29,
+      "cash": 7592767.16
     },
     {
       "month": 23,
@@ -511,11 +511,11 @@
       "cost_of_revenue": 394617.14,
       "gross_profit": 1174882.86,
       "payroll": 63000,
-      "marketing": 217000,
+      "marketing": 325500,
       "other_opex": 56000,
-      "opex": 336000,
-      "net": 838882.86,
-      "cash": 9701600.02
+      "opex": 444500,
+      "net": 730382.86,
+      "cash": 8323150.02
     },
     {
       "month": 24,
@@ -529,11 +529,11 @@
       "cost_of_revenue": 426045.71,
       "gross_profit": 1268454.29,
       "payroll": 63000,
-      "marketing": 234300,
+      "marketing": 351450,
       "other_opex": 56000,
-      "opex": 353300,
-      "net": 915154.29,
-      "cash": 10616754.31
+      "opex": 470450,
+      "net": 798004.29,
+      "cash": 9121154.31
     },
     {
       "month": 25,
@@ -547,11 +547,11 @@
       "cost_of_revenue": 448422.85,
       "gross_profit": 1335077.15,
       "payroll": 63000,
-      "marketing": 243700,
+      "marketing": 365550,
       "other_opex": 56000,
-      "opex": 362700,
-      "net": 972377.15,
-      "cash": 11589131.46
+      "opex": 484550,
+      "net": 850527.15,
+      "cash": 9971681.46
     },
     {
       "month": 26,
@@ -565,11 +565,11 @@
       "cost_of_revenue": 468034.28,
       "gross_profit": 1393465.72,
       "payroll": 63000,
-      "marketing": 253400,
+      "marketing": 380100,
       "other_opex": 56000,
-      "opex": 372400,
-      "net": 1021065.72,
-      "cash": 12610197.18
+      "opex": 499100,
+      "net": 894365.72,
+      "cash": 10866047.18
     },
     {
       "month": 27,
@@ -583,11 +583,11 @@
       "cost_of_revenue": 487394.28,
       "gross_profit": 1451105.72,
       "payroll": 63000,
-      "marketing": 263600,
+      "marketing": 395400,
       "other_opex": 56000,
-      "opex": 382600,
-      "net": 1068505.72,
-      "cash": 13678702.9
+      "opex": 514400,
+      "net": 936705.72,
+      "cash": 11802752.9
     },
     {
       "month": 28,
@@ -601,11 +601,11 @@
       "cost_of_revenue": 507005.71,
       "gross_profit": 1509494.29,
       "payroll": 63000,
-      "marketing": 274100,
+      "marketing": 411150,
       "other_opex": 56000,
-      "opex": 393100,
-      "net": 1116394.29,
-      "cash": 14795097.19
+      "opex": 530150,
+      "net": 979344.29,
+      "cash": 12782097.19
     },
     {
       "month": 29,
@@ -619,11 +619,11 @@
       "cost_of_revenue": 527371.43,
       "gross_profit": 1570128.57,
       "payroll": 63000,
-      "marketing": 285100,
+      "marketing": 427650,
       "other_opex": 56000,
-      "opex": 404100,
-      "net": 1166028.57,
-      "cash": 15961125.76
+      "opex": 546650,
+      "net": 1023478.57,
+      "cash": 13805575.76
     },
     {
       "month": 30,
@@ -637,11 +637,11 @@
       "cost_of_revenue": 548491.43,
       "gross_profit": 1633008.57,
       "payroll": 63000,
-      "marketing": 296500,
+      "marketing": 444750,
       "other_opex": 56000,
-      "opex": 415500,
-      "net": 1217508.57,
-      "cash": 17178634.33
+      "opex": 563750,
+      "net": 1069258.57,
+      "cash": 14874834.33
     },
     {
       "month": 31,
@@ -655,11 +655,11 @@
       "cost_of_revenue": 570365.71,
       "gross_profit": 1698134.29,
       "payroll": 63000,
-      "marketing": 308300,
+      "marketing": 462450,
       "other_opex": 56000,
-      "opex": 427300,
-      "net": 1270834.29,
-      "cash": 18449468.62
+      "opex": 581450,
+      "net": 1116684.29,
+      "cash": 15991518.62
     },
     {
       "month": 32,
@@ -673,11 +673,11 @@
       "cost_of_revenue": 593245.71,
       "gross_profit": 1766254.29,
       "payroll": 63000,
-      "marketing": 320700,
+      "marketing": 481050,
       "other_opex": 56000,
-      "opex": 439700,
-      "net": 1326554.29,
-      "cash": 19776022.91
+      "opex": 600050,
+      "net": 1166204.29,
+      "cash": 17157722.91
     },
     {
       "month": 33,
@@ -691,11 +691,11 @@
       "cost_of_revenue": 617005.71,
       "gross_profit": 1836994.29,
       "payroll": 63000,
-      "marketing": 333500,
+      "marketing": 500250,
       "other_opex": 56000,
-      "opex": 452500,
-      "net": 1384494.29,
-      "cash": 21160517.2
+      "opex": 619250,
+      "net": 1217744.29,
+      "cash": 18375467.2
     },
     {
       "month": 34,
@@ -709,11 +709,11 @@
       "cost_of_revenue": 641645.71,
       "gross_profit": 1910354.29,
       "payroll": 63000,
-      "marketing": 346800,
+      "marketing": 520200,
       "other_opex": 56000,
-      "opex": 465800,
-      "net": 1444554.29,
-      "cash": 22605071.49
+      "opex": 639200,
+      "net": 1271154.29,
+      "cash": 19646621.49
     },
     {
       "month": 35,
@@ -727,11 +727,11 @@
       "cost_of_revenue": 667291.42,
       "gross_profit": 1986708.58,
       "payroll": 63000,
-      "marketing": 360700,
+      "marketing": 541050,
       "other_opex": 56000,
-      "opex": 479700,
-      "net": 1507008.58,
-      "cash": 24112080.07
+      "opex": 660050,
+      "net": 1326658.58,
+      "cash": 20973280.07
     },
     {
       "month": 36,
@@ -745,11 +745,11 @@
       "cost_of_revenue": 693942.85,
       "gross_profit": 2066057.15,
       "payroll": 63000,
-      "marketing": 375100,
+      "marketing": 562650,
       "other_opex": 56000,
-      "opex": 494100,
-      "net": 1571957.15,
-      "cash": 25684037.22
+      "opex": 681650,
+      "net": 1384407.15,
+      "cash": 22357687.22
     }
   ],
   "summary": {
@@ -765,18 +765,18 @@
     "gmv_y1": 4098000,
     "gmv_y2": 13784000,
     "gmv_y3": 26927000,
-    "net_y1": 847545.72,
-    "net_y2": 6769208.59,
-    "net_y3": 15067282.91,
-    "breakeven_month": 11,
-    "breakeven_date": "2027-11",
-    "peak_burn": 214831.43,
-    "peak_burn_month": 4,
+    "net_y1": 91495.72,
+    "net_y2": 6029658.59,
+    "net_y3": 13236532.91,
+    "breakeven_month": 5,
+    "breakeven_date": "2027-05",
+    "peak_burn": 256392.86,
+    "peak_burn_month": 3,
     "runway_months": 36,
     "cash_out_month": null,
-    "cash_low": 2842825.71,
+    "cash_low": 2232875.71,
     "cash_low_month": 4,
-    "cash_end": 25684037.22,
+    "cash_end": 22357687.22,
     "customers_end": 5520,
     "raise": 3000000,
     "raise_month": 1,
@@ -799,10 +799,10 @@
     "orders_per_customer_month": 1,
     "contribution_per_customer_month": 374.285715,
     "churn_monthly_pct": 66.67,
-    "cac": 100,
+    "cac": 150,
     "ltv": 561.4,
-    "ltv_cac": 5.61,
-    "cac_payback_months": 0.27
+    "ltv_cac": 3.74,
+    "cac_payback_months": 0.4
   },
   "note": "Projections from your own assumptions: a plan, not a forecast. Not investment advice."
 }

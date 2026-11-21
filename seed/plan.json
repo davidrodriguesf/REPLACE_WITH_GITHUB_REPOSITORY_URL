@@ -1,6 +1,6 @@
 {
   "created_by": "seed-plan",
-  "tagline": "",
+  "tagline": "Controle de pragas operado por IA: mais clientes, menos escrit\u00f3rio.",
   "brand": {
     "brand": "#2F6FEB",
     "ink": "#0E1B33",
@@ -10,76 +10,284 @@
     {
       "key": "executive_summary",
       "title": "Executive summary",
-      "text": "",
-      "pitch": "",
+      "text": "A Foco Dedetizadora \u00e9 uma empresa de controle de pragas do Distrito Federal que j\u00e1 fatura R$150 mil por m\u00eas e d\u00e1 lucro. O plano transforma a Foco em uma empresa operada por IA: aquisi\u00e7\u00e3o por Google, Meta e prospec\u00e7\u00e3o por IA, vendas por um vendedor de IA no WhatsApp, faturamento e back office por IA, e um motor de IA para crescer no SEO e nas buscas por IA. De humanos ficam s\u00f3 um gestor de escrit\u00f3rio, um t\u00e9cnico de visitas, o bi\u00f3logo respons\u00e1vel e os t\u00e9cnicos de campo, que crescem com o faturamento (um t\u00e9cnico a cada R$35 mil). Captamos R$3 milh\u00f5es para construir o motor de IA e abrir Goi\u00e2nia e Entorno, Vit\u00f3ria e Florian\u00f3polis nos primeiros 4 meses de 2027. Pelas premissas do fundador, a receita vai a R$4,1 milh\u00f5es no ano 1 e R$26,9 milh\u00f5es no ano 3, com lucro todo m\u00eas a partir de maio de 2027.",
+      "pitch": "Uma dedetizadora lucrativa que vira empresa operada por IA: o escrit\u00f3rio fica do mesmo tamanho enquanto a receita cresce.",
       "points": []
     },
     {
       "key": "problem",
       "title": "Problem",
-      "text": "",
-      "pitch": "",
+      "text": "Controle de pragas \u00e9 um servi\u00e7o obrigat\u00f3rio para restaurantes, condom\u00ednios e empresas e recorrente para muitas casas, mas o mercado \u00e9 pulverizado: s\u00e3o 33.782 empresas no CNAE 8122-2/00, segundo o Sebrae, quase todas pequenas e locais. Nelas, vender, or\u00e7ar, agendar, faturar e cobrar depende de pessoas no escrit\u00f3rio. Isso deixa o atendimento lento (o cliente que pede or\u00e7amento \u00e0 noite ou no fim de semana fica sem resposta), limita o crescimento ao tamanho da equipe administrativa e come a margem a cada nova cidade.",
+      "pitch": "Dedetizadoras crescem contratando escrit\u00f3rio: atendimento lento, margem baixa e expans\u00e3o cara.",
       "points": []
     },
     {
       "key": "solution",
       "title": "Solution",
-      "text": "",
-      "pitch": "",
-      "points": []
+      "text": "A Foco coloca IA em todo o caminho do cliente. A IA atrai (SEO, busca por IA, Google e Meta Ads, prospec\u00e7\u00e3o em massa), vende (vendedor de IA no WhatsApp que or\u00e7a e agenda 24 horas por dia), fatura e cobra, e cuida do back office. As pessoas ficam onde a IA n\u00e3o chega: o t\u00e9cnico em campo, o bi\u00f3logo respons\u00e1vel t\u00e9cnico, a visita t\u00e9cnica e um gestor de escrit\u00f3rio. Assim cada nova cidade precisa s\u00f3 de t\u00e9cnicos e de uma pequena base local, e n\u00e3o de um novo escrit\u00f3rio.",
+      "pitch": "IA atrai, vende, fatura e administra; pessoas fazem o servi\u00e7o em campo.",
+      "points": [
+        "Vendedor de IA no WhatsApp: or\u00e7a e agenda 24 horas por dia",
+        "Motor de IA para SEO e buscas por IA em cada cidade nova",
+        "Faturamento e back office por IA: escrit\u00f3rio fixo enquanto a receita cresce"
+      ]
     },
     {
       "key": "market",
       "title": "Market",
-      "text": "",
-      "pitch": "",
+      "text": "Pelo Censo 2022 do IBGE, o Brasil tem 72,4 milh\u00f5es de domic\u00edlios ocupados. Se cerca de 1 em cada 10 contrata dedetiza\u00e7\u00e3o por ano (premissa a validar) a R$500, o mercado total (TAM) \u00e9 de R$3,62 bilh\u00f5es por ano. Nas quatro regi\u00f5es do plano (DF, Goi\u00e1s, Esp\u00edrito Santo e Santa Catarina), estimamos 764 mil domic\u00edlios que contratam por ano, um mercado atend\u00edvel (SAM) de R$382 milh\u00f5es. Nossa meta (SOM) \u00e9 8% desse mercado em 3 anos, R$30,56 milh\u00f5es por ano. Contratos B2B (restaurantes, condom\u00ednios, empresas) ficam fora dessa conta e s\u00e3o potencial extra.",
+      "pitch": "TAM R$3,62 bi no Brasil; SAM R$382 mi em DF, GO, ES e SC; meta de 8% em 3 anos.",
       "points": []
     },
     {
       "key": "competition",
       "title": "Competition",
-      "text": "",
-      "pitch": "",
+      "text": "O mercado \u00e9 pulverizado: 33.782 empresas no CNAE 8122-2/00 segundo o Sebrae, com poucas redes nacionais e milhares de dedetizadoras locais que dependem de indica\u00e7\u00e3o e de um escrit\u00f3rio para vender e atender. Nenhuma delas, at\u00e9 onde sabemos, opera vendas, faturamento e back office por IA. A vantagem da Foco \u00e9 atender na hora pelo WhatsApp, aparecer primeiro no Google e nas respostas das IAs em cada cidade e crescer sem inchar o escrit\u00f3rio. A an\u00e1lise dos concorrentes locais (notas e reclama\u00e7\u00f5es no Google) ainda ser\u00e1 feita.",
+      "pitch": "Milhares de dedetizadoras locais dependentes de escrit\u00f3rio; a Foco atende na hora e aparece primeiro.",
       "points": []
     },
     {
       "key": "business_model",
       "title": "Business model",
-      "text": "",
-      "pitch": "",
+      "text": "A Foco cobra por servi\u00e7o, com ticket m\u00e9dio de R$500, e mant\u00e9m contratos mensais com empresas. Cada servi\u00e7o custa 8% em produto e combust\u00edvel e cerca de 17% em t\u00e9cnicos (um t\u00e9cnico de R$6 mil a cada R$35 mil faturados), deixando R$374 de margem por servi\u00e7o. Conquistar um cliente custa hoje R$100; o plano usa R$150 por prud\u00eancia nas cidades novas. Com isso, cada cliente vale cerca de 3,7 vezes o que custa para ser conquistado.",
+      "pitch": "R$500 por servi\u00e7o, R$374 de margem, CAC de R$150: cada cliente vale 3,7x o custo de conquist\u00e1-lo.",
       "points": []
     },
     {
       "key": "go_to_market",
       "title": "Go-to-market",
-      "text": "",
-      "pitch": "",
-      "points": []
+      "text": "Come\u00e7amos onde j\u00e1 ganhamos: o Distrito Federal, com 300 servi\u00e7os por m\u00eas. Abrimos Goi\u00e2nia e Entorno, Vit\u00f3ria e Florian\u00f3polis entre fevereiro e abril de 2027, cada uma com uma pequena base (bi\u00f3logo respons\u00e1vel t\u00e9cnico e t\u00e9cnico de visitas) e t\u00e9cnicos contratados conforme o faturamento cresce. Em cada cidade, o motor de IA cria as p\u00e1ginas e o conte\u00fado para o SEO e as buscas por IA, os an\u00fancios no Google e na Meta trazem a demanda imediata, a prospec\u00e7\u00e3o por IA chega \u00e0s empresas, e o vendedor de IA no WhatsApp fecha e agenda.",
+      "pitch": "DF primeiro, depois Goi\u00e2nia, Vit\u00f3ria e Florian\u00f3polis at\u00e9 abril de 2027, com aquisi\u00e7\u00e3o e vendas por IA.",
+      "points": [
+        "SEO e busca por IA por cidade, gerados pelo motor de IA",
+        "Google e Meta Ads mais prospec\u00e7\u00e3o por IA de empresas",
+        "Vendedor de IA no WhatsApp fecha e agenda"
+      ]
     },
     {
       "key": "financial_plan",
       "title": "Financial plan",
-      "text": "",
-      "pitch": "",
+      "text": "Proje\u00e7\u00f5es feitas a partir das premissas do fundador, n\u00e3o s\u00e3o previs\u00e3o. Receita de R$4,1 milh\u00f5es no ano 1, R$13,8 milh\u00f5es no ano 2 e R$26,9 milh\u00f5es no ano 3. O pior m\u00eas \u00e9 mar\u00e7o de 2027, com a abertura das cidades; a partir de maio de 2027 todo m\u00eas d\u00e1 lucro. O caixa nunca fica abaixo de R$2,2 milh\u00f5es. Os valores n\u00e3o incluem impostos nem pr\u00f3-labore.",
+      "pitch": "R$4,1 mi no ano 1, R$26,9 mi no ano 3; lucro todo m\u00eas a partir de maio de 2027.",
       "points": []
     },
     {
       "key": "use_of_funds",
       "title": "Use of funds",
-      "text": "",
-      "pitch": "",
+      "text": "Os R$3 milh\u00f5es v\u00e3o para: motor de IA (SEO, busca por IA, vendas, back office) R$1,2 milh\u00e3o (40%); marketing em Google, Meta e prospec\u00e7\u00e3o por IA R$900 mil (30%); expans\u00e3o para Goi\u00e2nia e Entorno, Vit\u00f3ria e Florian\u00f3polis R$600 mil (20%); capital de giro R$300 mil (10%).",
+      "pitch": "R$3 mi: 40% motor de IA, 30% marketing, 20% expans\u00e3o, 10% capital de giro.",
       "points": []
     }
   ],
   "team": [
     {
       "name": "David Rodrigues da Fonseca",
-      "role": "Founder",
-      "line": ""
+      "role": "Fundador e CEO",
+      "line": "Fundou e opera a Foco Dedetizadora no Distrito Federal, hoje com 300 servi\u00e7os por m\u00eas e R$150 mil de faturamento mensal."
     }
   ],
-  "numbers": {},
-  "flags": [],
-  "notes": [],
-  "built": null
+  "numbers": {
+    "currency": "BRL",
+    "raise": 3000000,
+    "instrument": "a definir",
+    "stage": "seed",
+    "unit_economics": {
+      "unit": "servico",
+      "units": "servicos",
+      "price": 500,
+      "take_rate_pct": 100,
+      "revenue_per_order": 500,
+      "cost_per_order": 125.714285,
+      "costs": [
+        {
+          "label": "produto (6%)",
+          "amount": 30
+        },
+        {
+          "label": "combustivel (2%)",
+          "amount": 10
+        },
+        {
+          "label": "tecnicos: R$6.000 a cada R$35.000 faturados (17,14%)",
+          "amount": 85.714285
+        }
+      ],
+      "contribution_per_order": 374.285715,
+      "orders_per_customer_month": 1,
+      "contribution_per_customer_month": 374.285715,
+      "churn_monthly_pct": 66.67,
+      "cac": 150,
+      "ltv": 561.4,
+      "ltv_cac": 3.74,
+      "cac_payback_months": 0.4
+    },
+    "financials": {
+      "months": 36,
+      "start_month": "2027-01",
+      "end_month": "2029-12",
+      "revenue_y1": 4098000,
+      "revenue_y2": 13784000,
+      "revenue_y3": 26927000,
+      "gmv_y1": 4098000,
+      "gmv_y2": 13784000,
+      "gmv_y3": 26927000,
+      "breakeven_month": 5,
+      "breakeven_date": "2027-05",
+      "peak_burn": 256392.86,
+      "peak_burn_month": 3,
+      "runway_months": 36,
+      "cash_out_month": null,
+      "cash_low": 2232875.71,
+      "cash_low_month": 4,
+      "cash_end": 22357687.22,
+      "customers_end": 5520,
+      "years": [
+        {
+          "year": 1,
+          "orders": 8196,
+          "gmv": 4098000,
+          "revenue": 4098000,
+          "gross_profit": 3067645.72,
+          "opex": 2976150,
+          "net": 91495.72,
+          "cash_end": 3091495.72,
+          "customers_end": 1310
+        },
+        {
+          "year": 2,
+          "orders": 27568,
+          "gmv": 13784000,
+          "revenue": 13784000,
+          "gross_profit": 10318308.59,
+          "opex": 4288650,
+          "net": 6029658.59,
+          "cash_end": 9121154.31,
+          "customers_end": 3389
+        },
+        {
+          "year": 3,
+          "orders": 53854,
+          "gmv": 26927000,
+          "revenue": 26927000,
+          "gross_profit": 20156782.91,
+          "opex": 6920250,
+          "net": 13236532.91,
+          "cash_end": 22357687.22,
+          "customers_end": 5520
+        }
+      ]
+    },
+    "model_raise": 3000000,
+    "use_of_funds": {
+      "Motor de IA (SEO, busca por IA, vendas, back office)": 1200000,
+      "Marketing (Google, Meta, prospeccao por IA)": 900000,
+      "Expansao": 600000,
+      "Capital de giro": 300000
+    },
+    "use_of_funds_pct": {
+      "Motor de IA (SEO, busca por IA, vendas, back office)": 40,
+      "Marketing (Google, Meta, prospeccao por IA)": 30,
+      "Expansao": 20,
+      "Capital de giro": 10
+    },
+    "market": {
+      "method": "top-down TAM, bottom-up SAM, SOM 8% of SAM in 3 years",
+      "currency": "BRL",
+      "tam": 3620000000,
+      "sam": 382000000,
+      "som": 30560000,
+      "inputs": [
+        {
+          "name": "domicilios particulares permanentes ocupados no Brasil",
+          "value": 72400000,
+          "unit": "count",
+          "source": "IBGE, Censo Demografico 2022, Primeiros resultados (biblioteca.ibge.gov.br/visualizacao/livros/liv102011.pdf)",
+          "kind": "publication",
+          "level": "tam"
+        },
+        {
+          "name": "domicilios que contratam dedetizacao no ano",
+          "value": 10,
+          "unit": "%",
+          "source": "assumption: cerca de 1 em cada 10 domicilios contrata controle de pragas por ano; validar com pesquisa",
+          "kind": "assumption",
+          "level": "tam"
+        },
+        {
+          "name": "gasto por domicilio no ano",
+          "value": 500,
+          "unit": "BRL a year",
+          "source": "Foco Dedetizadora: ticket medio de R$500, 1 servico por ano (dado do fundador)",
+          "kind": "publication",
+          "level": "tam"
+        },
+        {
+          "name": "domicilios que contratam dedetizacao no DF, GO, ES e SC",
+          "value": 764000,
+          "unit": "count",
+          "source": "assumption: 10% de ~7,64M domicilios; populacao Censo 2022 (DF 2.817.068, GO 7.055.228, ES 3.833.486, SC 7.609.601; IBGE via cnnbrasil.com.br/nacional/quais-sao-os-maiores-e-menores-estados-do-brasil-veja-ranking) dividida por 2,79 moradores por domicilio",
+          "kind": "assumption",
+          "level": "sam"
+        },
+        {
+          "name": "servicos a year per customer",
+          "value": 1,
+          "unit": "per year",
+          "source": "assumption: 1 servico por ano no residencial; contratos mensais B2B ficam fora (potencial extra)",
+          "kind": "assumption",
+          "level": "sam"
+        },
+        {
+          "name": "price per servico",
+          "value": 500,
+          "unit": "BRL",
+          "source": "Foco Dedetizadora: ticket medio de R$500 (dado do fundador)",
+          "kind": "publication",
+          "level": "sam"
+        },
+        {
+          "name": "empresas de imunizacao e controle de pragas urbanas no Brasil (CNAE 8122-2/00)",
+          "value": 33782,
+          "unit": "empresas",
+          "source": "Sebrae em Dados: servicos de dedetizacao (sebraepr.com.br/comunidade/artigo/sebrae-em-dados-servicos-de-dedetizacao-2)",
+          "kind": "publication",
+          "level": "context"
+        },
+        {
+          "name": "domicilios no Distrito Federal",
+          "value": 989344,
+          "unit": "domicilios",
+          "source": "IPEDF, Censo 2022 Composicao domiciliar (ipe.df.gov.br/documents/d/ipedf/informe-demografico_censo-2022-composicao-domiciliar)",
+          "kind": "publication",
+          "level": "context"
+        }
+      ],
+      "notes": ""
+    }
+  },
+  "flags": [
+    "No seed/competitors.json: run /seed-scout first, then build again."
+  ],
+  "notes": [
+    "Solution text: 24 is in none of the seed/ files. Check it.",
+    "Solution points: 24 is in none of the seed/ files. Check it.",
+    "Market text: 72, 62, 764, 382, 56 are in none of the seed/ files. Check them.",
+    "Market pitch: 62, 382 are in none of the seed/ files. Check them.",
+    "Financial plan text: 13 is in none of the seed/ files. Check it.",
+    "Use of funds text: 900, 600 are in none of the seed/ files. Check them."
+  ],
+  "built": "2026-11-21",
+  "startup": {
+    "name": "Foco Dedetizadora",
+    "one_liner": "Controle de pragas com aquisi\u00e7\u00e3o, vendas, faturamento e back office operados por IA",
+    "sector": "controle de pragas / servi\u00e7os B2B e residenciais",
+    "stage": "seed",
+    "geography": "Distrito Federal, Brasil",
+    "raise": 3000000,
+    "instrument": "a definir"
+  },
+  "founder": {
+    "name": "David Rodrigues da Fonseca",
+    "email": "Contato@focodedetizadora.com.br"
+  }
 }

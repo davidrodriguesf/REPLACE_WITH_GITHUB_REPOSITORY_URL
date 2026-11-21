@@ -1,0 +1,88 @@
+{
+  "created_by": "seed-market",
+  "generated": "2026-11-21",
+  "method": "top-down TAM, bottom-up SAM, SOM 8% of SAM in 3 years",
+  "tam": 3620000000,
+  "sam": 382000000,
+  "som": 30560000,
+  "currency": "BRL",
+  "inputs": [
+    {
+      "name": "domicilios particulares permanentes ocupados no Brasil",
+      "value": 72400000,
+      "unit": "count",
+      "source": "IBGE, Censo Demografico 2022, Primeiros resultados (biblioteca.ibge.gov.br/visualizacao/livros/liv102011.pdf)",
+      "kind": "publication",
+      "level": "tam"
+    },
+    {
+      "name": "domicilios que contratam dedetizacao no ano",
+      "value": 10,
+      "unit": "%",
+      "source": "assumption: cerca de 1 em cada 10 domicilios contrata controle de pragas por ano; validar com pesquisa",
+      "kind": "assumption",
+      "level": "tam"
+    },
+    {
+      "name": "gasto por domicilio no ano",
+      "value": 500,
+      "unit": "BRL a year",
+      "source": "Foco Dedetizadora: ticket medio de R$500, 1 servico por ano (dado do fundador)",
+      "kind": "publication",
+      "level": "tam"
+    },
+    {
+      "name": "domicilios que contratam dedetizacao no DF, GO, ES e SC",
+      "value": 764000,
+      "unit": "count",
+      "source": "assumption: 10% de ~7,64M domicilios; populacao Censo 2022 (DF 2.817.068, GO 7.055.228, ES 3.833.486, SC 7.609.601; IBGE via cnnbrasil.com.br/nacional/quais-sao-os-maiores-e-menores-estados-do-brasil-veja-ranking) dividida por 2,79 moradores por domicilio",
+      "kind": "assumption",
+      "level": "sam"
+    },
+    {
+      "name": "servicos a year per customer",
+      "value": 1,
+      "unit": "per year",
+      "source": "assumption: 1 servico por ano no residencial; contratos mensais B2B ficam fora (potencial extra)",
+      "kind": "assumption",
+      "level": "sam"
+    },
+    {
+      "name": "price per servico",
+      "value": 500,
+      "unit": "BRL",
+      "source": "Foco Dedetizadora: ticket medio de R$500 (dado do fundador)",
+      "kind": "publication",
+      "level": "sam"
+    },
+    {
+      "name": "empresas de imunizacao e controle de pragas urbanas no Brasil (CNAE 8122-2/00)",
+      "value": 33782,
+      "unit": "empresas",
+      "source": "Sebrae em Dados: servicos de dedetizacao (sebraepr.com.br/comunidade/artigo/sebrae-em-dados-servicos-de-dedetizacao-2)",
+      "kind": "publication",
+      "level": "context"
+    },
+    {
+      "name": "domicilios no Distrito Federal",
+      "value": 989344,
+      "unit": "domicilios",
+      "source": "IPEDF, Censo 2022 Composicao domiciliar (ipe.df.gov.br/documents/d/ipedf/informe-demografico_censo-2022-composicao-domiciliar)",
+      "kind": "publication",
+      "level": "context"
+    }
+  ],
+  "notes": [],
+  "methods": {
+    "tam": "top-down",
+    "sam": "bottom-up"
+  },
+  "formulas": {
+    "tam": "72,400,000 domicilios particulares permanentes ocupados no Brasil x 10% x BRL 500 = BRL 3,620,000,000",
+    "sam": "764,000 domicilios que contratam dedetizacao no DF, GO, ES e SC x 1 servicos a year x BRL 500 = BRL 382,000,000",
+    "som": "8% of SAM BRL 382,000,000 = BRL 30,560,000"
+  },
+  "som_share_pct": 8.0,
+  "som_years": 3,
+  "som_reason": "mercado pulverizado (33.782 empresas no CNAE 8122-2/00, Sebrae) e a Foco ganha share com SEO e busca por IA, anuncios e vendedor por IA no WhatsApp; o modelo de 36 meses fatura R$26,9M no ano 3, cerca de 7% do SAM"
+}

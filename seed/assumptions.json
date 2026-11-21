@@ -1,5 +1,5 @@
 {
-  "_about": "Foco Dedetizadora. Valores em reais (BRL). Numeros de hoje informados pelo fundador em 21/11/2026: ticket R$500, 300 servicos/mes (200 clientes novos), 100 contratos mensais, produto 6%, combustivel 2%, CAC R$100, folha R$51 mil com encargos (4 tecnicos, 2 vendedores, 1 biologo, 1 adm), fixos R$6 mil. Regra do fundador: 1 tecnico de R$6.000 a cada R$35.000 de faturamento (17,14% do preco, aproximacao continua); escritorio fixo em R$27 mil sem novas contratacoes, IA no lugar de vendas e back office. ESTIMATIVAS (sugeridas e aceitas pelo fundador, a validar): crescimento de clientes novos 8%/5%/3% ao mes nos anos 1/2/3, motor de IA R$30 mil/mes, ferramentas de IA R$8 mil/mes, uso dos recursos 40/30/20/10.",
+  "_about": "Foco Dedetizadora. Valores em reais (BRL). Numeros de hoje informados pelo fundador em 21/11/2026: ticket R$500, 300 servicos/mes (200 clientes novos), 100 contratos mensais, produto 6%, combustivel 2%, CAC hoje R$100 (modelo usa R$150, conservador, decisao do fundador), folha R$51 mil com encargos (4 tecnicos, 2 vendedores, 1 biologo, 1 adm), fixos R$6 mil. Regra do fundador: 1 tecnico de R$6.000 a cada R$35.000 de faturamento (17,14% do preco, aproximacao continua); escritorio fixo em R$27 mil sem novas contratacoes, IA no lugar de vendas e back office. ESTIMATIVAS (sugeridas e aceitas pelo fundador, a validar): crescimento de clientes novos 8%/5%/3% ao mes nos anos 1/2/3, motor de IA R$30 mil/mes, ferramentas de IA R$8 mil/mes, uso dos recursos 40/30/20/10.",
   "company": "Foco Dedetizadora",
   "currency": "BRL",
   "unit": "servico",
@@ -35,7 +35,7 @@
     "churn_monthly_pct": 66.67,
     "orders_per_customer_month": 1
   },
-  "cac": 100,
+  "cac": 150,
   "payroll_overhead_pct": 0,
   "payroll": [
     {
@@ -46,17 +46,17 @@
     {
       "role": "Base Goiania: biologo responsavel tecnico + tecnico de visitas",
       "monthly": 12000,
-      "start_month": 4
+      "start_month": 2
     },
     {
       "role": "Base Vitoria: biologo responsavel tecnico + tecnico de visitas",
       "monthly": 12000,
-      "start_month": 10
+      "start_month": 3
     },
     {
       "role": "Base Florianopolis: biologo responsavel tecnico + tecnico de visitas",
       "monthly": 12000,
-      "start_month": 16
+      "start_month": 4
     }
   ],
   "opex": [
@@ -80,17 +80,17 @@
   "one_off": [
     {
       "label": "lancamento Goiania e Entorno (base, veiculos, alvaras, estoque) - estimativa",
-      "month": 4,
+      "month": 2,
       "cost": 250000
     },
     {
       "label": "lancamento Vitoria - estimativa",
-      "month": 10,
+      "month": 3,
       "cost": 250000
     },
     {
       "label": "lancamento Florianopolis - estimativa",
-      "month": 16,
+      "month": 4,
       "cost": 250000
     }
   ],

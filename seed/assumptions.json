@@ -1,5 +1,5 @@
 {
-  "_about": "Foco Dedetizadora. Valores em reais (BRL), informados pelo fundador em 21/11/2026. Cenario BASE: a operacao de hoje sem crescimento, para validar o modelo. O cenario de crescimento com IA entra depois, com premissas aprovadas pelo fundador.",
+  "_about": "Foco Dedetizadora. Valores em reais (BRL). Numeros de hoje informados pelo fundador em 21/11/2026: ticket R$500, 300 servicos/mes (200 clientes novos), 100 contratos mensais, produto 6%, combustivel 2%, CAC R$100, folha R$51 mil com encargos (4 tecnicos, 2 vendedores, 1 biologo, 1 adm), fixos R$6 mil. Regra do fundador: 1 tecnico de R$6.000 a cada R$35.000 de faturamento (17,14% do preco, aproximacao continua); escritorio fixo em R$27 mil sem novas contratacoes, IA no lugar de vendas e back office. ESTIMATIVAS (sugeridas e aceitas pelo fundador, a validar): crescimento de clientes novos 8%/5%/3% ao mes nos anos 1/2/3, motor de IA R$30 mil/mes, ferramentas de IA R$8 mil/mes, uso dos recursos 40/30/20/10.",
   "company": "Foco Dedetizadora",
   "currency": "BRL",
   "unit": "servico",
@@ -11,25 +11,58 @@
   "price": 500,
   "take_rate_pct": 100,
   "cost_per_order": [
-    {"label": "produto (6%)", "pct_of_price": 6},
-    {"label": "combustivel (2%)", "pct_of_price": 2},
-    {"label": "tecnico (18%)", "pct_of_price": 18}
+    {
+      "label": "produto (6%)",
+      "pct_of_price": 6
+    },
+    {
+      "label": "combustivel (2%)",
+      "pct_of_price": 2
+    },
+    {
+      "label": "tecnicos: R$6.000 a cada R$35.000 faturados (17,14%)",
+      "pct_of_price": 17.142857
+    }
   ],
   "customers": {
     "starting": 300,
     "new_month_1": 200,
-    "new_growth_pct": [0, 0, 0],
+    "new_growth_pct": [
+      8,
+      5,
+      3
+    ],
     "churn_monthly_pct": 66.67,
     "orders_per_customer_month": 1
   },
   "cac": 100,
   "payroll_overhead_pct": 0,
   "payroll": [
-    {"role": "Equipe atual: 4 tecnicos, 2 vendedores, 1 biologo, 1 administrativo (com encargos)", "monthly": 51000, "start_month": 1}
+    {
+      "role": "Escritorio fixo (hoje 2 vendedores, 1 biologo, 1 adm; com a IA: gestor de escritorio, tecnico de visitas e biologo), com encargos",
+      "monthly": 27000,
+      "start_month": 1
+    }
   ],
   "opex": [
-    {"label": "custos fixos", "monthly": 6000}
+    {
+      "label": "custos fixos",
+      "monthly": 6000
+    },
+    {
+      "label": "motor de IA (SEO, busca por IA, vendedor no WhatsApp, faturamento, back office) - estimativa",
+      "monthly": 30000
+    },
+    {
+      "label": "ferramentas de IA, WhatsApp API e software - estimativa",
+      "monthly": 8000
+    }
   ],
   "one_off": [],
-  "use_of_funds": {}
+  "use_of_funds": {
+    "Motor de IA (SEO, busca por IA, vendas, back office)": 1200000,
+    "Marketing (Google, Meta, prospeccao por IA)": 900000,
+    "Expansao": 600000,
+    "Capital de giro": 300000
+  }
 }
